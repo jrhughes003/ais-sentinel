@@ -1,0 +1,25 @@
+# Development config: exercise the whole pipeline on early-season days while the full
+# download runs. Splits are temporary and live entirely inside May–June 2023, outputs go to
+# data/dev/, so the real reports and the locked October test are never touched.
+extends: default.yaml
+
+paths:
+  processed: data/dev/processed
+  reports: data/dev/reports
+  models: data/dev/models
+
+splits:
+  train: [2023-05-01, 2023-05-24]
+  val: [2023-05-26, 2023-05-31]
+  test: [2023-06-02, 2023-06-10]
+
+prediction:
+  n_boot: 300
+  ml:
+    max_epochs: 12
+    seeds_gaussian: [0, 1]
+    seeds_mdn: [0]
+
+anomaly:
+  eval:
+    n_per_type: 80

@@ -299,7 +299,7 @@ def evaluate_stage(cfg: Config) -> None:
         "",
     ]
     write_text(Path(cfg.paths.reports) / "prediction_val.md", "\n".join(lines))
-    _save_forecasts(cfg, "val", {m: fc.with_cov_scale(scales[m]) for m, fc in fcs.items()})
+    _save_forecasts(cfg, "val", {m: fc.with_cov_scale(scales[m]) for m, fc in fcs.items()}, val)
     log.info("evaluate: wrote reports/prediction_val.md")
 
 
@@ -309,7 +309,12 @@ def _choose(table: pl.DataFrame, names: list[str]) -> str:
     return str(t.sort("mean_km")["model"][0])
 
 
-def _save_forecasts(cfg: Config, split: str, fcs: dict[str, Forecast]) -> None:
+def _save_forecasts(
+    cfg: Config, split: str, fcs: dict[str, Forecast], samples: pl.DataFrame | None = None
+) -> None:
+    """Persist calibrated forecasts (and the samples they score) for the site export."""
+    if samples is not None:
+        samples.write_parquet(Path(cfg.paths.processed) / f"samples_{split}.parquet")
     rows = []
     for name, fc in fcs.items():
         lat, lon = fc.latlon()
@@ -465,7 +470,7 @@ def holdout_stage(cfg: Config) -> None:
             default=str,
         ),
     )
-    _save_forecasts(cfg, "test", fcs)
+    _save_forecasts(cfg, "test", fcs, test)
     _append_holdout_log(cfg, best_ml, verdict, cov_ml, met_point, met_cov, test.height)
     log.info("holdout: wrote reports/prediction_test.md")
 

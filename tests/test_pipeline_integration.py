@@ -100,10 +100,10 @@ def test_build_track_export(tmp_cfg: Config) -> None:
     web.stage(tmp_cfg)
     site = Path(tmp_cfg.paths.site_data)
     tj = json.loads((site / "tracks.json").read_text(encoding="utf-8"))
-    aj = json.loads((site / "anomalies.json").read_text(encoding="utf-8"))
+    rj = json.loads((site / "results.json").read_text(encoding="utf-8"))
     assert "CC0" in tj["attribution"]
-    assert {v["group"] for v in tj["voyages"]} == {"cargo"}
+    assert {v["group"] for v in tj["voyages"]} == {"cargo"}  # no pleasure craft / tugs here
     v0 = tj["voyages"][0]
-    assert len(v0["lat"]) == len(v0["s_lat"]) == len(v0["dt"])
-    assert [e["mmsi"] for e in aj["events"]] == [366000002]
-    assert aj["events"][0]["duration_min"] == 46.0
+    assert len(v0["lat"]) == len(v0["s_lat"]) == len(v0["dt"]) == len(v0["mode"])
+    assert rj["counts"]["vessels"] == 3
+    assert not (site / "anomalies.json").exists()  # only written after the anomaly stage

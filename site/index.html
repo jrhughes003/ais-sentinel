@@ -3,11 +3,40 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ais-sentinel — vessel tracking, prediction & anomaly detection</title>
-    <meta name="description" content="Maritime domain awareness from public AIS data: Kalman/IMM tracking, trajectory prediction with uncertainty, and anomaly detection." />
+    <title>ais-sentinel: vessel tracking, prediction and anomaly detection</title>
+    <meta
+      name="description"
+      content="Maritime domain awareness from public AIS data: Kalman/IMM tracking, trajectory prediction with uncertainty, and anomaly detection on the Detroit–St. Clair corridor."
+    />
+    <meta name="theme-color" content="#0b63ce" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='15' fill='%230b63ce'/%3E%3Cpath d='M7 19c3-1 5 1 9 0s6-2 9-1' stroke='white' stroke-width='2.4' fill='none' stroke-linecap='round'/%3E%3Ccircle cx='16' cy='11' r='3' fill='white'/%3E%3C/svg%3E" />
   </head>
   <body>
-    <div id="app"></div>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="brand" href="#/" aria-label="ais-sentinel home">
+          <svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="15" fill="var(--accent)" /><path d="M7 19c3-1 5 1 9 0s6-2 9-1" stroke="#fff" stroke-width="2.4" fill="none" stroke-linecap="round" /><circle cx="16" cy="11" r="3" fill="#fff" /></svg>
+          ais-sentinel
+        </a>
+        <button class="nav-toggle" aria-expanded="false" aria-controls="nav">Menu</button>
+        <nav id="nav" class="nav" aria-label="Main">
+          <a href="#/">Overview</a>
+          <a href="#/tracks">Tracks</a>
+          <a href="#/predict">Predictions</a>
+          <a href="#/anomalies">Anomalies</a>
+          <a href="#/results">Results &amp; methods</a>
+        </nav>
+        <button class="theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">◐</button>
+      </div>
+    </header>
+    <main id="main" tabindex="-1"></main>
+    <footer class="site-footer">
+      <div class="inner">
+        <span>AIS data: U.S. Coast Guard NAVCEN via NOAA/BOEM <a href="https://marinecadastre.gov/">MarineCadastre.gov</a> (CC0). Not for navigation.</span>
+        <span>Basemap © OpenFreeMap © OpenMapTiles © OpenStreetMap contributors · <a href="https://github.com/jrhughes003/ais-sentinel">Source on GitHub</a></span>
+      </div>
+    </footer>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

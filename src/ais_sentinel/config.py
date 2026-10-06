@@ -34,13 +34,28 @@ class Config(dict[str, Any]):
         return hashlib.sha256(blob).hexdigest()[:12]
 
 
+def _merge(base: dict[str, Any], over: dict[str, Any]) -> dict[str, Any]:
+    """Recursively merge ``over`` into a copy of ``base`` (mappings merge, others replace)."""
+    out = dict(base)
+    for k, v in over.items():
+        out[k] = _merge(out[k], v) if isinstance(v, dict) and isinstance(out.get(k), dict) else v
+    return out
+
+
 def load_config(path: str | Path | None = None) -> Config:
-    """Load a YAML config file (defaults to ``configs/default.yaml``)."""
+    """Load a YAML config file (defaults to ``configs/default.yaml``).
+
+    A config may start with ``extends: <file>`` (relative to its own directory). It is then
+    deep-merged over that base, so e.g. ``configs/dev.yaml`` only lists what it changes.
+    """
     cfg_path = Path(path) if path is not None else DEFAULT_CONFIG
     with cfg_path.open(encoding="utf-8") as fh:
         raw = yaml.safe_load(fh)
     if not isinstance(raw, dict):
         raise ValueError(f"Config {cfg_path} must be a mapping")
+    parent = raw.pop("extends", None)
+    if parent:
+        raw = _merge(dict(load_config(cfg_path.parent / str(parent))), raw)
     return Config(raw)
 
 

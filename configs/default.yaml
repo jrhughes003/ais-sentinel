@@ -126,3 +126,6 @@ anomaly:
 
 export:
   n_showcase: 16
+  n_predictions: 40        # seeded random draw of commercial test samples
+  n_events_per_type: 15    # top-scoring commercial events per anomaly type
+  case_studies: configs/case_studies.yaml
