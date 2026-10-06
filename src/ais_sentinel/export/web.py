@@ -407,7 +407,7 @@ def results_payload(
                 {
                     "area": "Anomaly",
                     "name": f"{c['type']}: precision / recall in the target bucket",
-                    "target": "see PLAN §9.4",
+                    "target": c.get("target", "see PLAN §9.4"),
                     "result": f"P {c['precision']:.2f} / R {c['recall']:.2f} (n={c['n']})",
                     "met": bool(c["met"]),
                 }

@@ -327,7 +327,16 @@ def report_markdown(
         p_t, r_t, _ = TARGETS[kind]
         pr, rc, n = _pr([r for r in results if r["type"] == kind and r["in_target_bucket"]])
         met = bool(n and pr >= p_t and rc >= r_t)
-        criteria.append({"type": kind, "precision": pr, "recall": rc, "n": n, "met": met})
+        criteria.append(
+            {
+                "type": kind,
+                "precision": pr,
+                "recall": rc,
+                "n": n,
+                "met": met,
+                "target": f"P ≥ {p_t:.2f}, R ≥ {r_t:.2f} for {bucket_txt[kind]}",
+            }
+        )
         lines.append(
             f"| {kind} | {bucket_txt[kind]} | {n} | {pr:.2f} (≥ {p_t:.2f}) "
             f"| {rc:.2f} (≥ {r_t:.2f}) | {'✅' if met else '❌'} |"

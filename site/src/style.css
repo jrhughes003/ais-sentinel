@@ -171,3 +171,10 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
 .chart { margin: 0.5rem 0 1.5rem; overflow-x: auto; }
 .chart figure { margin: 0; }
 .error-box { border: 1px solid var(--bad); color: var(--bad); padding: 1rem; border-radius: var(--radius); }
+
+/* MapLibre controls follow the theme. */
+.maplibregl-ctrl-attrib, .maplibregl-ctrl-group { background: color-mix(in srgb, var(--bg) 88%, transparent) !important; color: var(--fg); }
+.maplibregl-ctrl-attrib a { color: var(--fg) !important; }
+.maplibregl-ctrl-group button .maplibregl-ctrl-icon { filter: var(--ctrl-icon-filter, none); }
+:root[data-theme="dark"] { --ctrl-icon-filter: invert(1); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --ctrl-icon-filter: invert(1); } }
