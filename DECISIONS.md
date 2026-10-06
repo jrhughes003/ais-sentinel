@@ -116,3 +116,17 @@ Changes:
 
 The budget is now about 1.5 h. This changes the *method*, not any success target. The
 ensemble size is reported in the results.
+
+### D17 — Partial source days are "unavailable" for gap detection (2026-10-06)
+The MarineCadastre file for 2023-10-29 has 4.58 M national rows, 52% of the median day (the
+next-lowest day is at 78%). It yields 20.6 k AOI rows, against 40–80 k elsewhere. This looks
+like a partial NOAA file. It falls in the locked test month.
+
+- Any day below 60% of the median national row count is treated as **incomplete**.
+- The anomaly stage passes only complete days to the gap detector. D10's availability rule
+  had not been wired into the stage until now, and this fixes that.
+- The excluded days are listed in `reports/anomaly.md`.
+- Its tracks and forecasts are kept: fewer fixes do not bias a forecast's truth, which is
+  interpolated only between fixes no more than 3 min from the target time.
+
+(Spotted by a helper session that inspected the manifest.)

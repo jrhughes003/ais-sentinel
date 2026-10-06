@@ -24,7 +24,7 @@ from __future__ import annotations
 import json
 import logging
 from collections.abc import Callable
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 from pathlib import Path
 from typing import Any
 
@@ -51,6 +51,7 @@ from ais_sentinel.anomaly.inject import (
     inject_rendezvous,
 )
 from ais_sentinel.config import Config
+from ais_sentinel.data.download import complete_days
 from ais_sentinel.data.vessel_types import COMMERCIAL
 from ais_sentinel.io import write_text
 from ais_sentinel.prediction.knn import region_centre
@@ -81,8 +82,15 @@ TARGETS: dict[str, tuple[float, float, Callable[[Injection], bool]]] = {
 class Detectors:
     """Bundle of configured detectors sharing the learned context."""
 
-    def __init__(self, cfg: Config, ctx: Context, homes: VesselHome) -> None:
+    def __init__(
+        self,
+        cfg: Config,
+        ctx: Context,
+        homes: VesselHome,
+        available_days: set[date] | None = None,
+    ) -> None:
         self.cfg, self.ctx, self.homes = cfg, ctx, homes
+        self.available_days = available_days
         self.a = cfg.anomaly
 
     def run(self, kind: str, pts: pl.DataFrame) -> pl.DataFrame:
@@ -102,6 +110,7 @@ class Detectors:
                 min_reception=float(g["min_reception"]),
                 max_gap_h=float(g.get("max_gap_h", 24.0)),
                 home_cells=self.homes.cells,
+                available_days=self.available_days,
             )
         if kind == "jump":
             return detect_jumps(pts, **dict(a["jump"]))
@@ -368,7 +377,10 @@ def stage(cfg: Config) -> None:
     train_pts = points.filter(pl.col("split") == "train")
     ctx = learn_context(train_pts, *ref, **dict(cfg.anomaly["context"]))
     homes = learn_vessel_homes(train_pts, ctx)
-    det = Detectors(cfg, ctx, homes)
+    days, incomplete = complete_days(cfg)
+    if incomplete:
+        log.info("anomaly: excluding gaps that touch incomplete days %s", incomplete)
+    det = Detectors(cfg, ctx, homes, available_days=days or None)
     pts = points.select(
         "mmsi", "t", "lat", "lon", "sog_kn", "cog_deg", "vessel_group", "voyage_id", "split"
     )
@@ -380,6 +392,12 @@ def stage(cfg: Config) -> None:
         det, pts, voyages, int(cfg.anomaly["eval"]["n_per_type"]), int(cfg.seed)
     )
     md, criteria = report_markdown(results, alarms, events)
+    if incomplete:
+        md += (
+            "\nData completeness: days with a partial national source file (< 60% of the "
+            "median row count) are treated as unavailable, and no gap touching them is "
+            f"flagged: {', '.join(incomplete)}.\n"
+        )
     write_text(Path(cfg.paths.reports) / "anomaly.md", md)
     write_text(
         Path(cfg.paths.reports) / "anomaly_eval.json",

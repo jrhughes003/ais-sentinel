@@ -21,6 +21,7 @@ from dataclasses import asdict, dataclass
 from datetime import UTC, date, datetime, timedelta
 from pathlib import Path
 
+import numpy as np
 import polars as pl
 import requests
 
@@ -244,3 +245,20 @@ def stage(cfg: Config) -> None:
     manifest = run_download(cfg)
     rows = sum(r.rows_aoi for r in manifest.values())
     log.info("manifest: %d days, %d AOI rows", len(manifest), rows)
+
+
+def complete_days(cfg: Config, min_frac: float = 0.6) -> tuple[set[date], list[str]]:
+    """Days whose national file looks complete, plus the ISO dates judged incomplete.
+
+    A day is *incomplete* when its national row count is below ``min_frac`` of the median
+    day. That indicates a partial source file (for example 2023-10-29, at 52% of the median).
+    Silences overlapping incomplete days are holes in the data, not vessel behaviour.
+    """
+    manifest = load_manifest(cfg)
+    if not manifest:
+        return set(), []
+    counts = np.array([r.rows_national for r in manifest.values()], dtype=float)
+    floor = min_frac * float(np.median(counts))
+    good = {date.fromisoformat(d) for d, r in manifest.items() if r.rows_national >= floor}
+    bad = sorted(d for d, r in manifest.items() if r.rows_national < floor)
+    return good, bad
