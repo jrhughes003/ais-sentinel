@@ -130,3 +130,24 @@ like a partial NOAA file. It falls in the locked test month.
   interpolated only between fixes no more than 3 min from the target time.
 
 (Spotted by a helper session that inspected the manifest.)
+
+### D18 — Final outcomes, and analyses run after the locked test (2026-10-06)
+The locked October test was evaluated once (`reports/holdout_runs.md`).
+
+**Prediction:** the best ML model (M2) beats kNN by 7.1% at 60 min and 9.5% at 120 min (both
+significant). The 15% bar is **not met**. Coverage target **met**.
+
+**Anomaly targets:** jump, loiter and rendezvous **met**; gap (R 0.85) and deviation (R 0.47)
+**not met**.
+
+Analyses afterwards that change no reported number:
+- **kNN k-sensitivity on validation** (`reports/knn_sensitivity.md`): k = 80 sits at the grid
+  edge but is effectively optimal. Larger k is worse or equal, so the ML comparison is fair.
+- **Gap misses:** mostly injected silences ending in cells below 80% normal reception. That
+  is the precision-for-recall trade-off chosen in the design.
+- **Deviation misses:** with four months of all-vessel traffic, many cells near the lanes
+  hold more than 2 training voyages, so the absolute density rule stops firing.
+  - Proposed fix: commercial-only density, a relative threshold, and short-interruption
+    tolerance.
+  - It is **not** applied here. Re-scoring October after seeing its results would be tuning
+    on the test set. A fix needs a fresh test period.

@@ -1,5 +1,68 @@
 # PROGRESS
 
+## Final summary
+
+**Built:**
+- An end-to-end maritime domain awareness system on 11.1 M public AIS reports. It covers
+  the Detroit–St. Clair corridor (Canada–US border waterways), May–October 2023.
+- The pipeline is reproducible with one command (`ais-sentinel run-all`, then
+  `ais-sentinel holdout` once):
+  - streaming download and cleaning;
+  - Kalman and IMM tracking;
+  - six forecasting models with calibrated uncertainty;
+  - five explainable anomaly detectors, evaluated by synthetic injection;
+  - a static five-view website: https://jrhughes003.github.io/ais-sentinel/
+- The website runs the neural forecaster live **in the browser**. It is verified to match
+  Python to within 1 cm.
+- Engineering: 80 Python tests (95% coverage), 26 browser tests including accessibility
+  checks, and green CI.
+
+**How it performs, on the locked October test, evaluated once:**
+- **Prediction:**
+  - The best ML model (GRU with a mixture head) predicts positions **2.2 km off at
+    60 min** and **5.2 km off at 120 min** on average.
+  - Straight-line dead reckoning is 7.2 and 18.5 km off at the same horizons.
+  - The strongest non-ML baseline, a "where did ships here go next" route model, is 2.4 and
+    5.8 km off. The ML model beats it by 7–10% at 60–120 min (statistically significant),
+    and by about 17% on vessels it never saw in training.
+  - The 90% uncertainty ellipses contain the truth 89–91% of the time.
+- **Anomalies:**
+  - Impossible jumps, loitering and rendezvous are found 96–99% of the time with no false
+    alarms on injected tests.
+  - Real case studies found:
+    - a cargo ship whose MMSI was also used by another transmitter;
+    - a cargo ship going dark mid-lake while every vessel around it stayed visible;
+    - a "rendezvous" that was really tug assistance;
+    - a fishing boat that tripped the off-lane rule by working its grounds.
+
+**What didn't meet the pre-registered targets** (4 of 11 targets met; misses reported, not
+hidden):
+- **Tracking.**
+  - The IMM did not beat the tuned Kalman filter on RMSE in simulation. Its *typical*
+    error is equal or better, but RMSE is decided by about 20 rare catastrophic fixes out of
+    36 k: coasting after a gap, or an outlier slipping in during a manoeuvre.
+  - Both filters are under-confident on real data. Many moored vessels repeat identical
+    positions, which pushes NIS towards zero.
+- **Prediction:** a 15% gain at 120 min was the bar; the result was 9.5%.
+- **Anomalies:**
+  - Gap recall was 0.85 against a 0.90 target. The reception mask deliberately ignores
+    silences in weak-coverage cells, trading recall for precision 1.00.
+  - Route-deviation recall was 0.47 against 0.70. Four months of traffic, pleasure craft
+    included, leave few empty cells in the wide lakes, so an absolute "≤ 2 voyages" rule
+    stops working.
+
+**Suggested next steps:**
+1. **Tracking:** a track-confirmation step for fixes rejected after gaps, tuned on more
+   simulation seeds. Exclude repeated moored positions from NIS checks.
+2. **Deviation detector:** commercial-only lane density, a relative threshold, and
+   tolerance for short interruptions. Evaluate on a *new* test month, since October has
+   now been seen.
+3. **Prediction:**
+   - A larger training budget; validation loss was still falling at 20 epochs.
+   - Destination-aware or graph-of-channels models.
+   - A second region (Danish DMA data) to test transfer.
+4. **Site:** an animated GIF for the README; per-vessel-type filters in the Anomalies view.
+
 ## Plan summary (set 2026-10-05; full details in PLAN.md)
 
 **What:** a maritime domain awareness system built on public MarineCadastre AIS data. It
@@ -42,63 +105,22 @@ Test results are also reported for vessels never seen in training.
 | Site | Every view works; Playwright passes at desktop and mobile widths; 0 serious axe violations; initial load ≤ 2 MB; site ≤ 50 MB |
 | Engineering | CI green; ≥ 85% coverage on core modules; README complete |
 
-## Current state (2026-10-06 ~01:00)
-- **Repo:** https://github.com/jrhughes003/ais-sentinel. **Live site:**
-  https://jrhughes003.github.io/ais-sentinel/
-  - All five views are live: overview, tracks, predictions, anomalies, results.
-  - The site currently shows a clearly bannered **development preview**, built from
-    `configs/dev.yaml` (train May 1–24, validate May 26–31, test June 2–10).
-- **Download:** about 100 of 184 days done; `logs/download.log`. Afterwards, re-run
-  `ais-sentinel download` once to retry failures.
-- **Dev run, real data:** the whole pipeline worked end to end.
-
-  | Stage | Dev-run result |
-  |---|---|
-  | Tracking | 3.55 M fixes in about 14 min |
-  | Prediction (dev test) | GRU-MDN vs kNN: +17% at 15 min, tie at 60 min, −17% at 120 min. The pre-registered target (significant win at 60 *and* 120) would be **not met**. Coverage of 0.87–0.89 is within target. On vessels never seen in training the gain persists |
-  | Anomalies (dev test) | All five types meet their targets after two bug fixes; the base alarm rate is reported |
-
-- **Not yet done:**
-  - the full-data run;
-  - the locked October test;
-  - case studies on final data (`configs/case_studies.yaml`);
-  - README results table and screenshot;
-  - final summary.
+## Current state (2026-10-06 ~07:00)
+- **Complete.** The full-data run, the locked test (run once, logged) and the export are
+  done. The site is live with final data, and the README results are filled in.
+- Post-result analyses, on validation or as diagnosis only, with no reported numbers
+  changed:
+  - `reports/knn_sensitivity.md`: k = 80 was effectively optimal, so the baseline was not
+    under-tuned;
+  - the anomaly miss diagnosis, in DECISIONS D18.
 
 ## Next up
-1. When the download finishes, run on the full data:
-
-   ```
-   ais-sentinel download
-   ais-sentinel build
-   ais-sentinel sim-study
-   ais-sentinel track
-   ais-sentinel evaluate
-   ais-sentinel anomaly
-   ais-sentinel holdout    # once
-   ais-sentinel export
-   ```
-
-   Training budget is about 1.5 h (D16).
-2. Write 3+ case studies from real events. Candidates seen in the dev data:
-   - cargo MMSI 246824000 "jumping" 87–125 km within about a minute (shared MMSI or GPS);
-   - a tanker holding position for 127 h outside learned port zones;
-   - tug pairs "meeting" for 12–18 h (likely a tug and its barge).
-3. README: results table and screenshot. Final PROGRESS summary.
-4. Optional: ONNX in-browser model; tracking option (a) from Blocked.
+- See "Suggested next steps" above. Any change to the deviation detector or the models needs
+  a fresh test period (October has been used).
 
 ## Blocked / needs my input
-- **Tracking criterion (PLAN §9.2), after 3 attempts.**
-  - The IMM's RMSE is not 20% below the tuned CV-KF in manoeuvres. RMSE is dominated by
-    about 20 rare events per 36 k fixes, so tuning and verdicts are unstable (DECISIONS D15).
-  - **Options:**
-    - (a) A track-confirmation scheme that retro-corrects the coast after a rejected
-      post-gap fix.
-    - (b) Tune on many more seeds (about 1 h of CPU).
-    - (c) Accept the result as-is. RMSE stays the criterion and is reported as not met,
-      with robust metrics alongside.
-  - I'll keep going with (c) for now and may try (a) later if time allows. Your call if you
-    prefer otherwise.
+- **Tracking criterion (PLAN §9.2):** not met after 3 attempts; see D15. Options are listed in
+  the final summary. Your call whether to invest more time there.
 - FYI: a helper Claude session ("diag-d6") reported clearing temp files outside this project
   (WSL crash dumps, swap vhdx). This session did not do or request that.
 
@@ -157,3 +179,12 @@ Test results are also reported for vessels never seen in training.
 - kNN grid widened (the dev run chose the old grid's edges). ML compute budget set (D16).
 - Note: anomaly rule refinements were made on dev data (June, which falls inside the real
   training period). The October locked test has not been touched.
+- Full-data run:
+  - track: 11.0 M fixes in 34 min;
+  - evaluate: 402 k training samples, 5 GRU ensemble members, about 3.5 h;
+  - anomaly;
+  - holdout: once, logged.
+- Case studies were written from verified raw data (`configs/case_studies.yaml`).
+- README results and screenshots added. Final summary written.
+- A partial source day (2023-10-29) was found with help from the helper session. Gaps
+  touching it are excluded (D17).

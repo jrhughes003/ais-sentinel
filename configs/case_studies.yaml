@@ -1,0 +1,44 @@
+# Real-world case studies, keyed by event id (type-mmsi-epoch of t_start).
+# Each was checked against the raw reports. The notes state what the data show and the most
+# plausible explanations, never accusations. Shown on the site's Anomalies view.
+
+jump-246824000-1685460111: >-
+  FINNBORG (154 m cargo, Dutch MMSI) was steaming south down the St. Clair River at a steady
+  9.1 kn, heading 200°. One report in the middle of that run places the same MMSI 124.6 km
+  away in western Lake Erie, at a different but self-consistent 10.5 kn heading 302°. The
+  very next report is back on the river track. Read in time order, the same MMSI produced
+  three more such stray reports (2023-05-10 twice, 2023-10-20), each in western Lake Erie or
+  the lower Detroit River with plausible transit speeds and headings that progress *up* the
+  shipping route. Meanwhile the real FINNBORG was moored or in the St. Clair River. Most
+  likely explanation: a second transmitter using the same MMSI (a misconfigured unit), or
+  messages from another vessel mis-attributed to it, rather than random GPS noise. The
+  Kalman/IMM tracker rejects these fixes as outliers, so the smoothed track is unaffected.
+
+gap-636092253-1697285616: >-
+  YULIA (184 m cargo, Liberian MMSI) stopped reporting for 172 minutes while crossing Lake
+  St. Clair on 2023-10-14, inside the locked test month. It reappeared 50.9 km further on,
+  consistent with uninterrupted transit at about 9.6 kn. This was not a coverage hole:
+  during the silence, 9 other vessels sent 734 reports from the same area, and the cell
+  normally receives 89% of expected reports. The silence was specific to this vessel.
+  Plausible benign causes include a transponder fault, a power or antenna problem, or the
+  unit being switched off in error. In an operational setting this is exactly the kind of
+  "dark transit" an analyst would want to verify through another source.
+
+rendezvous-366938760-1695927600: >-
+  The 193 m laker SAM LAUD sat almost motionless (0.2 kn average) for about 4 hours in the
+  Detroit River near Grosse Ile on 2023-09-28, with the harbour tugs WISCONSIN and
+  PENNSYLVANIA within 500 m throughout. It then departed upbound at 8.6 kn. Kinematically
+  this is a "ship-to-ship meeting away from known ports". In practice it is almost
+  certainly routine tug assistance (docking at a facility the port-zone model did not
+  learn, or help in a tight channel). A useful negative example: rendezvous rules need
+  context about tugs and berths, and the explanation text gives the analyst what they need
+  to dismiss it in seconds.
+
+deviation-316049169-1696246991: >-
+  LINDA JANE II, a commercial fishing vessel, spent 87 minutes in water that at most two
+  training voyages had ever crossed. It produced several similar flags in early October.
+  This is what fishing boats do: they work grounds away from the shipping lanes. The
+  route-deviation detector learns "normal" from all traffic, which is dominated by lakers
+  and ferries in the channels. A per-vessel-type traffic model, or excluding fishing
+  vessels from this rule, would remove such flags. Listed here to show both how the rule
+  explains itself and where it is naive.
