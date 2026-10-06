@@ -1,0 +1,22 @@
+{
+  "name": "ais-sentinel-site",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview --port 4173 --strictPort",
+    "test:e2e": "playwright test"
+  },
+  "dependencies": {
+    "@observablehq/plot": "^0.6.17",
+    "maplibre-gl": "^6.12.0"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
+    "@playwright/test": "^1.63.0",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.2"
+  }
+}

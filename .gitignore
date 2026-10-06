@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+build/
+dist/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+# Data (never commit raw or bulk data)
+data/
+!data/README.md
+models/
+*.zip
+*.parquet
+*.csv
+*.pt
+*.onnx
+!site/public/**/*.onnx
+
+# Secrets
+.env
+
+# Node / site
+node_modules/
+site/dist/
+site/test-results/
+site/playwright-report/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

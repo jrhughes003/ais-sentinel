@@ -1,0 +1,56 @@
+# ais-sentinel default configuration. All thresholds live here, not in code.
+seed: 20231001
+
+paths:
+  raw: data/raw            # transient national downloads (deleted after filtering)
+  interim: data/interim    # per-day AOI parquet
+  processed: data/processed
+  reports: reports
+  site_data: site/public/data
+
+region:
+  name: Detroit–St. Clair corridor
+  lat_min: 41.40
+  lat_max: 43.10
+  lon_min: -83.60
+  lon_max: -82.30
+
+download:
+  url_template: "https://coast.noaa.gov/htdata/CMSP/AISDataHandler/{year}/AIS_{year}_{month:02d}_{day:02d}.zip"
+  start: 2023-05-01
+  end: 2023-10-31          # inclusive
+  pause_seconds: 5         # politeness delay between files
+  timeout_seconds: 600
+  keep_raw: false
+
+clean:
+  max_sog_kn: 102.2        # 102.3 = not available
+  max_implied_speed_kn: 60 # hard data-error gate during cleaning (detector uses its own)
+
+segment:
+  max_gap_min: 30          # a gap longer than this ends a voyage
+  min_points: 10
+  min_duration_min: 30
+
+splits:                    # inclusive UTC dates; days between splits are buffers
+  train: [2023-05-01, 2023-08-31]
+  val: [2023-09-02, 2023-09-30]
+  test: [2023-10-02, 2023-10-31]
+
+tracking:
+  cv:
+    q_accel: 0.003         # white-noise acceleration PSD [m^2/s^3] (tuned in simulation)
+    r_pos_m: 10.0          # position measurement std [m]
+  gate_prob: 0.999         # chi-square gate for outlier rejection
+  max_consecutive_rejects: 3
+
+prediction:
+  horizons_min: [15, 30, 60, 120]
+  history_min: 60
+  anchor_every_min: 10
+
+anomaly:
+  gap:
+    min_gap_min: 30
+    min_sog_kn: 1.0
+    edge_buffer_km: 3.0

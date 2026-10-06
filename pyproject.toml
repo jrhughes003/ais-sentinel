@@ -1,0 +1,72 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ais-sentinel"
+version = "0.1.0"
+description = "Maritime domain awareness from public AIS data: Kalman/IMM tracking, trajectory prediction with uncertainty, and anomaly detection."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "jrhughes003" }]
+dependencies = [
+  "numpy>=1.26",
+  "pandas>=2.1",
+  "pyarrow>=14",
+  "polars>=1.0",
+  "scipy>=1.11",
+  "pyyaml>=6",
+  "requests>=2.31",
+  "tqdm>=4.66",
+  "matplotlib>=3.8",
+]
+
+[project.optional-dependencies]
+ml = ["torch>=2.2", "scikit-learn>=1.4", "onnx>=1.15", "onnxruntime>=1.17"]
+dev = [
+  "pytest>=8",
+  "pytest-cov>=5",
+  "hypothesis>=6.100",
+  "ruff>=0.6",
+  "mypy>=1.10",
+  "pre-commit>=3.7",
+  "pandas-stubs",
+  "types-requests",
+  "types-PyYAML",
+  "types-tqdm",
+]
+
+[project.scripts]
+ais-sentinel = "ais_sentinel.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "N", "SIM", "NPY", "PD", "RUF"]
+ignore = ["N803", "N806", "RUF001", "RUF002", "RUF003"]
+
+[tool.mypy]
+python_version = "3.12"
+files = ["src"]
+strict = false
+disallow_untyped_defs = true
+warn_unused_ignores = true
+warn_redundant_casts = true
+no_implicit_optional = true
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+markers = ["slow: long-running tests", "network: requires internet"]
+
+[tool.coverage.run]
+source = ["ais_sentinel"]
+omit = ["*/cli.py"]
