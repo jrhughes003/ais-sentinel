@@ -28,4 +28,4 @@ jobs:
       - name: Type check
         run: mypy
       - name: Tests
-        run: pytest -m "not network and not slow" --cov --cov-report=term-missing
+        run: pytest -m "not network" --cov --cov-report=term-missing

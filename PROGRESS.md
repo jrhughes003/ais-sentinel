@@ -44,33 +44,57 @@ Test results are also reported for vessels never seen in training.
 
 ## Current state
 - **Repo:** https://github.com/jrhughes003/ais-sentinel (public). Pages:
-  https://jrhughes003.github.io/ais-sentinel/ (GitHub Actions source). Created automatically
-  with `gh`, on the owner's authorisation; see GITHUB_SETUP.md.
-- **Phase 1 vertical slice works end to end:**
-  `download → build → track → (samples, baselines, metrics) → export → site map`.
-- **Full download running in the background:** `logs/download.log` and
-  `data/interim/manifest.json`. Expect about 3 h. Re-running `ais-sentinel download` retries
-  failed days and skips finished ones.
-- **First look on 8 May/July days (not a result, a smoke test):**
-  - Dead reckoning mean error: about 1.1 km at 15 min, 8.0 km at 60 min, 19.7 km at 120 min.
-  - Cargo ships alone: 0.7 km at 15 min, 5.7 km at 60 min. The river bends hurt straight-line
-    prediction.
-  - The CV-KF re-initialises often on ferries' hard manoeuvres, which motivates the IMM.
+  https://jrhughes003.github.io/ais-sentinel/. Both were created automatically with `gh`; see
+  GITHUB_SETUP.md.
+- **Data:** the full six-month download is running in the background
+  (`logs/download.log`). It is about 40% done and download-bound at about 1.5 min/day.
+  Re-running `ais-sentinel download` retries failed days and skips finished ones.
+- **Pipeline stages working:**
+  - `download → build → sim-study → track → evaluate → export`;
+  - plus `holdout`, explicit only.
+  - `evaluate` and `holdout` have only been smoke-tested on synthetic data so far; they
+    still need to run on real data.
+- **Tracking (simulation study, `reports/tracking.md`):**
+  - CV-KF and IMM are implemented and tested.
+  - Median errors are about 5–6 m (raw noise radial median about 5.9 m), and outlier
+    recall is about 0.9.
+  - **PLAN §9.2 criteria not met yet.** See "Blocked" and DECISIONS D15.
+- **Prediction:**
+  - B0 dead reckoning;
+  - B1 CV-KF and B2 IMM extrapolation from stored filter states;
+  - B3 kNN route analogs;
+  - M1/M2 GRU (Gaussian and MDN), as deep ensembles;
+  - calibration on validation;
+  - reports with voyage-cluster bootstrap CIs.
+- **Anomalies:** only the gap rule exists so far.
+- **Site:** a minimal map page (raw vs smoothed, rejected outliers, gaps). Playwright smoke
+  tests pass at desktop and mobile widths in CI.
 
 ## Next up
-1. Python tests for samples, metrics, gaps and export (coverage).
-2. Once the download finishes: rerun `build`/`track` on all six months and write
-   `reports/data_summary.md`.
-3. **Phase 3:** AIS-like simulator, then IMM (stationary / CV / CT-EKF), then the simulation
-   study.
-4. **Phase 4:** IMM extrapolation, kNN route baseline, calibration on validation, and the
-   evaluation report.
+1. When the download finishes:
+   - run `ais-sentinel download` again (retry failures), then `build`, `track` and
+     `evaluate`;
+   - inspect the validation results;
+   - then `holdout` once.
+2. **Phase 6 anomaly suite:** reception grid and port zones; jump, loiter,
+   route-deviation and rendezvous detectors; synthetic injection evaluation; case studies.
+3. **Phase 7 front end:** landing page, tracks, prediction, anomalies, results.
+4. Real-data NIS consistency check (PLAN §9.2, last bullet).
 
 ## Blocked / needs my input
-- (none)
+- **Tracking criterion (PLAN §9.2), after 3 attempts.**
+  - The IMM's RMSE is not 20% below the tuned CV-KF in manoeuvres. RMSE is dominated by
+    about 20 rare events per 36 k fixes, so tuning and verdicts are unstable (DECISIONS D15).
+  - **Options:**
+    - (a) A track-confirmation scheme that retro-corrects the coast after a rejected
+      post-gap fix.
+    - (b) Tune on many more seeds (about 1 h of CPU).
+    - (c) Accept the result as-is. RMSE stays the criterion and is reported as not met,
+      with robust metrics alongside.
+  - I'll keep going with (c) for now and may try (a) later if time allows. Your call if you
+    prefer otherwise.
 - FYI: a helper Claude session ("diag-d6") reported clearing temp files outside this project
-  (WSL crash dumps, swap vhdx) to free disk space. This session did not do that or ask for
-  it; please confirm you're happy with it.
+  (WSL crash dumps, swap vhdx). This session did not do or request that.
 
 ## Log
 ### 2026-10-05
@@ -99,3 +123,15 @@ Test results are also reported for vessels never seen in training.
   - Python `write_text` on Windows defaults to cp1252 and CRLF. Use `PYTHONUTF8=1` and LF
     (ruff is pinned to LF).
   - `.gitignore` `data/` matched `site/public/data`; it is now anchored as `/data/`.
+- Tracking:
+  - Built the IMM, the AIS-like simulator and the simulation-study stage.
+  - Found and fixed three IMM gating problems (combined gate, any-mode gate, then the
+    clutter likelihood ratio).
+  - The CV and IMM re-initialise after 2 consistent rejections.
+  - The tracking criterion is still not met (see Blocked).
+- Prediction:
+  - B1/B2 from per-mode snapshots, with frozen-mode IMM forecasts (D12).
+  - kNN route analogs (B3).
+  - Causal features, and GRU Gaussian/MDN with ensembles (D13).
+  - The `evaluate`/`holdout` stages (D14) pass the synthetic end-to-end smoke test.
+- Gotcha: PyYAML reads `2e-07` as a string. Write floats with a decimal point.

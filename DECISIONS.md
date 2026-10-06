@@ -63,3 +63,42 @@ interpolated between fixes no more than 3 min from the target time.
 ### D10 — Gap events require data availability on every day they span (2026-10-05)
 A silence that spans a day missing from our download is a hole in our data, not a vessel
 going dark. Events are kept only if every UTC day they touch is in the manifest.
+
+### D11 — IMM outlier test: mixture likelihood vs a uniform clutter density (2026-10-05)
+Two simpler gates failed in the simulation study:
+
+- Gating on the moment-matched combined prediction rejected the first fixes of every turn,
+  because the cruising mode dominated: 535 good fixes were rejected.
+- An "inside any mode's χ² gate" rule let a wide, improbable turning mode admit km-scale
+  outliers on stopped vessels.
+
+The adopted test accepts a fix when Σⱼ cⱼ N(ν; Sⱼ) ≥ λ, i.e. when "from the target" is more
+probable than "outlier", as in probabilistic data association.
+
+### D12 — IMM forecasts freeze mode probabilities by default (2026-10-05)
+The filter's Markov prior (a cruising sojourn of about 10–15 min) is right for tracking, but
+over a 2 h forecast with no measurements it moves almost all probability into
+stationary/turning modes. On a straight line, the averaged mean then lands about 50% short.
+The switching variant is kept and compared on validation (`imm_switching`); validation
+picks the variant used on test.
+
+### D13 — ML targets are corrections to dead reckoning (2026-10-05)
+The GRU predicts (truth − dead reckoning) in km, scaled per horizon. A zero output equals
+the physics baseline, so the network only has to learn where vessels deviate from straight
+lines (channel bends, approaches). That is data-efficient on a laptop-sized dataset, and it
+makes "ML vs DR" a test of whether the learned corrections help.
+
+### D14 — The locked test is a separate, explicit CLI stage (2026-10-05)
+`ais-sentinel holdout` is excluded from `run-all` and appends a dated row (commit plus config
+hash) to `reports/holdout_runs.md`. Reproducing the pipeline can never silently re-run the
+locked test.
+
+### D15 — Tracking criterion: RMSE is dominated by a handful of events (2026-10-05, open)
+In the simulation study, about 95–98% of the squared position error comes from roughly 20 of
+about 36 k fixes. These are coasting after a rejected first-fix-after-a-gap, and outliers
+admitted by a wide turning mode. Both the tuning objective and the IMM-vs-CV verdict are
+therefore decided by luck on rare events, and the result swings between runs.
+
+- The PLAN §9.2 criteria are **kept unchanged**. The current result is reported as not met.
+- Median and p95 errors are reported alongside RMSE, and there the IMM is equal or better.
+- See PROGRESS "Blocked" for the options.

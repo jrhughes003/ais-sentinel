@@ -15,6 +15,7 @@ def _stages() -> dict[str, Stage]:
     """Return the pipeline stages in execution order (imported lazily)."""
     from ais_sentinel.data import build, download
     from ais_sentinel.export import web
+    from ais_sentinel.prediction import run as prediction
     from ais_sentinel.tracking import pipeline as tracking
     from ais_sentinel.tracking import sim_study
 
@@ -23,15 +24,25 @@ def _stages() -> dict[str, Stage]:
         "build": build.stage,
         "sim-study": sim_study.stage,
         "track": tracking.stage,
+        "evaluate": prediction.evaluate_stage,
         "export": web.stage,
     }
+
+
+def _explicit_stages() -> dict[str, Stage]:
+    """Stages excluded from ``run-all``. The locked test is run deliberately, once per model
+    version, never as a side effect of reproducing the pipeline."""
+    from ais_sentinel.prediction import run as prediction
+
+    return {"holdout": prediction.holdout_stage}
 
 
 def main(argv: list[str] | None = None) -> None:
     """Parse arguments and run the requested pipeline stage(s)."""
     stages = _stages()
+    explicit = _explicit_stages()
     parser = argparse.ArgumentParser(prog="ais-sentinel", description=__doc__)
-    parser.add_argument("stage", choices=[*stages, "run-all"])
+    parser.add_argument("stage", choices=[*stages, *explicit, "run-all"])
     parser.add_argument("--config", default=None, help="YAML config path")
     parser.add_argument("-v", "--verbose", action="store_true")
     args = parser.parse_args(argv)
@@ -43,7 +54,7 @@ def main(argv: list[str] | None = None) -> None:
     selected = list(stages) if args.stage == "run-all" else [args.stage]
     for name in selected:
         logging.getLogger("ais_sentinel").info("== stage: %s (config %s)", name, cfg.hash())
-        stages[name](cfg)
+        {**stages, **explicit}[name](cfg)
 
 
 if __name__ == "__main__":

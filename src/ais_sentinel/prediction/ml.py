@@ -159,10 +159,11 @@ def train_model(train: FeatureSet, val: FeatureSet, cfg: MLConfig) -> TrainedMod
     """Train with Adam and early stopping on validation NLL. Fully seeded."""
     torch.manual_seed(cfg.seed)
     torch.set_num_threads(cfg.threads)
-    scale = np.array(
-        [max(float(np.std(train.y[train.ymask[:, k], k])), 1e-3) for k in range(train.y.shape[1])],
-        dtype=np.float32,
-    )
+    scale = np.ones(train.y.shape[1], dtype=np.float32)
+    for k in range(train.y.shape[1]):
+        vals = train.y[train.ymask[:, k], k]
+        if vals.size >= 2:  # horizons with no training truth keep scale 1 (and are masked)
+            scale[k] = max(float(np.std(vals)), 1e-3)
     seq, ctx, y, mask = _tensors(train, scale)
     vseq, vctx, vy, vmask = _tensors(val, scale)
     model = SeqModel(seq.shape[-1], ctx.shape[-1], y.shape[1], cfg)

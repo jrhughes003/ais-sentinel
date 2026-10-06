@@ -39,7 +39,7 @@ class Forecast:
 
     def with_cov_scale(self, scale: dict[int, float]) -> Forecast:
         """Return a copy whose covariance is multiplied by a per-horizon scalar."""
-        s = np.array([scale[h] for h in self.horizons_min])[None, :, None, None]
+        s = np.array([scale.get(h, 1.0) for h in self.horizons_min])[None, :, None, None]
         return Forecast(
             self.model,
             self.sample_id,

@@ -49,9 +49,10 @@ def cv_params_from_config(cfg: Config) -> CVParams:
 
 def imm_params_from_config(cfg: Config) -> IMMParams:
     """IMM parameters from ``cfg.tracking.imm``."""
-    d = dict(cfg.tracking.get("imm", {}))
-    if "sojourn_s" in d:
-        d["sojourn_s"] = tuple(float(x) for x in d["sojourn_s"])
+    d: dict[str, Any] = {}
+    for k, v in dict(cfg.tracking.get("imm", {})).items():
+        # Cast explicitly: YAML 1.1 reads "2e-07" (no decimal point) as a string.
+        d[k] = tuple(float(x) for x in v) if isinstance(v, list) else float(v)
     d.setdefault("max_consecutive_rejects", int(cfg.tracking.max_consecutive_rejects))
     return IMMParams(**d)
 

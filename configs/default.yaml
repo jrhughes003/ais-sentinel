@@ -2,6 +2,7 @@
 seed: 20231001
 
 paths:
+  models: models           # trained models + validation choices (gitignored)
   raw: data/raw            # transient national downloads (deleted after filtering)
   interim: data/interim    # per-day AOI parquet
   processed: data/processed
@@ -38,10 +39,22 @@ splits:                    # inclusive UTC dates; days between splits are buffer
   test: [2023-10-02, 2023-10-31]
 
 tracking:
+  workers: 4               # parallel processes for the track stage
+  # Values below were chosen by the simulation study (reports/tracking.md), not by hand.
   cv:
-    q_accel: 0.003         # white-noise acceleration PSD [m^2/s^3] (tuned in simulation)
-    r_pos_m: 10.0          # position measurement std [m]
-  gate_prob: 0.999         # chi-square gate for outlier rejection
+    q_accel: 0.1            # white-noise acceleration PSD [m^2/s^3]
+    r_pos_m: 10.0            # position measurement std [m]
+    gate_prob: 0.9999       # chi-square outlier gate
+  imm:
+    r_pos_m: 10.0
+    q_stationary: 0.0001
+    tau_stationary_s: 30.0
+    q_cruise: 0.002
+    q_turn: 0.2
+    q_omega: 2.0e-07
+    sojourn_s: [1800.0, 600.0, 300.0]
+    clutter_density: 5.0e-11  # outlier density per m^2 (likelihood-ratio test)
+  gate_prob: 0.999         # default gate if a filter does not set its own
   max_consecutive_rejects: 2
   sim:                     # simulation study (tracking/sim_study.py); half-open seed ranges
     tune_seeds: [0, 50]
@@ -50,7 +63,27 @@ tracking:
 prediction:
   horizons_min: [15, 30, 60, 120]
   history_min: 60
-  anchor_every_min: 10
+  anchor_every_min: 10      # evaluation anchors (val/test)
+  min_sog_kn: 2.0           # evaluate underway vessels only (DECISIONS D9)
+  n_boot: 1000
+  knn:                      # tuned on validation
+    pos_scale_m: [300, 600, 1200]
+    course_scale_deg: [15, 30]
+    k: [10, 30]
+  ml:
+    train_anchor_every_min: 3
+    hidden: 64
+    layers: 1
+    mlp: 128
+    dropout: 0.1
+    lr: 0.002
+    batch: 512
+    max_epochs: 30
+    patience: 4
+    threads: 4
+    mdn_components: 3
+    seeds_gaussian: [0, 1, 2, 3, 4]
+    seeds_mdn: [0, 1, 2]
 
 anomaly:
   gap:
