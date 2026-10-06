@@ -13,6 +13,7 @@ Stage = Callable[[Config], None]
 
 def _stages() -> dict[str, Stage]:
     """Return the pipeline stages in execution order (imported lazily)."""
+    from ais_sentinel.anomaly import run as anomaly
     from ais_sentinel.data import build, download
     from ais_sentinel.export import web
     from ais_sentinel.prediction import run as prediction
@@ -25,6 +26,7 @@ def _stages() -> dict[str, Stage]:
         "sim-study": sim_study.stage,
         "track": tracking.stage,
         "evaluate": prediction.evaluate_stage,
+        "anomaly": anomaly.stage,
         "export": web.stage,
     }
 

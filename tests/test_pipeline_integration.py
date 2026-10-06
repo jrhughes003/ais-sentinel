@@ -106,4 +106,4 @@ def test_build_track_export(tmp_cfg: Config) -> None:
     v0 = tj["voyages"][0]
     assert len(v0["lat"]) == len(v0["s_lat"]) == len(v0["dt"])
     assert [e["mmsi"] for e in aj["events"]] == [366000002]
-    assert aj["events"][0]["gap_min"] == 46.0
+    assert aj["events"][0]["duration_min"] == 46.0

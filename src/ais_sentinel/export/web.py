@@ -122,7 +122,9 @@ def stage(cfg: Config) -> None:
 
     points = pl.read_parquet(base / "points.parquet")
     days = {date.fromisoformat(d) for d in load_manifest(cfg)}
-    gaps = detect_gaps(points, region, available_days=days, **dict(cfg.anomaly["gap"]))
+    g = dict(cfg.anomaly["gap"])
+    g.pop("min_reception", None)
+    gaps = detect_gaps(points, region, available_days=days, **g)
     gaps = gaps.filter(pl.col("vessel_group").is_in(sorted(COMMERCIAL)))
     events = [
         {

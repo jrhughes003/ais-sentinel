@@ -78,3 +78,24 @@ def test_evaluate_and_holdout_end_to_end(tmp_cfg: Config) -> None:
     fc = pl.read_parquet(Path(tmp_cfg.paths.processed) / "forecasts_test.parquet")
     assert set(fc["model"]) >= {"dead_reckoning", "kf_cv", "imm", "knn_route", "gru", "gru_mdn"}
     assert fc["lat"].is_finite().all()
+
+
+@pytest.mark.slow
+def test_anomaly_stage_end_to_end(tmp_cfg: Config) -> None:
+    from ais_sentinel.anomaly import run as anomaly
+
+    rng = np.random.default_rng(1)
+    for d in DAYS:
+        p = interim_path(tmp_cfg, d)
+        p.parent.mkdir(parents=True, exist_ok=True)
+        _day(d, rng).write_parquet(p)
+    save_manifest(
+        tmp_cfg, {d.isoformat(): DayRecord(d.isoformat(), "x", 0, 0, 0, "now") for d in DAYS}
+    )
+    tmp_cfg["anomaly"]["eval"].update({"n_per_type": 6, "min_voyage_min": 60})
+    build.stage(tmp_cfg)
+    anomaly.stage(tmp_cfg)
+    md = (Path(tmp_cfg.paths.reports) / "anomaly.md").read_text(encoding="utf-8")
+    assert "Success criteria" in md
+    assert "| jump |" in md
+    assert (Path(tmp_cfg.paths.processed) / "anomalies.parquet").exists()

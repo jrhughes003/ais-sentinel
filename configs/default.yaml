@@ -86,10 +86,43 @@ prediction:
     seeds_mdn: [0, 1, 2]
 
 anomaly:
+  context:                 # learned from the training split
+    reception_cell_m: 2000.0
+    port_cell_m: 500.0
+    traffic_cell_m: 500.0
+    port_min_vessel_hours: 12.0
+    port_min_vessels: 3
+    course_min_fixes: 20
   gap:
     min_gap_min: 30
     min_sog_kn: 1.0
     edge_buffer_km: 3.0
+    min_reception: 0.8     # both ends must be in cells with >= 80% normal reception
+  jump:
+    min_jump_m: 1000.0
+    abs_kn: 40.0
+    sog_factor: 2.0
+    sog_margin_kn: 10.0
+  loiter:
+    max_sog_kn: 2.0
+    min_hours: 2.0
+    max_port_frac: 0.2
+    max_gap_min: 30.0
+  deviation:
+    min_sog_kn: 3.0
+    max_cell_voyages: 2
+    min_course_prob: 0.02
+    min_cell_voyages_for_course: 10
+    min_minutes: 10.0
+    max_gap_min: 5.0
+  rendezvous:
+    max_dist_m: 500.0
+    max_sog_kn: 2.0
+    min_hours: 1.0
+    bin_min: 5.0
+  eval:
+    n_per_type: 300
+    min_voyage_min: 120    # injection pool: commercial test voyages at least this long
 
 export:
   n_showcase: 16

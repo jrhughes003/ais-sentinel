@@ -6,8 +6,13 @@ the area of interest. Silences that start or end near the AOI edge are usually v
 leaving or entering coverage, not going dark. Moored vessels are excluded because Class B
 units in particular often stop transmitting at the dock.
 
-Each event carries a plain-language explanation for analysts. A later refinement weights
-events by local receiver coverage (PLAN §5.3).
+If a learned :class:`~ais_sentinel.anomaly.context.Context` is given, both ends of the
+silence must also lie in cells where at least ``min_reception`` of expected reports are
+normally received. A silence in a known coverage hole is expected, not suspicious. This
+plays the role of Global Fishing Watch's satellite-reception filter.
+
+Events use the shared :data:`~ais_sentinel.anomaly.detectors.EVENT_SCHEMA`, and each carries
+a plain-language explanation.
 """
 
 from __future__ import annotations
@@ -15,8 +20,11 @@ from __future__ import annotations
 from collections.abc import Collection
 from datetime import date, timedelta
 
+import numpy as np
 import polars as pl
 
+from ais_sentinel.anomaly.context import Context
+from ais_sentinel.anomaly.detectors import EVENT_SCHEMA
 from ais_sentinel.geo import KNOT_MS
 
 KM_PER_DEG_LAT = 111.32
@@ -42,6 +50,8 @@ def detect_gaps(
     min_sog_kn: float = 1.0,
     edge_buffer_km: float = 3.0,
     available_days: Collection[date] | None = None,
+    ctx: Context | None = None,
+    min_reception: float = 0.8,
 ) -> pl.DataFrame:
     """Return one row per detected gap event.
 
@@ -87,36 +97,54 @@ def detect_gaps(
     )
     if available_days is not None:
         events = events.filter(_span_is_covered(events, set(available_days)))
-    return events.with_columns(
-        type=pl.lit("gap"),
-        score=pl.col("gap_min") / min_gap_min,
-        explanation=pl.format(
-            "Silent for {} min while moving ({} kn before, {} kn after), {} km inside the "
-            "coverage area; it covered {} km during the silence.",
-            pl.col("gap_min").round(0).cast(pl.Int64),
-            pl.col("sog_start").round(1),
-            pl.col("sog_end").round(1),
-            pl.min_horizontal("edge_start_km", "edge_end_km").round(1),
-            pl.col("gap_dist_km").round(1),
-        ),
-    ).select(
-        "type",
-        "mmsi",
-        "vessel_group",
-        "t_start",
-        "t_end",
-        "gap_min",
-        "lat_start",
-        "lon_start",
-        "lat_end",
-        "lon_end",
-        "sog_start",
-        "sog_end",
-        "gap_dist_km",
-        "implied_kn",
-        "score",
-        "explanation",
+    if ctx is not None and events.height:
+        rec0 = ctx.reception_at(events["lat_start"].to_numpy(), events["lon_start"].to_numpy())
+        rec1 = ctx.reception_at(events["lat_end"].to_numpy(), events["lon_end"].to_numpy())
+        rec = np.fmin(rec0, rec1)
+        events = events.with_columns(reception=pl.Series(rec)).filter(
+            pl.col("reception").fill_nan(0.0) >= min_reception
+        )
+    else:
+        events = events.with_columns(reception=pl.lit(float("nan")))
+    rec_txt = (
+        pl.when(pl.col("reception").is_nan())
+        .then(pl.lit(""))
+        .otherwise(
+            pl.format(
+                " Normally {}% of expected reports are received here.",
+                (100 * pl.col("reception")).round(0).cast(pl.Int64),
+            )
+        )
     )
+    return events.select(
+        type=pl.lit("gap"),
+        mmsi=pl.col("mmsi"),
+        mmsi2=pl.lit(None, dtype=pl.Int64),
+        vessel_group=pl.col("vessel_group"),
+        t_start=pl.col("t_start"),
+        t_end=pl.col("t_end"),
+        lat=pl.col("lat_start"),
+        lon=pl.col("lon_start"),
+        lat_end=pl.col("lat_end"),
+        lon_end=pl.col("lon_end"),
+        duration_min=pl.col("gap_min"),
+        score=pl.col("gap_min") / min_gap_min * pl.col("reception").fill_nan(1.0),
+        explanation=pl.concat_str(
+            [
+                pl.format(
+                    "Silent for {} min while moving ({} kn before, {} kn after), {} km inside "
+                    "the coverage area; it covered {} km ({} kn average) during the silence.",
+                    pl.col("gap_min").round(0).cast(pl.Int64),
+                    pl.col("sog_start").round(1),
+                    pl.col("sog_end").round(1),
+                    pl.min_horizontal("edge_start_km", "edge_end_km").round(1),
+                    pl.col("gap_dist_km").round(1),
+                    pl.col("implied_kn").round(1),
+                ),
+                rec_txt,
+            ]
+        ),
+    ).cast(EVENT_SCHEMA)  # type: ignore[arg-type]
 
 
 def _span_is_covered(events: pl.DataFrame, days: set[date]) -> pl.Series:

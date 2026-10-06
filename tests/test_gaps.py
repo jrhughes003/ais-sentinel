@@ -32,7 +32,7 @@ def test_moving_gap_inside_aoi_is_detected_with_explanation() -> None:
     ev = detect_gaps(pts, REGION, min_gap_min=30)
     assert ev.height == 1
     row = ev.row(0, named=True)
-    assert round(row["gap_min"]) == 46
+    assert round(row["duration_min"]) == 46
     assert "Silent for 46 min" in row["explanation"]
 
 

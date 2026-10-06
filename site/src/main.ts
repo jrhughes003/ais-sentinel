@@ -22,13 +22,14 @@ interface Voyage {
   rejected: number[];
 }
 interface GapEvent {
+  type: string;
   mmsi: number;
   vessel_group: string;
   t_start: number;
   t_end: number;
-  gap_min: number;
-  lat_start: number;
-  lon_start: number;
+  duration_min: number;
+  lat: number;
+  lon: number;
   lat_end: number;
   lon_end: number;
   explanation: string;
@@ -121,9 +122,9 @@ async function init(): Promise<void> {
     for (const g of anomalies.events) {
       const el = document.createElement("button");
       el.className = "gap-marker";
-      el.setAttribute("aria-label", `AIS gap, ${Math.round(g.gap_min)} minutes`);
+      el.setAttribute("aria-label", `AIS gap, ${Math.round(g.duration_min)} minutes`);
       new maplibregl.Marker({ element: el })
-        .setLngLat([g.lon_start, g.lat_start])
+        .setLngLat([g.lon, g.lat])
         .setPopup(new maplibregl.Popup().setText(`MMSI ${g.mmsi}: ${g.explanation}`))
         .addTo(map);
     }
