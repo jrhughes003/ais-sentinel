@@ -111,3 +111,50 @@ def test_url_template() -> None:
     from ais_sentinel.config import load_config
 
     assert url_for(load_config(), date(2023, 5, 1)).endswith("/2023/AIS_2023_05_01.zip")
+
+
+class _FakeResponse:
+    def __init__(self, payload: bytes, status: int = 200) -> None:
+        self.payload, self.status = payload, status
+
+    def __enter__(self) -> _FakeResponse:
+        return self
+
+    def __exit__(self, *exc: object) -> None:
+        return None
+
+    def raise_for_status(self) -> None:
+        import requests
+
+        if self.status != 200:
+            raise requests.HTTPError(f"HTTP {self.status}")
+
+    def iter_content(self, n: int):  # type: ignore[no-untyped-def]
+        for i in range(0, len(self.payload), n):
+            yield self.payload[i : i + n]
+
+
+def _zip_bytes(text: str) -> bytes:
+    import io
+
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, "w") as zf:
+        zf.writestr("AIS.csv", text)
+    return buf.getvalue()
+
+
+def test_run_download_fetches_over_http_and_survives_a_bad_day(
+    tmp_cfg: Config, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import requests
+
+    good, bad = date(2023, 7, 12), date(2023, 7, 13)
+
+    def fake_get(url: str, stream: bool, timeout: float) -> _FakeResponse:
+        return _FakeResponse(_zip_bytes(LEGACY)) if "07_12" in url else _FakeResponse(b"", 404)
+
+    monkeypatch.setattr(requests, "get", fake_get)
+    manifest = run_download(tmp_cfg, [good, bad])
+    assert set(manifest) == {"2023-07-12"}  # the 404 day is skipped and retried next run
+    assert manifest["2023-07-12"].bytes_downloaded > 0
+    assert not list(Path(tmp_cfg.paths.raw).glob("*.part"))

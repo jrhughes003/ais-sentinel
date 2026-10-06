@@ -79,6 +79,22 @@ def test_evaluate_and_holdout_end_to_end(tmp_cfg: Config) -> None:
     assert set(fc["model"]) >= {"dead_reckoning", "kf_cv", "imm", "knn_route", "gru", "gru_mdn"}
     assert fc["lat"].is_finite().all()
 
+    import json
+
+    from ais_sentinel.export import web
+
+    tmp_cfg["export"]["n_predictions"] = 3
+    web.stage(tmp_cfg)
+    site = Path(tmp_cfg.paths.site_data)
+    preds = json.loads((site / "predictions.json").read_text(encoding="utf-8"))
+    results = json.loads((site / "results.json").read_text(encoding="utf-8"))
+    assert preds["split"].startswith("locked test")
+    for smp in preds["samples"]:
+        assert set(smp["preds"]) >= {"dead_reckoning", "gru"}
+        assert len(smp["hist"]["lat"]) > 0
+    assert results["prediction"]["rows"]
+    assert any(c["area"] == "Prediction" for c in results["criteria"])
+
 
 @pytest.mark.slow
 def test_anomaly_stage_end_to_end(tmp_cfg: Config) -> None:
