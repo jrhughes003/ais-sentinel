@@ -13,10 +13,11 @@ Stage = Callable[[Config], None]
 
 def _stages() -> dict[str, Stage]:
     """Return the pipeline stages in execution order (imported lazily)."""
-    from ais_sentinel.data import download
+    from ais_sentinel.data import build, download
 
     return {
         "download": download.stage,
+        "build": build.stage,
     }
 
 
