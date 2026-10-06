@@ -42,44 +42,50 @@ Test results are also reported for vessels never seen in training.
 | Site | Every view works; Playwright passes at desktop and mobile widths; 0 serious axe violations; initial load ≤ 2 MB; site ≤ 50 MB |
 | Engineering | CI green; ≥ 85% coverage on core modules; README complete |
 
-## Current state
-- **Repo:** https://github.com/jrhughes003/ais-sentinel (public). Pages:
-  https://jrhughes003.github.io/ais-sentinel/. Both were created automatically with `gh`; see
-  GITHUB_SETUP.md.
-- **Data:** the full six-month download is running in the background
-  (`logs/download.log`). It is about 40% done and download-bound at about 1.5 min/day.
-  Re-running `ais-sentinel download` retries failed days and skips finished ones.
-- **Pipeline stages working:**
-  - `download → build → sim-study → track → evaluate → export`;
-  - plus `holdout`, explicit only.
-  - `evaluate` and `holdout` have only been smoke-tested on synthetic data so far; they
-    still need to run on real data.
-- **Tracking (simulation study, `reports/tracking.md`):**
-  - CV-KF and IMM are implemented and tested.
-  - Median errors are about 5–6 m (raw noise radial median about 5.9 m), and outlier
-    recall is about 0.9.
-  - **PLAN §9.2 criteria not met yet.** See "Blocked" and DECISIONS D15.
-- **Prediction:**
-  - B0 dead reckoning;
-  - B1 CV-KF and B2 IMM extrapolation from stored filter states;
-  - B3 kNN route analogs;
-  - M1/M2 GRU (Gaussian and MDN), as deep ensembles;
-  - calibration on validation;
-  - reports with voyage-cluster bootstrap CIs.
-- **Anomalies:** only the gap rule exists so far.
-- **Site:** a minimal map page (raw vs smoothed, rejected outliers, gaps). Playwright smoke
-  tests pass at desktop and mobile widths in CI.
+## Current state (2026-10-06 ~01:00)
+- **Repo:** https://github.com/jrhughes003/ais-sentinel. **Live site:**
+  https://jrhughes003.github.io/ais-sentinel/
+  - All five views are live: overview, tracks, predictions, anomalies, results.
+  - The site currently shows a clearly bannered **development preview**, built from
+    `configs/dev.yaml` (train May 1–24, validate May 26–31, test June 2–10).
+- **Download:** about 100 of 184 days done; `logs/download.log`. Afterwards, re-run
+  `ais-sentinel download` once to retry failures.
+- **Dev run, real data:** the whole pipeline worked end to end.
+
+  | Stage | Dev-run result |
+  |---|---|
+  | Tracking | 3.55 M fixes in about 14 min |
+  | Prediction (dev test) | GRU-MDN vs kNN: +17% at 15 min, tie at 60 min, −17% at 120 min. The pre-registered target (significant win at 60 *and* 120) would be **not met**. Coverage of 0.87–0.89 is within target. On vessels never seen in training the gain persists |
+  | Anomalies (dev test) | All five types meet their targets after two bug fixes; the base alarm rate is reported |
+
+- **Not yet done:**
+  - the full-data run;
+  - the locked October test;
+  - case studies on final data (`configs/case_studies.yaml`);
+  - README results table and screenshot;
+  - final summary.
 
 ## Next up
-1. When the download finishes:
-   - run `ais-sentinel download` again (retry failures), then `build`, `track` and
-     `evaluate`;
-   - inspect the validation results;
-   - then `holdout` once.
-2. **Phase 6 anomaly suite:** reception grid and port zones; jump, loiter,
-   route-deviation and rendezvous detectors; synthetic injection evaluation; case studies.
-3. **Phase 7 front end:** landing page, tracks, prediction, anomalies, results.
-4. Real-data NIS consistency check (PLAN §9.2, last bullet).
+1. When the download finishes, run on the full data:
+
+   ```
+   ais-sentinel download
+   ais-sentinel build
+   ais-sentinel sim-study
+   ais-sentinel track
+   ais-sentinel evaluate
+   ais-sentinel anomaly
+   ais-sentinel holdout    # once
+   ais-sentinel export
+   ```
+
+   Training budget is about 1.5 h (D16).
+2. Write 3+ case studies from real events. Candidates seen in the dev data:
+   - cargo MMSI 246824000 "jumping" 87–125 km within about a minute (shared MMSI or GPS);
+   - a tanker holding position for 127 h outside learned port zones;
+   - tug pairs "meeting" for 12–18 h (likely a tug and its barge).
+3. README: results table and screenshot. Final PROGRESS summary.
+4. Optional: ONNX in-browser model; tracking option (a) from Blocked.
 
 ## Blocked / needs my input
 - **Tracking criterion (PLAN §9.2), after 3 attempts.**
@@ -135,3 +141,19 @@ Test results are also reported for vessels never seen in training.
   - Causal features, and GRU Gaussian/MDN with ensembles (D13).
   - The `evaluate`/`holdout` stages (D14) pass the synthetic end-to-end smoke test.
 - Gotcha: PyYAML reads `2e-07` as a string. Write floats with a decimal point.
+
+### 2026-10-06
+- Anomaly suite:
+  - context grids (reception, ports, traffic);
+  - the jump, loiter, deviation and rendezvous detectors;
+  - synthetic injection evaluation.
+- Bugs fixed:
+  - injection eligibility (`min(initial=0)`);
+  - parked vessels flagged as dark;
+  - gap ranking.
+- Front end: five views, lazy-loaded maps and charts, a validated palette, axe-clean.
+  Playwright passes 24/24 at desktop and mobile widths.
+- Dev pipeline on real May–June data: the experiment, export and site all work end to end.
+- kNN grid widened (the dev run chose the old grid's edges). ML compute budget set (D16).
+- Note: anomaly rule refinements were made on dev data (June, which falls inside the real
+  training period). The October locked test has not been touched.

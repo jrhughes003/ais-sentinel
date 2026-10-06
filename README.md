@@ -50,7 +50,8 @@ The package uses a src layout:
 | `ais_sentinel.evaluation` | metrics and bootstrap CIs |
 | `ais_sentinel.export` | site data |
 
-The front end is in `site/`. Design rationale is in [DECISIONS.md](DECISIONS.md), and the
+The front end is in `site/`. The ideas beyond a standard Kalman filter are explained in
+[docs/METHODS.md](docs/METHODS.md). Design rationale is in [DECISIONS.md](DECISIONS.md), and the
 full plan and pre-registered targets are in [PLAN.md](PLAN.md).
 
 ## Reproduce
