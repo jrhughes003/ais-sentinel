@@ -27,6 +27,8 @@ LEGACY = (
     "245299000,2023-07-12T00:00:03,41.87042,-82.59744,12.1,285.0,285.0,ATLANTICBORG,"
     "IMO9466350,PCEC,70,0,142,21,9.7,79,A\n"
     "316023959,2023-07-12T00:00:05,42.98361,-82.40972,0.0,16.8,511.0,PRIDE,,CFN6705,31,0,,,,52,A\n"
+    '367704390,2023-07-12T00:00:04,42.3634,-83.0119,0.0,302.2,511.0,RAY "CHIEF" TONEY,,WDI5024,'
+    "31,12,25,,,57,A\n"
     "111111111,2023-07-12T00:01:00,30.0,-90.0,5.0,10.0,10.0,FAR AWAY,,,70,0,,,,,A\n"
 )
 CSV2 = (
@@ -71,11 +73,14 @@ def test_filter_drops_points_outside_aoi_and_keeps_blank_as_null(tmp_path: Path)
     out = tmp_path / "out.parquet"
     _, n_aoi = filter_csv_to_aoi(src, out, AOI)
     df = pl.read_parquet(out)
-    assert n_aoi == 2
+    assert n_aoi == 3
     assert 111111111 not in df["mmsi"].to_list()
     pride = df.filter(pl.col("mmsi") == 316023959).row(0, named=True)
     assert pride["imo"] is None
     assert pride["length_m"] is None
+    quoted = df.filter(pl.col("mmsi") == 367704390).row(0, named=True)
+    assert quoted["vessel_name"] == 'RAY "CHIEF" TONEY'
+    assert quoted["call_sign"] == "WDI5024"
 
 
 def test_run_download_uses_existing_zip_and_skips_done_days(tmp_cfg: Config) -> None:
@@ -86,7 +91,7 @@ def test_run_download_uses_existing_zip_and_skips_done_days(tmp_cfg: Config) -> 
     with zipfile.ZipFile(zip_path, "w") as zf:
         zf.writestr("AIS_2023_07_12.csv", LEGACY)
     manifest = run_download(tmp_cfg, [day])
-    assert manifest["2023-07-12"].rows_aoi == 2
+    assert manifest["2023-07-12"].rows_aoi == 3
     assert interim_path(tmp_cfg, day).exists()
     assert not zip_path.exists(), "raw national file should be deleted after filtering"
     # Second run: nothing to do, and no network access is attempted (zip is gone).
