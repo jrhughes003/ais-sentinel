@@ -43,15 +43,34 @@ Test results are also reported for vessels never seen in training.
 | Engineering | CI green; ≥ 85% coverage on core modules; README complete |
 
 ## Current state
-- Phase 0 (planning plus skeleton) in progress.
+- **Repo:** https://github.com/jrhughes003/ais-sentinel (public). Pages:
+  https://jrhughes003.github.io/ais-sentinel/ (GitHub Actions source). Created automatically
+  with `gh`, on the owner's authorisation; see GITHUB_SETUP.md.
+- **Phase 1 vertical slice works end to end:**
+  `download → build → track → (samples, baselines, metrics) → export → site map`.
+- **Full download running in the background:** `logs/download.log` and
+  `data/interim/manifest.json`. Expect about 3 h. Re-running `ais-sentinel download` retries
+  failed days and skips finished ones.
+- **First look on 8 May/July days (not a result, a smoke test):**
+  - Dead reckoning mean error: about 1.1 km at 15 min, 8.0 km at 60 min, 19.7 km at 120 min.
+  - Cargo ships alone: 0.7 km at 15 min, 5.7 km at 60 min. The river bends hurt straight-line
+    prediction.
+  - The CV-KF re-initialises often on ferries' hard manoeuvres, which motivates the IMM.
 
 ## Next up
-1. Finish the skeleton (package, CI, Pages workflow, README). Create the GitHub repo.
-2. Phase 1 vertical slice: download 3 sample days, clean, CV-KF, dead reckoning, gap rule,
-   minimal map page.
+1. Python tests for samples, metrics, gaps and export (coverage).
+2. Once the download finishes: rerun `build`/`track` on all six months and write
+   `reports/data_summary.md`.
+3. **Phase 3:** AIS-like simulator, then IMM (stationary / CV / CT-EKF), then the simulation
+   study.
+4. **Phase 4:** IMM extrapolation, kNN route baseline, calibration on validation, and the
+   evaluation report.
 
 ## Blocked / needs my input
 - (none)
+- FYI: a helper Claude session ("diag-d6") reported clearing temp files outside this project
+  (WSL crash dumps, swap vhdx) to free disk space. This session did not do that or ask for
+  it; please confirm you're happy with it.
 
 ## Log
 ### 2026-10-05
@@ -64,3 +83,19 @@ Test results are also reported for vessels never seen in training.
 - Research: MarineCadastre formats and URLs (verified by HEAD requests and in-memory
   sampling), the literature, and the web stack. Written up in docs/RESEARCH.md.
 - Wrote PLAN.md, CLAUDE.md, DECISIONS.md (D1–D7) and this file.
+- Step 0 continued: the owner authorised `gh`, so I created the public repo and enabled
+  Pages (workflow build type). The first deploy succeeded.
+- Data:
+  - Downloader verified on 2023-07-12: 9.96 M national rows → 59,861 AOI rows (1.3 MB).
+  - Fixed CSV parsing: names contain literal quotes, so quoting is disabled; rare ragged
+    lines are dropped.
+  - Added single-worker prefetch.
+- Built geo (ENU via ECEF), clean, segment, build, CV-KF plus RTS, the track stage,
+  prediction samples, B0/B1 baselines, metrics with cluster-bootstrap CIs, the gap detector
+  and the export.
+- Site: MapLibre map (fixed the v6 worker URL under Vite). Playwright smoke tests pass at
+  1280×800 and 390×844.
+- Gotchas recorded:
+  - Python `write_text` on Windows defaults to cp1252 and CRLF. Use `PYTHONUTF8=1` and LF
+    (ruff is pinned to LF).
+  - `.gitignore` `data/` matched `site/public/data`; it is now anchored as `/data/`.

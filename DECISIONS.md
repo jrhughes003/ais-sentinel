@@ -48,3 +48,18 @@ behaviour. "vessel-track" covers only one of the three pillars.
 - Transparent thresholds grounded in GFW definitions, plus learned context (reception
   grid, port zones, traffic grid), are explainable and evaluable by injection.
 - A learned likelihood model (GeoTrackNet-style) is out of scope.
+
+### D8 — Cleaning flags kinematic spikes instead of deleting them (2026-10-05)
+Isolated implausible fixes are kept with `spike = true`. The tracker gates them out and the
+anomaly detector reports them. Deleting them during cleaning would hide exactly the
+"impossible jump" behaviour pillar 3 is meant to find.
+
+### D9 — Prediction evaluation uses underway anchors only (SOG ≥ 2 kn) (2026-10-05)
+Moored and anchored vessels are trivially predictable, and they would dominate sample
+counts and make every model look good. Following common practice (TrAISformer removes
+moored vessels), primary metrics use anchors where the vessel is underway. Truth is
+interpolated between fixes no more than 3 min from the target time.
+
+### D10 — Gap events require data availability on every day they span (2026-10-05)
+A silence that spans a day missing from our download is a hole in our data, not a vessel
+going dark. Events are kept only if every UTC day they touch is in the manifest.

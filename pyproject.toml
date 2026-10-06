@@ -74,3 +74,6 @@ markers = ["slow: long-running tests", "network: requires internet"]
 [tool.coverage.run]
 source = ["ais_sentinel"]
 omit = ["*/cli.py"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["ais_sentinel"]
