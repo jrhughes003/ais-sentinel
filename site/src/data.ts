@@ -32,6 +32,7 @@ export interface Voyage {
   mode: number[]; // dominant IMM mode per fix: 0 stationary, 1 cruising, 2 turning
   rejected: number[]; // indices of fixes rejected as outliers
   sog_kn: (number | null)[];
+  cog_deg: (number | null)[];
 }
 
 export interface TracksFile extends Meta {

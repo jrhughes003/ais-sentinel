@@ -10,6 +10,7 @@ const routes: Record<string, { title: string; load: () => Promise<{ render: View
   predict: { title: "Predictions", load: () => import("./views/predict") },
   anomalies: { title: "Anomalies", load: () => import("./views/anomalies") },
   results: { title: "Results & methods", load: () => import("./views/results") },
+  parity: { title: "Model parity check", load: () => import("./views/parity") }, // unlisted (tests)
 };
 
 const main = document.querySelector<HTMLElement>("#main")!;

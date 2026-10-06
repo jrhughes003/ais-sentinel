@@ -1,6 +1,7 @@
 import { fmtTime, getData, GROUP_LABEL, type TracksFile, type Voyage, vesselLabel } from "../data";
-import { bounds } from "../geo";
-import { createMap, fc, lineFeature, pointFeature, setData, setVisible } from "../map";
+import { bounds, ellipse } from "../geo";
+import { createMap, fc, lineFeature, pointFeature, polygonFeature, setData, setVisible } from "../map";
+import { modelColor } from "../models";
 import { $, esc, query, setQuery } from "../util";
 
 const MODE_COLOR = ["#8a94a3", "#0b63ce", "#e8590c"]; // stationary, cruising, turning
@@ -63,6 +64,12 @@ export async function render(root: HTMLElement): Promise<void> {
         <input type="range" id="time" min="0" max="1" value="1" aria-label="Time along voyage" />
       </div>
       <p class="status" id="clock" aria-live="polite"></p>
+      <div class="explain small" style="margin:0.6rem 0">
+        <strong>Try the neural network.</strong> Pause anywhere with at least an hour of history,
+        then run the GRU forecaster <em>in your browser</em> (ONNX Runtime, ~4 MB, loaded on demand).
+        <div style="margin-top:0.5rem"><button class="btn primary" id="live" type="button" disabled>Predict from here</button></div>
+        <p class="status" id="live-status" aria-live="polite" style="margin:0.4rem 0 0"></p>
+      </div>
       <dl class="stat-grid" id="stats"></dl>
     </aside>
     <div class="map" id="map" role="region" aria-label="Map of the selected vessel track"></div>
@@ -112,6 +119,18 @@ export async function render(root: HTMLElement): Promise<void> {
       "circle-stroke-color": "#ffffff",
     },
   });
+  for (const id of ["live-ell", "live-path", "live-pts", "live-dr", "live-truth"]) setData(map, id, fc([]));
+  map.addLayer({ id: "live-ell", type: "fill", source: "live-ell", paint: { "fill-color": modelColor("gru"), "fill-opacity": 0.12 } });
+  map.addLayer({ id: "live-ell-line", type: "line", source: "live-ell", paint: { "line-color": modelColor("gru"), "line-width": 1.4 } });
+  map.addLayer({ id: "live-truth", type: "line", source: "live-truth", paint: { "line-color": "#16202c", "line-width": 3, "line-dasharray": [2, 1.5] } });
+  map.addLayer({ id: "live-dr", type: "line", source: "live-dr", paint: { "line-color": modelColor("dead_reckoning"), "line-width": 2.5 } });
+  map.addLayer({ id: "live-path", type: "line", source: "live-path", paint: { "line-color": modelColor("gru"), "line-width": 3 } });
+  map.addLayer({
+    id: "live-pts",
+    type: "circle",
+    source: "live-pts",
+    paint: { "circle-radius": 5, "circle-color": modelColor("gru"), "circle-stroke-color": "#fff", "circle-stroke-width": 1.5 },
+  });
   map.addLayer({ id: "trail", type: "line", source: "trail", paint: { "line-width": 5, "line-color": "#16202c", "line-opacity": 0.35 } });
   map.addLayer({
     id: "now",
@@ -125,7 +144,15 @@ export async function render(root: HTMLElement): Promise<void> {
   const slider = $(root, "#time") as HTMLInputElement;
   const clock = $(root, "#clock");
 
+  const liveBtn = $(root, "#live") as HTMLButtonElement;
+  const liveStatus = $(root, "#live-status");
+  const clearLive = (): void => {
+    for (const id of ["live-ell", "live-path", "live-pts", "live-dr", "live-truth"]) setData(map, id, fc([]));
+  };
   const showTime = (i: number): void => {
+    const enough = ts.length > 0 && ts[i] - ts[0] >= 3600;
+    liveBtn.disabled = !enough;
+    liveBtn.title = enough ? "" : "Needs at least 60 minutes of history before this moment";
     setData(map, "now", fc([pointFeature(v.s_lon[i], v.s_lat[i])]));
     setData(map, "trail", fc([lineFeature(v.s_lon.slice(0, i + 1), v.s_lat.slice(0, i + 1))]));
     const sog = v.sog_kn[i];
@@ -159,6 +186,56 @@ export async function render(root: HTMLElement): Promise<void> {
     map.getContainer().setAttribute("aria-label", `Map of ${vesselLabel(v.name, v.mmsi)}: ${v.lat.length} AIS reports over ${hours.toFixed(1)} hours.`);
   };
 
+  liveBtn.addEventListener("click", async () => {
+    const i = Number(slider.value);
+    liveBtn.disabled = true;
+    liveStatus.textContent = "Loading the model…";
+    try {
+      const { predict, loadModel } = await import("../ml/infer");
+      const { meta } = await loadModel();
+      const t0 = performance.now();
+      const anchor = {
+        t0: ts[i], lat0: v.lat[i], lon0: v.lon[i], sog0: v.sog_kn[i], cog0: v.cog_deg[i],
+        length_m: v.length_m, group: v.group,
+      };
+      const raw = { t: ts.slice(0, i + 1), lat: v.lat.slice(0, i + 1), lon: v.lon.slice(0, i + 1), sog: v.sog_kn.slice(0, i + 1), cog: v.cog_deg.slice(0, i + 1) };
+      const p = await predict(raw, anchor);
+      const ms = performance.now() - t0;
+      const H = meta.horizons_min;
+      // Truth: the vessel's actual positions over the next two hours (interpolated in time).
+      const truthAt = (tq: number): [number, number] | null => {
+        if (tq > ts[ts.length - 1]) return null;
+        let j = i;
+        while (j < ts.length - 1 && ts[j + 1] < tq) j++;
+        const w = (tq - ts[j]) / Math.max(ts[j + 1] - ts[j], 1);
+        return [v.lon[j] + w * (v.lon[j + 1] - v.lon[j]), v.lat[j] + w * (v.lat[j + 1] - v.lat[j])];
+      };
+      const fut = ts.map((t, k) => [t, k] as const).filter(([t]) => t > ts[i] && t <= ts[i] + 7200).map(([, k]) => k);
+      setData(map, "live-truth", fc([lineFeature([v.lon[i], ...fut.map((k) => v.lon[k])], [v.lat[i], ...fut.map((k) => v.lat[k])])]));
+      setData(map, "live-path", fc([lineFeature([v.lon[i], ...p.lon], [v.lat[i], ...p.lat])]));
+      setData(map, "live-pts", fc(p.lon.map((x, k) => pointFeature(x, p.lat[k]))));
+      setData(map, "live-ell", fc(p.lat.map((la, k) => polygonFeature(ellipse(la, p.lon[k], p.cov[k][0], p.cov[k][1], p.cov[k][2], 0.9)))));
+      const { deadReckoning, enuToLatlon } = await import("../ml/features");
+      const dr = deadReckoning(anchor, H).map(([e, n]) => enuToLatlon(e * 1000, n * 1000, anchor.lat0, anchor.lon0));
+      setData(map, "live-dr", fc([lineFeature([v.lon[i], ...dr.map((d) => d[1])], [v.lat[i], ...dr.map((d) => d[0])])]));
+      const errs = H.map((h, k) => {
+        const tr = truthAt(ts[i] + h * 60);
+        if (!tr) return `${h} min: –`;
+        const dLat = ((p.lat[k] - tr[1]) * Math.PI) / 180;
+        const dLon = ((p.lon[k] - tr[0]) * Math.PI) / 180;
+        const a = Math.sin(dLat / 2) ** 2 + Math.cos((tr[1] * Math.PI) / 180) * Math.cos((p.lat[k] * Math.PI) / 180) * Math.sin(dLon / 2) ** 2;
+        return `${h} min: ${((2 * 6371.0088 * Math.asin(Math.sqrt(a)))).toFixed(2)} km`;
+      });
+      liveStatus.innerHTML = `${esc(meta.model)} ran in your browser in ${ms.toFixed(0)} ms. Error vs what actually happened: ${esc(errs.join(" · "))}.
+        <br/><span style="color:${modelColor("gru")}">■</span> GRU + 90% ellipses · <span style="color:${modelColor("dead_reckoning")}">■</span> dead reckoning · dashed: actual path.`;
+    } catch (err) {
+      liveStatus.textContent = `Could not run the model: ${String(err)}`;
+    } finally {
+      liveBtn.disabled = false;
+    }
+  });
+  slider.addEventListener("input", clearLive);
+  select.addEventListener("change", () => (clearLive(), (liveStatus.textContent = "")));
   select.addEventListener("change", () => show(select.value));
   slider.addEventListener("input", () => showTime(Number(slider.value)));
   for (const [box, layers] of [

@@ -162,6 +162,7 @@ def voyage_payload(track: pl.DataFrame, meta: dict[str, Any]) -> dict[str, Any]:
         "mode": mode,
         "rejected": np.flatnonzero(~track["accepted"].to_numpy()).tolist(),
         "sog_kn": _round(track["sog_kn"].cast(pl.Float64).fill_null(np.nan).to_numpy(), 1),
+        "cog_deg": _round(track["cog_deg"].cast(pl.Float64).fill_null(np.nan).to_numpy(), 1),
     }
 
 
@@ -495,4 +496,8 @@ def stage(cfg: Config) -> None:
 
     n_days = len(list((Path(cfg.paths.interim) / "days").glob("aoi_*.parquet")))
     size += write_json(out / "results.json", results_payload(cfg, voyages, points.height, n_days))
+    if ex.get("onnx", True):
+        from ais_sentinel.export.onnx_export import export_onnx
+
+        size += export_onnx(cfg)
     log.info("export: %d voyages; %.1f KB total", len(payload), size / 1024)

@@ -73,3 +73,25 @@ test("initial page weight is small", async ({ page }) => {
   await page.waitForLoadState("networkidle");
   expect(bytes).toBeLessThan(2 * 1024 * 1024);
 });
+
+test("in-browser model matches Python (features and predictions)", async ({ page }, info) => {
+  test.skip(info.project.name === "mobile", "same code path as desktop");
+  await page.goto("./#/parity");
+  const pre = page.locator("#parity");
+  await expect(pre).not.toHaveText("running…", { timeout: 60_000 });
+  const r = JSON.parse((await pre.textContent())!);
+  expect(r.n).toBeGreaterThan(0);
+  expect(r.maxSeq).toBeLessThan(1e-3);
+  expect(r.maxCtx).toBeLessThan(1e-4);
+  expect(r.maxPosM).toBeLessThan(5); // metres
+  expect(r.maxCovRel).toBeLessThan(1e-3);
+});
+
+test("live prediction runs from the tracks view", async ({ page }, info) => {
+  test.skip(info.project.name === "mobile", "desktop is enough for the wiring check");
+  await page.goto("./#/tracks");
+  const btn = page.locator("#live");
+  await expect(btn).toBeEnabled({ timeout: 30_000 });
+  await btn.click();
+  await expect(page.locator("#live-status")).toContainText("ran in your browser", { timeout: 60_000 });
+});
