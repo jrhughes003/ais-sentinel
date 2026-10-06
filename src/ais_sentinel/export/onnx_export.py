@@ -28,6 +28,7 @@ import torch
 
 from ais_sentinel.config import Config
 from ais_sentinel.data.vessel_types import COMMERCIAL, GROUPS
+from ais_sentinel.io import write_text
 from ais_sentinel.prediction.features import SEQ_CHANNELS, build_features
 from ais_sentinel.prediction.knn import region_centre
 from ais_sentinel.prediction.ml import ensemble_forecast
@@ -157,7 +158,6 @@ def export_onnx(cfg: Config, n_fixtures: int = 3) -> int:
         "fixtures": fixtures,
     }
     text = json.dumps(meta, separators=(",", ":"))
-    (out_dir / "model.json").write_text(text, encoding="utf-8", newline="\n")
-    size += len(text)
+    size += write_text(out_dir / "model.json", text)
     log.info("onnx: %d members, %.0f KB", len(members), size / 1024)
     return size
