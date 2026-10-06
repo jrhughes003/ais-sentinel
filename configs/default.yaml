@@ -54,3 +54,6 @@ anomaly:
     min_gap_min: 30
     min_sog_kn: 1.0
     edge_buffer_km: 3.0
+
+export:
+  n_showcase: 16

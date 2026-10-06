@@ -14,8 +14,8 @@ coverage.xml
 htmlcov/
 
 # Data (never commit raw or bulk data)
-data/
-!data/README.md
+/data/
+!/data/README.md
 models/
 *.zip
 *.parquet
@@ -39,3 +39,4 @@ Thumbs.db
 .vscode/
 .idea/
 logs/
+site/.pw-browsers/

@@ -48,6 +48,10 @@ line-length = 100
 target-version = "py311"
 src = ["src", "tests"]
 
+[tool.ruff.format]
+# Pinned so files written on Windows do not churn with the pre-commit hooks.
+line-ending = "lf"
+
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "B", "UP", "N", "SIM", "NPY", "PD", "RUF"]
 ignore = ["N803", "N806", "RUF001", "RUF002", "RUF003"]

@@ -48,8 +48,10 @@ def test_clean_drops_invalid_and_duplicates_and_nulls_sentinels() -> None:
     df = make_points(rows).with_columns(
         sog_kn=pl.when(pl.int_range(pl.len()) == 0).then(102.3).otherwise(pl.col("sog_kn"))
     )
+    df = pl.concat([df, make_points(straight(316000009, 1)).with_columns(transceiver=pl.lit("52"))])
     out, rep = clean_points(df, max_sog_kn=102.2, max_implied_speed_kn=60)
     assert rep.dropped_invalid_mmsi == 2
+    assert rep.dropped_malformed == 1
     assert rep.dropped_duplicates == 1
     assert out.height == 5
     assert out["heading_deg"].null_count() == 5  # 511 -> null

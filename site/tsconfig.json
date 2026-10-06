@@ -8,7 +8,7 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "skipLibCheck": true,
-    "types": ["vite/client"]
+    "types": ["vite/client", "geojson", "node"]
   },
   "include": ["src", "tests", "vite.config.ts", "playwright.config.ts"]
 }

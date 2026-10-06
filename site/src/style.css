@@ -1,0 +1,13 @@
+:root { --fg: #1f2328; --bg: #ffffff; --muted: #57606a; --accent: #1f6feb; font-family: system-ui, sans-serif; color: var(--fg); background: var(--bg); }
+* { box-sizing: border-box; }
+body { margin: 0; }
+.bar { display: flex; flex-wrap: wrap; gap: 0.75rem 1.25rem; align-items: center; padding: 0.6rem 1rem; border-bottom: 1px solid #d0d7de; }
+.bar h1 { font-size: 1.1rem; margin: 0; }
+.bar select { max-width: 70vw; }
+#map { height: calc(100vh - 6rem); min-height: 320px; }
+.status { margin: 0; padding: 0.4rem 1rem; color: var(--muted); font-size: 0.9rem; }
+.legend { color: var(--muted); font-size: 0.85rem; }
+.dot { display: inline-block; width: 0.7rem; height: 0.7rem; border-radius: 50%; margin: 0 0.25rem 0 0.6rem; vertical-align: middle; }
+.dot.raw { background: #57606a; } .dot.rej { background: #d1242f; } .dot.gap { background: #bf8700; }
+.gap-marker { width: 14px; height: 14px; border-radius: 50%; border: 2px solid #fff; background: #bf8700; cursor: pointer; padding: 0; }
+.gap-marker:focus-visible { outline: 3px solid var(--accent); }

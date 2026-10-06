@@ -78,3 +78,19 @@ def test_cog_convention_clockwise_from_north() -> None:
     ve, vn = sog_cog_to_enu_velocity(10.0, 90.0)  # due east
     assert ve > 5
     assert abs(vn) < 1e-9
+
+
+def test_vectorised_anchors_match_scalar_calls() -> None:
+    rng = np.random.default_rng(0)
+    lat0 = rng.uniform(41.5, 43.0, 5)
+    lon0 = rng.uniform(-83.5, -82.4, 5)
+    lat = lat0[:, None] + rng.uniform(-0.2, 0.2, (5, 4))
+    lon = lon0[:, None] + rng.uniform(-0.2, 0.2, (5, 4))
+    e, n = latlon_to_enu(lat, lon, lat0[:, None], lon0[:, None])
+    for i in range(5):
+        es, ns = latlon_to_enu(lat[i], lon[i], lat0[i], lon0[i])
+        assert np.allclose(e[i], es)
+        assert np.allclose(n[i], ns)
+    lat2, lon2 = enu_to_latlon(e, n, lat0[:, None], lon0[:, None])
+    assert np.allclose(lat2, lat, atol=1e-8)
+    assert np.allclose(lon2, lon, atol=1e-8)

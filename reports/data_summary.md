@@ -1,36 +1,36 @@
 # Data summary
 
-Days processed: **4**. Clean points: **188,246**. Distinct vessels: **258**. Voyages: **714**.
+Days processed: **7**. Clean points: **327,832**. Distinct vessels: **312**. Voyages: **1,184**.
 
 ## Cleaning
 
 | step | rows |
 |---|---:|
-| rows_in | 188,480 |
+| rows_in | 328,071 |
 | dropped_null_keys | 0 |
 | dropped_invalid_mmsi | 231 |
-| dropped_duplicates | 3 |
-| nulled_sog | 1,713 |
-| nulled_cog | 27,794 |
-| nulled_heading | 82,617 |
+| dropped_duplicates | 8 |
+| nulled_sog | 4,036 |
+| nulled_cog | 48,782 |
+| nulled_heading | 143,134 |
 | flagged_spikes | 0 |
-| rows_out | 188,246 |
+| rows_out | 327,832 |
 
 ## Usable voyages by split
 
 | split | voyages | vessels | points | hours |
 |---|---:|---:|---:|---:|
-| train | 385 | 229 | 187,223 | 6,332 |
+| train | 655 | 283 | 326,106 | 10,807 |
 
 ## Usable voyages by vessel group
 
 | group | voyages | vessels | points |
 |---|---:|---:|---:|
-| tug_tow | 53 | 37 | 52,601 |
-| cargo | 65 | 51 | 44,338 |
-| pleasure | 144 | 81 | 31,759 |
-| passenger | 46 | 20 | 28,063 |
-| other | 33 | 19 | 12,599 |
-| tanker | 13 | 10 | 10,458 |
-| unknown | 29 | 10 | 7,338 |
-| fishing | 2 | 1 | 67 |
+| tug_tow | 98 | 42 | 94,533 |
+| cargo | 108 | 65 | 77,118 |
+| pleasure | 250 | 109 | 53,286 |
+| passenger | 78 | 22 | 48,978 |
+| other | 49 | 20 | 19,989 |
+| tanker | 19 | 11 | 17,719 |
+| unknown | 45 | 12 | 14,110 |
+| fishing | 8 | 2 | 373 |
