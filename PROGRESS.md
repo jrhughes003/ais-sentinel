@@ -37,14 +37,15 @@
 
 **What didn't meet the pre-registered targets** (4 of 11 targets met; misses reported, not
 hidden):
-- **Tracking**, after three attempts, all reported (D15, D19, D20):
+- **Tracking**, after four attempts, all reported (D15, D19, D20, D21):
   - The final attempt recalibrated the simulator to real ship behaviour and fitted both
     filters' noise to real training data.
   - On real data the IMM is clearly the better predictor (−7.4 against −10.4 log-likelihood
     per fix), and its consistency improved from 0.9% to 1.6% (target 2–10%).
   - But in a realistic simulator a well-tuned Kalman filter follows gentle real manoeuvres
     just as well (both 1.4 m RMSE). The pre-registered margins over it are not met.
-  - The remaining straight-leg gap is two fixes right after 20-minute reporting gaps.
+  - Attempt 4 fixed the post-gap failure (IMM straight-leg RMSE 63.5 → 9.7 m). The CV-KF
+    is still slightly ahead in RMSE, with equal medians, so no obvious fix remains.
 - **Prediction:** a 15% gain at 120 min was the bar; the result was 9.5%.
 - **Anomalies:**
   - Gap recall was 0.85 against a 0.90 target. The reception mask deliberately ignores
@@ -54,8 +55,7 @@ hidden):
     stops working.
 
 **Suggested next steps:**
-1. **Tracking:** done (D20). The one remaining known fix: re-initialise immediately when the
-   first fix after a long gap fails the gate. That would need fresh evaluation seeds.
+1. **Tracking:** done (D21). The post-gap restart was applied in attempt 4 on fresh seeds.
 2. **Deviation detector:** commercial-only lane density, a relative threshold, and
    tolerance for short interruptions. Evaluate on a *new* test month, since October has
    now been seen.
@@ -117,11 +117,15 @@ Test results are also reported for vessels never seen in training.
   - the anomaly miss diagnosis, in DECISIONS D18.
 
 ## Next up
+- **v2 run on a fresh test month (October 2024), D21.** Code, config and data are ready.
+  The owner runs `scripts
+un_v2.ps1` overnight. Afterwards: export the v2 site data
+  alongside v1, then update README/PROGRESS with the v2 results (v1 stays published).
 - See "Suggested next steps" above. Any change to the deviation detector or the models needs
   a fresh test period (October has been used).
 
 ## Blocked / needs my input
-- (none). Tracking attempt 3 is done (D20); iteration stopped per the three-attempt guardrail.
+- (none). Tracking attempt 4 is done (D21); iteration stopped, no obvious fix left.
 - FYI: a helper Claude session ("diag-d6") reported clearing temp files outside this project
   (WSL crash dumps, swap vhdx). This session did not do or request that.
 
@@ -198,3 +202,13 @@ Test results are also reported for vessels never seen in training.
   - fixed a likelihood loophole (unscored restarts);
   - conservative best-of-two CV baseline;
   - fresh seeds 2000–2199. Results in D20.
+
+### 2026-10-06
+- Tracking attempt 4 (D21): post-gap restart and repeat skipping, recalibrated, fresh seeds
+  3000–3199. IMM straight-leg RMSE improved from 63.5 to 9.7 m, but all three simulation
+  criteria are still not met. Real NIS is pending, in the overnight run.
+- Anomaly detectors tuned on September (`anomaly-tune`). The owner picked the
+  "modest budget" operating point: gap recall 0.84 → 0.90, deviation recall 0.45 → 0.70.
+- Downloaded October 2024 (Zstandard csv2) as a fresh, never-seen test month. Added
+  `configs/v2.yaml` and `scripts/run_v2.ps1`. The v2 build ran; the remaining stages were
+  stopped at the owner's request, to run overnight.

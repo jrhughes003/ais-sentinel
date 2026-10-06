@@ -18,8 +18,12 @@ region:
 
 download:
   url_template: "https://coast.noaa.gov/htdata/CMSP/AISDataHandler/{year}/AIS_{year}_{month:02d}_{day:02d}.zip"
+  url_templates:           # per-year formats (2024+ is Zstandard-compressed "csv2")
+    2024: "https://noaaocm.blob.core.windows.net/ais/csv2/csv{year}/ais-{year}-{month:02d}-{day:02d}.csv.zst"
   start: 2023-05-01
   end: 2023-10-31          # inclusive
+  extra_ranges:            # v2 locked test month, one year later (D21)
+    - [2024-10-01, 2024-10-31]
   pause_seconds: 5         # politeness delay between files
   timeout_seconds: 600
   keep_raw: false
@@ -44,15 +48,15 @@ tracking:
   # one-step predictive likelihood on training voyages; edge values were confirmed by a
   # local refinement. Earlier simulation-tuned values: reports/tracking_attempt1.md, D19.
   cv:
-    q_accel: 1.0e-04         # white-noise acceleration PSD [m^2/s^3]
+    q_accel: 3.0e-05         # white-noise acceleration PSD [m^2/s^3]
     r_pos_m: 5.0            # position measurement std [m]
     gate_prob: 0.9999       # chi-square outlier gate
   imm:
-    r_pos_m: 0.75
+    r_pos_m: 1.5
     q_stationary: 1.0e-04
     tau_stationary_s: 30.0
-    q_cruise: 5.0e-04
-    q_turn: 0.05
+    q_cruise: 1.0e-04
+    q_turn: 0.02
     q_omega: 2.0e-08
     sojourn_s: [1800.0, 600.0, 300.0]
     clutter_density: 5.0e-11  # outlier density per m^2 (likelihood-ratio test)
@@ -64,7 +68,7 @@ tracking:
     tune_seeds: [0, 50]
     # Attempt 3 (D20): "fixed" mode evaluates the real-data-calibrated simulator and filter
     # parameters unchanged on fresh seeds. Attempt 1 used seeds 100-300, attempt 2 1000-1200.
-    eval_seeds: [2000, 2200]
+    eval_seeds: [3000, 3200]  # attempt 4 (D21); attempt 3 used 2000-2200
     mode: fixed
     calibration_file: reports/tracking_calibration.json
   calibration:               # tracking/calibrate.py (training split only)

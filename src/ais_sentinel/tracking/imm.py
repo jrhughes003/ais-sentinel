@@ -37,7 +37,7 @@ from dataclasses import dataclass, field
 import numpy as np
 from numpy.typing import NDArray
 
-from ais_sentinel.tracking.kf import FilterResult, gap_noise, two_point_velocity
+from ais_sentinel.tracking.kf import FilterResult, gap_noise, post_gap_restart, two_point_velocity
 from ais_sentinel.tracking.models import (
     ct_predict,
     ct_process_noise,
@@ -78,6 +78,8 @@ class IMMParams:
     clutter_density: float = 5e-11  # per m²: outlier prior / area, e.g. 0.005 / (10 km)²
     gap_q: float = 0.0  # extra acceleration PSD on steps longer than gap_s (see kf.gap_noise)
     gap_s: float = 180.0
+    gap_reinit_s: float = 300.0  # restart if the first fix after a longer gap fails the test
+    skip_repeats: bool = True  # a repeated identical coordinate is not a new measurement
     max_consecutive_rejects: int = 2
 
 
@@ -216,6 +218,15 @@ def run_imm(
             xps[j], Pps[j], Fs[j] = predict_mode(j, x0, P0, dt, params)
         out_xp[i], out_Pp[i] = mixture_moments(c, xps, Pps)
         out_F[i] = np.einsum("m,mij->ij", c, Fs)  # effective linearisation for smoothing
+        if params.skip_repeats and np.array_equal(z[i], z[i - 1]):
+            # Repeated coordinate: no new measurement, so coast (see CVParams.skip_repeats).
+            xs, Ps, mu = xps, Pps, c
+            accepted[i] = True
+            out_x[i], out_P[i] = mixture_moments(mu, xs, Ps)
+            out_mu[i] = mu
+            if i in snap_pos:
+                snap_x[snap_pos[i]], snap_P[snap_pos[i]] = xs, Ps
+            continue
         nu = z[i] - out_xp[i][:2]
         S = out_Pp[i][:2, :2] + R
         nis[i] = float(nu @ np.linalg.solve(S, nu))
@@ -236,6 +247,16 @@ def run_imm(
             w = np.exp(w - w.max())
             mu = w / w.sum()
             accepted[i] = True
+            rejects = 0
+        elif post_gap_restart(dt, params):
+            # First fix after a long silence fails the outlier test: restart here (D21).
+            v0 = vel_at(i)
+            if v0 is not None and np.all(np.isfinite(v0)):
+                xs, Ps, mu = _init(z[i], v0, params)
+            else:
+                xs, Ps, mu = _init(z[i], None, params)
+                xs[:, 2:4] = out_xp[i][2:4]  # rough velocity guess, wide uncertainty
+            reinit[i] = accepted[i] = True
             rejects = 0
         else:
             xs, Ps, mu = xps, Pps, c

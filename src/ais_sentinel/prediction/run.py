@@ -488,9 +488,10 @@ def _append_holdout_log(
     met_c: bool,
     n: int,
 ) -> None:
-    path = Path(cfg.paths.reports) / "holdout_runs.md"
+    # One shared log for every locked test (v1: Oct 2023, v2: Oct 2024).
+    path = Path(str(cfg.paths.get("holdout_log", Path(cfg.paths.reports) / "holdout_runs.md")))
     header = (
-        "# Locked test runs\n\nEach row is one evaluation of the locked October 2023 test split. "
+        "# Locked test runs\n\nEach row is one evaluation of a locked test split. "
         "Rows are appended, never edited.\n\n"
         "| date (UTC) | commit | config | samples | best ML | Δ60 vs best baseline | Δ120 "
         "| cov90 (ML) | "
@@ -501,7 +502,8 @@ def _append_holdout_log(
     v = {60: na, 120: na, **{x["horizon"]: x for x in verdict}}
     text += (
         f"| {datetime.now(UTC).isoformat(timespec='minutes')} | {_git_hash()} | {cfg.hash()} "
-        f"| {n:,} | {best_ml} | {100 * v[60]['rel']:+.1f}% | {100 * v[120]['rel']:+.1f}% "
+        f"| {n:,} (test {cfg.splits['test'][0]}–{cfg.splits['test'][1]}) | {best_ml} "
+        f"| {100 * v[60]['rel']:+.1f}% | {100 * v[120]['rel']:+.1f}% "
         f"| {', '.join(f'{c:.2f}' for c in cov)} | "
         f"{'met' if met_p else 'not met'} | {'met' if met_c else 'not met'} |\n"
     )

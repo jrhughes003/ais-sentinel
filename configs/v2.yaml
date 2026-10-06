@@ -1,0 +1,30 @@
+# v2 (DECISIONS D21): same pipeline and train/validation months, improved tracker and
+# anomaly rules, larger ML training budget, scored once on a NEW locked test month one year
+# later (October 2024). v1 results (locked October 2023) stay published unchanged.
+extends: default.yaml
+
+paths:
+  processed: data/v2/processed
+  reports: reports/v2
+  models: models/v2
+  holdout_log: reports/holdout_runs.md   # one shared log of every locked test
+
+splits:
+  test: [2024-10-02, 2024-10-31]
+
+prediction:
+  ml:
+    max_epochs: 40      # v1 stopped at 20 with validation loss still falling (D16, D21)
+    patience: 4
+
+anomaly:
+  # Operating point chosen by the owner from the September trade-off table
+  # (reports/anomaly_tuning.md, D21): more recall for a modest rise in alarms.
+  context:
+    traffic_groups: [cargo, fishing, passenger, tanker, tug_tow]   # commercial lane model
+  gap:
+    min_reception: 0.7
+  deviation:
+    max_cell_voyages: 2
+    bridge_min: 3.0
+    skip_groups: [fishing]   # fishing boats work grounds off the lanes by design

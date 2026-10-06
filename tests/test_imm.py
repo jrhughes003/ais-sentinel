@@ -127,9 +127,50 @@ def test_gap_noise_accepts_first_fix_after_unseen_turn() -> None:
     z = truth + rng.normal(0, 5, truth.shape)
     k = 30  # first fix after the gap
     for run in (run_cv_filter, run_imm):
-        base = CVParams(q_accel=0.003) if run is run_cv_filter else IMMParams()
+        # Restart rule off, so this tests the gap-noise mechanism alone.
+        base = (
+            CVParams(q_accel=0.003, gap_reinit_s=0.0)
+            if run is run_cv_filter
+            else IMMParams(gap_reinit_s=0.0)
+        )
         off = run(t, z, base)
         on = run(t, z, replace(base, gap_q=0.3))
         assert not off.accepted[k], run.__name__
         assert on.accepted[k], run.__name__
         assert np.hypot(*(on.x[k, :2] - truth[k])) < 0.2 * np.hypot(*(off.x[k, :2] - truth[k]))
+
+
+def _turn_during_gap() -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    rng = np.random.default_rng(3)
+    t = np.concatenate([np.arange(30) * 60.0, 30 * 60.0 + 900 + np.arange(20) * 60.0])
+    truth = np.zeros((len(t), 2))
+    for i, ti in enumerate(t):
+        truth[i] = (
+            [5.0 * ti, 0.0] if ti <= 29 * 60 else [5.0 * 29 * 60 + 300.0, 5.0 * (ti - 29 * 60 - 60)]
+        )
+    return t, truth + rng.normal(0, 5, truth.shape), truth
+
+
+def test_post_gap_restart_uses_the_first_fix_after_an_unseen_turn() -> None:
+    t, z, truth = _turn_during_gap()
+    k = 30
+    for run, base in ((run_cv_filter, CVParams(q_accel=0.003)), (run_imm, IMMParams())):
+        on = run(t, z, base)  # gap_reinit_s = 300 by default
+        off = run(t, z, replace(base, gap_reinit_s=0.0))
+        assert on.reinit[k] and on.accepted[k], run.__name__
+        assert np.hypot(*(on.x[k, :2] - truth[k])) < 30  # restarted at the measured fix
+        assert np.hypot(*(off.x[k, :2] - truth[k])) > 1000  # old behaviour: coasted far off
+
+
+def test_repeated_identical_fix_is_not_a_measurement() -> None:
+    t = np.arange(20) * 60.0
+    z = np.zeros((20, 2))
+    z[10:] = [0.4, -0.3]  # a moored vessel's reported position steps once, then repeats
+    for run, base in ((run_cv_filter, CVParams()), (run_imm, IMMParams())):
+        res = run(t, z, base)
+        assert np.isnan(res.nis[11:]).all(), run.__name__  # repeats: no NIS
+        assert np.isnan(res.loglik[11:]).all()
+        assert np.isfinite(res.nis[10])  # the genuinely new fix is used
+        assert res.accepted.all()
+        legacy = run(t, z, replace(base, skip_repeats=False))
+        assert np.isfinite(legacy.nis[11:]).all()

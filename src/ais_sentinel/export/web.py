@@ -354,7 +354,8 @@ def results_payload(
                 }
             )
     nis = (
-        _read_json(rep / "tracking_nis_attempt3.json")
+        _read_json(rep / "tracking_nis_attempt4.json")
+        or _read_json(rep / "tracking_nis_attempt3.json")
         or _read_json(rep / "tracking_nis_attempt2.json")
         or _read_json(rep / "tracking_nis.json")
     )

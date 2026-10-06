@@ -201,12 +201,17 @@ def injection_study(
     n_per_type: int,
     seed: int,
     min_voyage_min: float = 120.0,
+    split: str = "test",
+    types: tuple[str, ...] = TYPES,
 ) -> list[dict[str, Any]]:
-    """Inject anomalies into test-period commercial voyages and score the detectors."""
+    """Inject anomalies into commercial voyages of ``split`` and score the detectors.
+
+    Use ``split="val"`` for tuning, so the locked test period is only used for the final score.
+    """
     rng = np.random.default_rng(seed)
     region = dict(det.cfg.region)
     pool = voyages.filter(
-        (pl.col("split") == "test")
+        (pl.col("split") == split)
         & pl.col("usable")
         & pl.col("vessel_group").is_in(sorted(COMMERCIAL))
         & (pl.col("moving_frac") >= 0.5)
@@ -219,7 +224,7 @@ def injection_study(
         for v in points.filter(pl.col("voyage_id").is_in(pool)).partition_by("voyage_id")
     }
     results: list[dict[str, Any]] = []
-    for kind in TYPES:
+    for kind in types:
         done = attempts = 0
         while done < n_per_type and attempts < n_per_type * 20:
             attempts += 1

@@ -52,9 +52,9 @@ Against the strongest baseline (kNN), the ML model chosen on validation (M2) is:
 | Area | Criterion | Result | Met? |
 |---|---|---|---|
 | Data | Reproducible pipeline; DQ tests; ≥ 5 M rows | 11.09 M rows; leakage and DQ tests pass | ✅ |
-| Tracking | IMM ≥ 20% lower RMSE than tuned CV-KF in manoeuvres (simulation) | −0.4%: both 1.4 m in a simulator calibrated to real ships (attempt 3; earlier −0.6%, 7.1%) | ❌ |
-| Tracking | IMM no more than 10% worse on straights | +5,678%, from 2 post-gap fixes of 24 k (medians equal; attempt 2: +0.2%) | ❌ |
-| Tracking | NEES inside the 95% band for ≥ 80% of steps | 1% (attempt 2: 8%) | ❌ |
+| Tracking | IMM ≥ 20% lower RMSE than tuned CV-KF in manoeuvres (simulation) | CV-KF 4.5 m vs IMM 9.0 m in a simulator calibrated to real ships; medians equal (attempt 4; earlier −0.4%, −0.6%, 7.1%) | ❌ |
+| Tracking | IMM no more than 10% worse on straights | +33% (7.3 vs 9.7 m; medians equal) after the post-gap restart fix (attempt 3: +5,678%) | ❌ |
+| Tracking | NEES inside the 95% band for ≥ 80% of steps | 17% (attempt 3: 1%) | ❌ |
 | Tracking | Real NIS: 2–10% above the 95% threshold | 1.6%, up from 0.9% after fitting noise to real data | ❌ |
 | Prediction | ML beats best baseline at 60 & 120 min, ≥ 15% at 120 | significant at both, but −9.5% at 120 | ❌ |
 | Prediction | 90% coverage within 85–95% at every horizon | 0.89–0.91 | ✅ |
@@ -67,7 +67,7 @@ Against the strongest baseline (kNN), the ML model chosen on validation (M2) is:
 | Site | All views; desktop + mobile; 0 serious axe violations; ≤ 2 MB initial load | 26 Playwright tests pass | ✅ |
 | Engineering | CI green; ≥ 85% coverage on core modules | 80 tests, 95% coverage | ✅ |
 
-**Tracking had three attempts, all reported** (DECISIONS D15, D19, D20). The final one fitted
+**Tracking had four attempts, all reported** (DECISIONS D15, D19, D20, D21). The final one fitted
 the simulator and both filters to real ship behaviour.
 - On real data, the IMM predicts each next fix far better than a Kalman filter (mean
   log-likelihood −7.4 against −10.4 per fix).

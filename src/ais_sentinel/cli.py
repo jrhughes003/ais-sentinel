@@ -35,9 +35,10 @@ def _stages() -> dict[str, Stage]:
 def _explicit_stages() -> dict[str, Stage]:
     """Stages excluded from ``run-all``. The locked test is run deliberately, once per model
     version, never as a side effect of reproducing the pipeline."""
+    from ais_sentinel.anomaly import tune as anomaly_tune
     from ais_sentinel.prediction import run as prediction
 
-    return {"holdout": prediction.holdout_stage}
+    return {"holdout": prediction.holdout_stage, "anomaly-tune": anomaly_tune.stage}
 
 
 def main(argv: list[str] | None = None) -> None:

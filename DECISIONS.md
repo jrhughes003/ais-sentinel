@@ -249,3 +249,57 @@ long gap fails the gate.
 **Scope:** the config holds the attempt-3 parameters. The site's tracks and the locked-test
 prediction baselines B1/B2 use the attempt-1 tracker. The attempt-1 and attempt-2 reports
 are kept in `reports/`.
+
+## D21 — Tracking attempt 4 and a v2 evaluation on a fresh test month (2026-10-06)
+
+**Context:** the owner asked whether the missed targets were fixable. They are happy to report
+misses, as long as no obvious fix is left untried. Two obvious fixes were left:
+- the tracker's post-gap failure (D20);
+- the gap and route-deviation detectors (PROGRESS, "Suggested next steps").
+
+October 2023 had already been used as the locked test, so the changed detectors and models
+need a test month that has never been looked at.
+
+**Tracking attempt 4** (owner-authorised; a fourth attempt is a logged exception to the
+three-attempt guardrail):
+- **Post-gap restart.** When the first fix after a gap of more than 300 s fails the gate,
+  the filter re-initialises at that fix, instead of rejecting it and coasting.
+- **Repeats skipped.** A fix whose position is identical to the one before it is treated as
+  "no new measurement": predict only, no update, no NIS.
+- Both filters were recalibrated on real training data. Restart fixes are scored, so a stiff
+  filter cannot hide its misses (test in `tests/test_calibrate.py`).
+- Evaluated on fresh simulator seeds 3000–3199, with the best-of-two CV-KF baseline (D20).
+
+**Attempt-4 results (simulation):**
+- The IMM's straight-leg RMSE fell from 63.5 m to 9.7 m, but the CV-KF is at 7.3 m: **+33%,
+  not met**.
+- Manoeuvres: CV-KF 4.5 m, IMM 9.0 m. **Not met.**
+- Medians and 95th percentiles are equal (1.7–1.8 m and 3.5–3.7 m). The RMSE differences
+  come from a handful of tail fixes.
+- NEES: 17% of steps in band, up from 1%. **Not met.**
+- Real-data NIS for attempt 4 is pending (`scripts/nis_val.py`, part of the overnight run).
+
+**Conclusion:** no obvious tracking fix remains. In a simulator calibrated to real ships, the
+manoeuvres are gentle enough that a well-tuned constant-velocity filter is as accurate as the
+IMM, and the IMM's advantage shows up in real-data predictive likelihood instead. Tracking
+iteration stops here.
+
+**v2 evaluation design:**
+- **Test month:** October 2024. MarineCadastre's 2024 files are Zstandard `csv2`, with a
+  different column order; the downloader and schema normaliser handle both formats.
+- **Train and validation months:** unchanged (May–August and September 2023).
+- **Configuration:** everything lives in `configs/v2.yaml` (it extends the default). v2
+  outputs go to `data/v2`, `reports/v2` and `models/v2`. v1 results stay published alongside.
+- **Detectors tuned on September only** (`ais-sentinel anomaly-tune`,
+  `reports/anomaly_tuning.md`). The rule is to maximise recall subject to precision ≥ 0.9.
+  The owner chose the "modest budget" operating point:
+  - **Gap:** reception mask 0.7, up from 0.8. September recall 0.84 → 0.90, base alarm
+    rate 1.78 → 2.00 per 1,000 commercial vessel-hours.
+  - **Route deviation:** a lane model from commercial traffic only, ≤ 2 voyages per cell,
+    3-minute bridging of short interruptions, fishing vessels skipped. September recall
+    0.45 → 0.70, base alarm rate 1.5 → 5.6 per 1,000 h.
+  - This deviation setting breaks the tuning rule's "base rate no higher than v1" cap.
+    The owner accepted that trade explicitly, and it is reported as such.
+- **Prediction models** are retrained under v2: same architecture, 40 epochs, patience 4.
+  They are evaluated once on October 2024 by the `holdout` stage, which appends a row to
+  `reports/holdout_runs.md`.

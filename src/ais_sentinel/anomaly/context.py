@@ -112,8 +112,14 @@ def learn_context(
     port_min_vessel_hours: float = 12.0,
     port_min_vessels: int = 3,
     course_min_fixes: int = 20,
+    traffic_groups: list[str] | None = None,
 ) -> Context:
-    """Learn reception, port and traffic grids from training-split points."""
+    """Learn reception, port and traffic grids from training-split points.
+
+    ``traffic_groups`` limits the lane model (traffic density and course histograms) to
+    those vessel groups. With all traffic, pleasure craft roaming the lakes make almost
+    every cell look "used", so deviations become undetectable (v1 recall 0.47, D18).
+    """
     p = train_points.sort("mmsi", "t")
     lat, lon = p["lat"].to_numpy(), p["lon"].to_numpy()
     t = p["t"].dt.epoch("us").to_numpy() / 1e6
@@ -161,6 +167,8 @@ def learn_context(
     # Traffic: distinct voyages and course histogram of moving fixes per cell.
     tg = Grid(ref_lat, ref_lon, traffic_cell_m)
     moving = sog >= 2.0
+    if traffic_groups is not None and "vessel_group" in p.columns:
+        moving &= np.isin(p["vessel_group"].fill_null("unknown").to_numpy(), traffic_groups)
     cells_m = tg.cells(lat[moving], lon[moving])
     vids = p["voyage_id"].to_numpy()[moving] if "voyage_id" in p.columns else mmsi[moving]
     tdf = (

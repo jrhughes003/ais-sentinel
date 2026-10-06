@@ -126,6 +126,22 @@ def _runs(
     return runs
 
 
+def _bridge(
+    flag: NDArray[np.bool_], same_vessel: NDArray[np.bool_], t: NDArray[np.float64], max_s: float
+) -> NDArray[np.bool_]:
+    """Fill unflagged stretches of at most ``max_s`` seconds between flagged fixes."""
+    out = flag.copy()
+    last = -1  # index of the last flagged fix of the current vessel
+    for i in range(len(flag)):
+        if i > 0 and not same_vessel[i]:
+            last = -1
+        if flag[i]:
+            if last >= 0 and last < i - 1 and t[i] - t[last] <= max_s:
+                out[last + 1 : i] = True
+            last = i
+    return out
+
+
 # --------------------------------------------------------------------------- jumps
 
 
@@ -268,12 +284,23 @@ def detect_route_deviation(
     min_cell_voyages_for_course: int = 10,
     min_minutes: float = 10.0,
     max_gap_min: float = 5.0,
+    skip_groups: tuple[str, ...] | list[str] = (),
+    bridge_min: float = 0.0,
 ) -> pl.DataFrame:
-    """Sustained travel through rarely-used water, or against the usual direction of traffic."""
+    """Sustained travel through rarely-used water, or against the usual direction of traffic.
+
+    ``skip_groups`` lists vessel groups the rule does not apply to. Fishing boats, for
+    example, work grounds away from the lanes by design. ``bridge_min`` tolerates brief
+    interruptions: unflagged stretches of at most that many minutes between flagged fixes
+    of the same vessel count as part of the run, so one busier cell does not split an
+    excursion (v2, DECISIONS D21).
+    """
     p = points.sort("mmsi", "t")
     a = _arrays(p)
     same = np.concatenate([[False], a["mmsi"][1:] == a["mmsi"][:-1]])
     moving = np.nan_to_num(a["sog"], nan=0.0) >= min_sog_kn
+    if skip_groups:
+        moving &= ~np.isin(a["group"], list(skip_groups))
     dens, prob = ctx.traffic_at(a["lat"], a["lon"], a["cog"])
     off_lane = moving & (dens <= max_cell_voyages)
     wrong_way = (
@@ -282,6 +309,8 @@ def detect_route_deviation(
         & (np.nan_to_num(prob, nan=1.0) < min_course_prob)
     )
     flag = off_lane | wrong_way
+    if bridge_min > 0:
+        flag = _bridge(flag, same, a["t"], bridge_min * 60)
     rows: list[dict[str, object]] = []
     for i0, i1 in _runs(flag, same, a["t"], max_gap_min * 60):
         minutes = (a["t"][i1] - a["t"][i0]) / 60

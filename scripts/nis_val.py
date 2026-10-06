@@ -1,6 +1,6 @@
 """Real-data NIS consistency on the validation split with the current tracking config.
 
-Re-filters validation voyages only and writes reports/tracking_nis_attempt3.json. It does
+Re-filters validation voyages only and writes reports/tracking_nis_attempt4.json. It does
 NOT overwrite data/processed/tracks.parquet or filter_states.parquet, which the locked
 prediction test and the website were produced with (attempt-1 tracker, DECISIONS D19/D20).
 
@@ -47,7 +47,7 @@ def main() -> None:
     )
     nodup = dup.filter(~pl.col("rep").fill_null(False) & pl.col("accepted"))["nis"].drop_nans()
     res["imm_no_repeats_frac_above_95"] = float((nodup > 5.991).mean())  # type: ignore[arg-type]
-    write_text(Path(cfg.paths.reports) / "tracking_nis_attempt3.json", json.dumps(res, indent=1))
+    write_text(Path(cfg.paths.reports) / "tracking_nis_attempt4.json", json.dumps(res, indent=1))
     print(res["criterion"], res["imm_no_repeats_frac_above_95"])
 
 

@@ -179,7 +179,8 @@ def _setup_text(res: dict[str, Any]) -> str:
     if res.get("mode") == "fixed":
         sc = res["sim_config"]
         return (
-            "**Attempt 3 (fixed mode).** Simulator calibrated to real AIS behaviour, and both "
+            "**Fixed mode (attempt 4: post-gap restart, repeats skipped; DECISIONS D21).** "
+            "Simulator calibrated to real AIS behaviour, and both "
             "filters' noise chosen by one-step predictive likelihood on real training data "
             "(reports/tracking_calibration.md). Nothing was tuned in simulation. "
             f"Evaluation seeds: {ev}, never used before. Simulated ships turn log-uniformly at "

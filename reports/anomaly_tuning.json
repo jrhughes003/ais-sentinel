@@ -1,0 +1,188 @@
+{
+ "gap": {
+  "v1": {
+   "params": {
+    "min_reception": 0.8
+   },
+   "precision": 1.0,
+   "recall": 0.8369565217391305,
+   "n": 92,
+   "base_rate_per_1000h": 1.7822223498821492
+  },
+  "candidates": [
+   {
+    "params": {
+     "min_reception": 0.5
+    },
+    "precision": 1.0,
+    "recall": 0.9239130434782609,
+    "n": 92,
+    "base_rate_per_1000h": 2.6376890778255806,
+    "eligible": false
+   },
+   {
+    "params": {
+     "min_reception": 0.6
+    },
+    "precision": 1.0,
+    "recall": 0.9239130434782609,
+    "n": 92,
+    "base_rate_per_1000h": 2.566400183830295,
+    "eligible": false
+   },
+   {
+    "params": {
+     "min_reception": 0.7
+    },
+    "precision": 1.0,
+    "recall": 0.9021739130434783,
+    "n": 92,
+    "base_rate_per_1000h": 1.9960890318680071,
+    "eligible": false
+   },
+   {
+    "params": {
+     "min_reception": 0.8
+    },
+    "precision": 1.0,
+    "recall": 0.8369565217391305,
+    "n": 92,
+    "base_rate_per_1000h": 1.7822223498821492,
+    "eligible": true
+   }
+  ],
+  "chosen": {
+   "params": {
+    "min_reception": 0.8
+   },
+   "precision": 1.0,
+   "recall": 0.8369565217391305,
+   "n": 92,
+   "base_rate_per_1000h": 1.7822223498821492,
+   "eligible": true
+  }
+ },
+ "deviation": {
+  "v1": {
+   "params": {
+    "traffic_groups": "all",
+    "max_cell_voyages": 2,
+    "bridge_min": 0.0
+   },
+   "precision": 1.0,
+   "recall": 0.45454545454545453,
+   "n": 88,
+   "base_rate_per_1000h": 1.4970667739010053
+  },
+  "candidates": [
+   {
+    "params": {
+     "traffic_groups": "all",
+     "max_cell_voyages": 2,
+     "bridge_min": 0.0
+    },
+    "precision": 1.0,
+    "recall": 0.45454545454545453,
+    "n": 88,
+    "base_rate_per_1000h": 1.1406223039245755,
+    "eligible": true
+   },
+   {
+    "params": {
+     "traffic_groups": "all",
+     "max_cell_voyages": 2,
+     "bridge_min": 3.0
+    },
+    "precision": 1.0,
+    "recall": 0.5,
+    "n": 88,
+    "base_rate_per_1000h": 1.5327112208986482,
+    "eligible": false
+   },
+   {
+    "params": {
+     "traffic_groups": "all",
+     "max_cell_voyages": 5,
+     "bridge_min": 0.0
+    },
+    "precision": 1.0,
+    "recall": 0.5340909090909091,
+    "n": 88,
+    "base_rate_per_1000h": 2.566400183830295,
+    "eligible": false
+   },
+   {
+    "params": {
+     "traffic_groups": "all",
+     "max_cell_voyages": 5,
+     "bridge_min": 3.0
+    },
+    "precision": 1.0,
+    "recall": 0.5681818181818182,
+    "n": 88,
+    "base_rate_per_1000h": 3.3505780177784406,
+    "eligible": false
+   },
+   {
+    "params": {
+     "traffic_groups": "commercial",
+     "max_cell_voyages": 2,
+     "bridge_min": 0.0
+    },
+    "precision": 1.0,
+    "recall": 0.6590909090909091,
+    "n": 88,
+    "base_rate_per_1000h": 4.562489215698302,
+    "eligible": false
+   },
+   {
+    "params": {
+     "traffic_groups": "commercial",
+     "max_cell_voyages": 2,
+     "bridge_min": 3.0
+    },
+    "precision": 1.0,
+    "recall": 0.7045454545454546,
+    "n": 88,
+    "base_rate_per_1000h": 5.596178178629948,
+    "eligible": false
+   },
+   {
+    "params": {
+     "traffic_groups": "commercial",
+     "max_cell_voyages": 5,
+     "bridge_min": 0.0
+    },
+    "precision": 1.0,
+    "recall": 0.7272727272727273,
+    "n": 88,
+    "base_rate_per_1000h": 6.986311611538024,
+    "eligible": false
+   },
+   {
+    "params": {
+     "traffic_groups": "commercial",
+     "max_cell_voyages": 5,
+     "bridge_min": 3.0
+    },
+    "precision": 1.0,
+    "recall": 0.7840909090909091,
+    "n": 88,
+    "base_rate_per_1000h": 8.1269339154626,
+    "eligible": false
+   }
+  ],
+  "chosen": {
+   "params": {
+    "traffic_groups": "all",
+    "max_cell_voyages": 2,
+    "bridge_min": 0.0
+   },
+   "precision": 1.0,
+   "recall": 0.45454545454545453,
+   "n": 88,
+   "base_rate_per_1000h": 1.1406223039245755,
+   "eligible": true
+  }
+ }
+}

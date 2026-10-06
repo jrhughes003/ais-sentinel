@@ -45,6 +45,11 @@ class CVParams:
     gap_q: float = 0.0
     """Extra acceleration PSD (m²/s³) on steps longer than ``gap_s``; 0 disables it."""
     gap_s: float = 180.0
+    gap_reinit_s: float = 300.0
+    """If the first fix after a gap longer than this fails the gate, restart from it at once
+    (after minutes unseen, a far-off fix is likelier a manoeuvre than an outlier). 0 = off."""
+    skip_repeats: bool = True
+    """Treat a fix identical to the previous one as no new measurement (predict only)."""
 
 
 def gap_noise(dt: float, params: CVParams | object) -> float:
@@ -59,6 +64,12 @@ def gap_noise(dt: float, params: CVParams | object) -> float:
     """
     gq = float(getattr(params, "gap_q", 0.0))
     return gq if gq > 0 and dt > float(getattr(params, "gap_s", 180.0)) else 0.0
+
+
+def post_gap_restart(dt: float, params: object) -> bool:
+    """True when a gate failure after a gap of ``dt`` seconds should trigger a restart."""
+    g = float(getattr(params, "gap_reinit_s", 0.0))
+    return g > 0 and dt > g
 
 
 def two_point_velocity(t: Array, z: Array, i: int) -> Array:
@@ -139,6 +150,13 @@ def run_cv_filter(
         x_pred = F @ x
         P_pred = F @ P @ F.T + cv_process_noise(dt, params.q_accel + gap_noise(dt, params))
         Fs[i], xps[i], Pps[i] = F, x_pred, P_pred
+        if params.skip_repeats and np.array_equal(z[i], z[i - 1]):
+            # A repeated coordinate (mostly moored vessels) is not an independent
+            # measurement: coast, without NIS or likelihood (DECISIONS D21).
+            x, P = x_pred, P_pred
+            accepted[i] = True
+            xs[i], Ps[i] = x, P
+            continue
         nu = z[i] - H_POS @ x_pred
         S = H_POS @ P_pred @ H_POS.T + R
         S_inv = np.linalg.inv(S)
@@ -151,6 +169,18 @@ def run_cv_filter(
             IKH = np.eye(4) - K @ H_POS
             P = IKH @ P_pred @ IKH.T + K @ R @ K.T
             accepted[i] = True
+            rejects = 0
+        elif post_gap_restart(dt, params):
+            # First fix after a long silence fails the gate: the vessel most likely manoeuvred
+            # unseen. Restart here instead of coasting on a stale prediction (D21).
+            v0 = vel_at(i)
+            if v0 is not None and np.all(np.isfinite(v0)):
+                x, P = initial_state(z[i], v0, params)  # reported SOG/COG
+            else:
+                # Keep the old velocity as a rough guess, with wide (init_vel_std) uncertainty.
+                x, P = initial_state(z[i], None, params)
+                x[2:] = x_pred[2:4]
+            reinit[i] = accepted[i] = True
             rejects = 0
         else:
             x, P = x_pred, P_pred

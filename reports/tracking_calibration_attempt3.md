@@ -13,9 +13,9 @@ Real manoeuvre statistics from 1,806,374 one-minute steps of moving commercial t
 | median report interval (s) | 70 | 70 |
 | share of gaps > 3 min | 0.53% | p_burst 0.0053 |
 | outlier share | 0.04% | 0.05% |
-| position noise σ (m) | – | 1.5 (IMM's likelihood-chosen R) |
+| position noise σ (m) | – | 0.75 (IMM's likelihood-chosen R) |
 
 ## Chosen filter noise (max predictive log-likelihood)
 
-- CV-KF: `{"q_accel": 3e-05, "r_pos_m": 5.0, "gap_q": 0.0}`
-- IMM: `{"q_cruise": 0.0001, "q_turn": 0.02, "q_omega": 2e-08, "r_pos_m": 1.5, "gap_q": 0.0}`
+- CV-KF: `{"q_accel": 0.0001, "r_pos_m": 5.0, "gap_q": 0.0}`
+- IMM: `{"q_cruise": 0.0005, "q_turn": 0.05, "q_omega": 2e-08, "r_pos_m": 0.75, "gap_q": 0.0}`

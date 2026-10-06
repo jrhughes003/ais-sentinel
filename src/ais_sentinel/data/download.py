@@ -104,8 +104,40 @@ def save_manifest(cfg: Config, manifest: dict[str, DayRecord]) -> None:
 
 
 def url_for(cfg: Config, day: date) -> str:
-    """Fill the URL template for a given day."""
-    return str(cfg.download.url_template).format(year=day.year, month=day.month, day=day.day)
+    """Fill the URL template for a given day.
+
+    ``download.url_templates`` (year -> template) overrides ``download.url_template``.
+    MarineCadastre publishes 2023 and earlier as zipped CSV, and 2024 onward as
+    Zstandard-compressed CSV ("csv2"), whose schema :mod:`ais_sentinel.data.schema`
+    normalises.
+    """
+    templates = dict(cfg.download.get("url_templates") or {})
+    tpl = templates.get(day.year, templates.get(str(day.year), cfg.download.url_template))
+    return str(tpl).format(year=day.year, month=day.month, day=day.day)
+
+
+def configured_days(cfg: Config) -> list[date]:
+    """All days to process: ``download.start``–``end`` plus any ``download.extra_ranges``."""
+    days = daterange(as_date(cfg.download.start), as_date(cfg.download.end))
+    for a, b in cfg.download.get("extra_ranges") or []:
+        days += daterange(as_date(a), as_date(b))
+    return sorted(set(days))
+
+
+def _extract_csv(raw: Path, tmpdir: str) -> Path:
+    """Unpack a daily file (zip or .zst) to a CSV in ``tmpdir``."""
+    if raw.suffix == ".zst":
+        import zstandard
+
+        out = Path(tmpdir) / raw.with_suffix("").name
+        with raw.open("rb") as src, out.open("wb") as dst:
+            zstandard.ZstdDecompressor().copy_stream(src, dst)
+        return out
+    with zipfile.ZipFile(raw) as zf:
+        members = [m for m in zf.namelist() if m.lower().endswith(".csv")]
+        if len(members) != 1:
+            raise ValueError(f"{raw}: expected one CSV member, found {members}")
+        return Path(zf.extract(members[0], tmpdir))
 
 
 def fetch(url: str, dest: Path, timeout: float) -> int:
@@ -169,11 +201,7 @@ def process_day(cfg: Config, day: date, bbox: BBox) -> DayRecord:
     zip_path = raw_zip_path(cfg, day)
     t0 = time.perf_counter()
     with tempfile.TemporaryDirectory(dir=zip_path.parent) as tmpdir:
-        with zipfile.ZipFile(zip_path) as zf:
-            members = [m for m in zf.namelist() if m.lower().endswith(".csv")]
-            if len(members) != 1:
-                raise ValueError(f"{zip_path}: expected one CSV member, found {members}")
-            csv_path = Path(zf.extract(members[0], tmpdir))
+        csv_path = _extract_csv(zip_path, tmpdir)
         n_total, n_aoi = filter_csv_to_aoi(csv_path, interim_path(cfg, day), bbox)
     if not cfg.download.keep_raw:
         zip_path.unlink(missing_ok=True)
@@ -210,7 +238,7 @@ def run_download(cfg: Config, days: list[date] | None = None) -> dict[str, DayRe
     """
     bbox = BBox.from_config(cfg)
     if days is None:
-        days = daterange(as_date(cfg.download.start), as_date(cfg.download.end))
+        days = configured_days(cfg)
     manifest = load_manifest(cfg)
     todo = [d for d in days if d.isoformat() not in manifest or not interim_path(cfg, d).exists()]
     log.info("%d of %d days to process", len(todo), len(days))
