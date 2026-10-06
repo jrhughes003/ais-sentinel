@@ -22,6 +22,7 @@ import json
 import logging
 import os
 from concurrent.futures import ProcessPoolExecutor
+from multiprocessing import get_context
 from pathlib import Path
 from typing import Any
 
@@ -177,7 +178,9 @@ def track_all(
     if workers == 1:
         results = [_worker(j) for j in jobs]
     else:
-        with ProcessPoolExecutor(max_workers=workers) as pool:
+        # "spawn", never "fork": forking after polars/torch have started their thread pools
+        # can deadlock (the Linux default). Windows always spawns.
+        with ProcessPoolExecutor(max_workers=workers, mp_context=get_context("spawn")) as pool:
             results = list(pool.map(_worker, jobs))
     tracks = pl.concat([r[0] for r in results]).sort("voyage_id", "t")
     snaps = pl.concat([r[1] for r in results if r[1] is not None]).sort("voyage_id", "t0")
