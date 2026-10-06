@@ -302,8 +302,10 @@ def detect_route_deviation(
         )
         if kind == "off-lane":
             why = (
-                f"Travelled {minutes:.0f} min ({dist_km:.1f} km) through water where at most "
-                f"{int(np.max(dens[sl]))} training voyages ever passed (500 m cells)."
+                f"Travelled {minutes:.0f} min ({dist_km:.1f} km) off the usual lanes: "
+                f"{100 * float(off_lane[sl].mean()):.0f}% of its fixes were in 500 m cells that at "
+                f"most {max_cell_voyages} training voyages ever crossed (median "
+                f"{float(np.median(dens[sl])):.0f} voyages per cell along this stretch)."
             )
         else:
             why = (

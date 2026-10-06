@@ -52,8 +52,8 @@ export async function render(root: HTMLElement): Promise<void> {
   if (want && data.samples.some((s) => s.id === want)) select.value = want;
   const map = await createMap($(root, "#map"), data.region, data.attribution);
   for (const id of ["ell", "hist", "future", "pred", "predpts", "anchor"]) setData(map, id, fc([]));
-  map.addLayer({ id: "ell", type: "fill", source: "ell", paint: { "fill-color": ["get", "color"], "fill-opacity": 0.14 } });
-  map.addLayer({ id: "ell-line", type: "line", source: "ell", paint: { "line-color": ["get", "color"], "line-width": 1.2 } });
+  map.addLayer({ id: "ell", type: "fill", source: "ell", paint: { "fill-color": ["get", "color"], "fill-opacity": 0.07 } });
+  map.addLayer({ id: "ell-line", type: "line", source: "ell", paint: { "line-color": ["get", "color"], "line-width": 1.6 } });
   map.addLayer({ id: "hist", type: "line", source: "hist", paint: { "line-color": "#5b6878", "line-width": 3 } });
   map.addLayer({ id: "future", type: "line", source: "future", paint: { "line-color": "#16202c", "line-width": 3, "line-dasharray": [2, 1.5] } });
   map.addLayer({ id: "pred", type: "line", source: "pred", paint: { "line-color": ["get", "color"], "line-width": 2.5 } });

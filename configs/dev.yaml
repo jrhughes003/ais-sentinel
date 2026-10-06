@@ -23,3 +23,9 @@ prediction:
 anomaly:
   eval:
     n_per_type: 80
+
+export:
+  note: >-
+    Development preview: these numbers come from a short early-season run (train May 1–24,
+    validate May 26–31, test June 2–10). Final results on the full May–October dataset with
+    the locked October test are pending.

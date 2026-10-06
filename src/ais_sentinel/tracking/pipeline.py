@@ -18,6 +18,7 @@ Voyages are independent, so they are processed in parallel worker processes.
 
 from __future__ import annotations
 
+import json
 import logging
 import os
 from concurrent.futures import ProcessPoolExecutor
@@ -29,6 +30,7 @@ import polars as pl
 
 from ais_sentinel.config import Config
 from ais_sentinel.geo import enu_to_latlon, latlon_to_enu, sog_cog_to_enu_velocity
+from ais_sentinel.io import write_text
 from ais_sentinel.prediction.samples import anchor_indices
 from ais_sentinel.tracking.imm import IMMParams, run_imm
 from ais_sentinel.tracking.kf import CVParams, rts_smooth, run_cv_filter
@@ -182,6 +184,37 @@ def track_all(
     return tracks, snaps
 
 
+def nis_consistency(
+    tracks: pl.DataFrame, voyages: pl.DataFrame, split: str = "val"
+) -> dict[str, Any]:
+    """Real-data consistency check (PLAN §9.2): NIS distribution on one split.
+
+    For a consistent filter, NIS ~ χ²(2). So about 5% of values should exceed
+    χ²₂(0.95) = 5.991, and the mean should be about 2. Fixes rejected as outliers are
+    excluded, because their NIS is large by construction.
+    """
+    ids = voyages.filter(pl.col("split") == split)["voyage_id"].implode()
+    t = tracks.filter(pl.col("voyage_id").is_in(ids))
+    out: dict[str, Any] = {"split": split}
+    for name, nis_col, acc_col in (("cv", "f_nis", "f_accepted"), ("imm", "nis", "accepted")):
+        v = t.filter(pl.col(acc_col))[nis_col].drop_nans().drop_nulls().to_numpy()
+        out[name] = {
+            "n": int(v.size),
+            "mean": float(np.mean(v)) if v.size else float("nan"),
+            "median": float(np.median(v)) if v.size else float("nan"),
+            "frac_above_95": float(np.mean(v > 5.991)) if v.size else float("nan"),
+            "rejected_frac": float(1 - t[acc_col].mean()) if t.height else float("nan"),  # type: ignore[operator]
+        }
+    frac = out["imm"]["frac_above_95"]
+    out["criterion"] = {
+        "name": "Real-data NIS: share above the 95% χ² threshold (IMM, validation)",
+        "target": "between 2% and 10%",
+        "result": f"{100 * frac:.1f}% (CV-KF {100 * out['cv']['frac_above_95']:.1f}%)",
+        "met": bool(0.02 <= frac <= 0.10),
+    }
+    return out
+
+
 def stage(cfg: Config) -> None:
     """CLI stage: track all usable voyages; write tracks and anchor filter states."""
     base = Path(cfg.paths.processed)
@@ -197,6 +230,9 @@ def stage(cfg: Config) -> None:
     )
     tracks.write_parquet(base / "tracks.parquet", compression="zstd")
     snaps.write_parquet(base / "filter_states.parquet", compression="zstd")
+    consistency = nis_consistency(tracks, pl.read_parquet(base / "voyages.parquet"))
+    write_text(Path(cfg.paths.reports) / "tracking_nis.json", json.dumps(consistency, indent=1))
+    log.info("NIS consistency (val): %s", consistency["criterion"]["result"])
     for name, nis_col, acc_col in (("cv", "f_nis", "f_accepted"), ("imm", "nis", "accepted")):
         nis = tracks[nis_col].drop_nans().drop_nulls()
         log.info(

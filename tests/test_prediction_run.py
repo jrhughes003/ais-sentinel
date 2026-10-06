@@ -99,3 +99,10 @@ def test_anomaly_stage_end_to_end(tmp_cfg: Config) -> None:
     assert "Success criteria" in md
     assert "| jump |" in md
     assert (Path(tmp_cfg.paths.processed) / "anomalies.parquet").exists()
+    import json
+
+    ev = json.loads((Path(tmp_cfg.paths.reports) / "anomaly_eval.json").read_text(encoding="utf-8"))
+    kinds = {r["type"] for r in ev["injections"]}
+    # Every anomaly type must actually receive injections (an eligibility bug once left
+    # gap and deviation with none, silently).
+    assert kinds == {"gap", "jump", "loiter", "deviation", "rendezvous"}

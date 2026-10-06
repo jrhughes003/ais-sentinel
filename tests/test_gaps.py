@@ -49,6 +49,11 @@ def test_gap_spanning_missing_data_day_is_ignored() -> None:
         lon=pl.lit(-83.0)  # keep it inside the AOI; only the timing matters here
     )  # resumes 2 days later
     ok_days = {date(2023, 7, 1), date(2023, 7, 3)}  # 2023-07-02 missing from our download
-    assert detect_gaps(pts, REGION, available_days=ok_days).height == 0
+    assert detect_gaps(pts, REGION, available_days=ok_days, max_gap_h=72).height == 0
     all_days = ok_days | {date(2023, 7, 2)}
-    assert detect_gaps(pts, REGION, available_days=all_days).height == 1
+    assert detect_gaps(pts, REGION, available_days=all_days, max_gap_h=72).height == 1
+
+
+def test_multi_day_silence_is_parked_not_dark() -> None:
+    pts = track(316000001, [0, 1, 2, 60 * 30, 60 * 30 + 1]).with_columns(lon=pl.lit(-83.0))
+    assert detect_gaps(pts, REGION, max_gap_h=24).height == 0  # 30 h > cap

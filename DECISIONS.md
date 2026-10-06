@@ -102,3 +102,17 @@ therefore decided by luck on rare events, and the result swings between runs.
 - The PLAN §9.2 criteria are **kept unchanged**. The current result is reported as not met.
 - Median and p95 errors are reported alongside RMSE, and there the IMM is equal or better.
 - See PROGRESS "Blocked" for the options.
+
+### D16 — ML compute budget: smaller ensembles, sparser training anchors (2026-10-06)
+On the dev run, one GRU epoch took about 30 s per 112 k samples on the 4-core CPU. The PLAN
+setup would take about 10 h on the full training months: anchors every 3 min, a 5-seed
+Gaussian plus 3-seed MDN ensemble, up to 30 epochs.
+
+Changes:
+- Training anchors every **6 min**. Adjacent anchors overlap almost entirely in history and
+  future, so little information is lost.
+- **3** Gaussian and **2** MDN ensemble members.
+- At most **20 epochs**, patience 3.
+
+The budget is now about 1.5 h. This changes the *method*, not any success target. The
+ensemble size is reported in the results.

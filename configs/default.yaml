@@ -66,24 +66,24 @@ prediction:
   anchor_every_min: 10      # evaluation anchors (val/test)
   min_sog_kn: 2.0           # evaluate underway vessels only (DECISIONS D9)
   n_boot: 1000
-  knn:                      # tuned on validation
-    pos_scale_m: [300, 600, 1200]
-    course_scale_deg: [15, 30]
-    k: [10, 30]
+  knn:                      # tuned on validation (dev run picked the old grid's edges: widened)
+    pos_scale_m: [600, 1200, 2500]
+    course_scale_deg: [20, 30, 45]
+    k: [20, 40, 80]
   ml:
-    train_anchor_every_min: 3
+    train_anchor_every_min: 6   # compute budget (DECISIONS D16)
     hidden: 64
     layers: 1
     mlp: 128
     dropout: 0.1
     lr: 0.002
     batch: 512
-    max_epochs: 30
-    patience: 4
+    max_epochs: 20
+    patience: 3
     threads: 4
     mdn_components: 3
-    seeds_gaussian: [0, 1, 2, 3, 4]
-    seeds_mdn: [0, 1, 2]
+    seeds_gaussian: [0, 1, 2]
+    seeds_mdn: [0, 1]
 
 anomaly:
   context:                 # learned from the training split
@@ -98,6 +98,7 @@ anomaly:
     min_sog_kn: 1.0
     edge_buffer_km: 3.0
     min_reception: 0.8     # both ends must be in cells with >= 80% normal reception
+    max_gap_h: 24.0        # longer silences are parked vessels, not "going dark" in transit
   jump:
     min_jump_m: 1000.0
     abs_kn: 40.0

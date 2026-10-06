@@ -64,8 +64,8 @@ LABELS = {
     "imm": "B2 IMM",
     "imm_switching": "B2' IMM (switching)",
     "knn_route": "B3 kNN route",
-    "gru": "M1 GRU (Gaussian, 5-seed ensemble)",
-    "gru_mdn": "M2 GRU (mixture, 3-seed ensemble)",
+    "gru": "M1 GRU (Gaussian ensemble)",
+    "gru_mdn": "M2 GRU (mixture ensemble)",
 }
 
 
@@ -285,7 +285,7 @@ def evaluate_stage(cfg: Config) -> None:
     d = _model_dir(cfg)
     write_text(d / "choices.json", json.dumps(choices, indent=1, default=str))
     lines = [
-        "# Prediction: validation results (Sep 2–30, 2023)",
+        f"# Prediction: validation results ({cfg.splits['val'][0]} – {cfg.splits['val'][1]})",
         "",
         f"Validation samples: {val.height:,} anchors (underway, SOG ≥ {pc.min_sog_kn} kn). "
         f"ML training samples: {train_s.height:,}. Covariances are calibrated per model and "
@@ -406,7 +406,7 @@ def holdout_stage(cfg: Config) -> None:
     met_cov = all(0.85 <= c <= 0.95 for c in cov_ml)
 
     lines = [
-        "# Prediction: locked test results (Oct 2–31, 2023)",
+        f"# Prediction: locked test results ({cfg.splits['test'][0]} – {cfg.splits['test'][1]})",
         "",
         f"Run at {datetime.now(UTC).isoformat(timespec='seconds')} (commit `{_git_hash()}`, config "
         f"`{cfg.hash()}`). Test samples: {test.height:,}. Models, kNN settings, IMM variant and "

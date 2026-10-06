@@ -52,6 +52,8 @@ def detect_gaps(
     available_days: Collection[date] | None = None,
     ctx: Context | None = None,
     min_reception: float = 0.8,
+    max_gap_h: float = 24.0,
+    home_cells: dict[int, set[int]] | None = None,
 ) -> pl.DataFrame:
     """Return one row per detected gap event.
 
@@ -61,6 +63,14 @@ def detect_gaps(
     ``available_days`` is the set of UTC days actually present in the dataset. A silence
     spanning a day with no data is a hole in *our* data, not the vessel going dark, so such
     candidates are discarded. If None, every day is assumed available.
+
+    With a context, a silence is treated as *parked* (and ignored) when it starts or ends
+    in a port/anchorage zone or at the vessel's own habitual mooring (``home_cells``), *and*
+    its implied speed across the silence is under a quarter of its reported speed. A
+    vessel tied up at its dock with a stale last speed is parked, not dark. Port zones alone
+    are not enough, because in narrow rivers dock cells overlap the shipping channel.
+    Silences longer than ``max_gap_h`` are ignored for the same reason: going dark in this
+    sense happens in transit.
     """
     p = points.sort("mmsi", "t").select("mmsi", "t", "lat", "lon", "sog_kn", "vessel_group")
     nxt = {c: pl.col(c).shift(-1).over("mmsi") for c in ("t", "lat", "lon", "sog_kn")}
@@ -97,6 +107,30 @@ def detect_gaps(
     )
     if available_days is not None:
         events = events.filter(_span_is_covered(events, set(available_days)))
+    events = events.filter(pl.col("gap_min") <= max_gap_h * 60)
+    if ctx is not None and events.height:
+        homes = home_cells or {}
+        parked = []
+        cols = (
+            "mmsi",
+            "lat_start",
+            "lon_start",
+            "lat_end",
+            "lon_end",
+            "implied_kn",
+            "sog_start",
+            "sog_end",
+        )
+        for r in events.select(cols).iter_rows():
+            lat = np.array([r[1], r[3]])
+            lon = np.array([r[2], r[4]])
+            cells = ctx.port_grid.cells(lat, lon)
+            own = homes.get(int(r[0]), set())
+            at_berth = bool(ctx.in_port(lat, lon).any() or any(int(c) in own for c in cells))
+            # Hardly moved during the silence, compared with its reported speed: it was tied up.
+            stood_still = r[5] < 0.25 * min(float(r[6] or 0.0), float(r[7] or 0.0))
+            parked.append(at_berth and stood_still)
+        events = events.filter(~pl.Series(parked, dtype=pl.Boolean))
     if ctx is not None and events.height:
         rec0 = ctx.reception_at(events["lat_start"].to_numpy(), events["lon_start"].to_numpy())
         rec1 = ctx.reception_at(events["lat_end"].to_numpy(), events["lon_end"].to_numpy())
@@ -128,7 +162,14 @@ def detect_gaps(
         lat_end=pl.col("lat_end"),
         lon_end=pl.col("lon_end"),
         duration_min=pl.col("gap_min"),
-        score=pl.col("gap_min") / min_gap_min * pl.col("reception").fill_nan(1.0),
+        # Rank silences in transit first: weight by how far the vessel moved relative to its
+        # reported speed (a vessel that kept going while dark scores ~1; one that sat still ~0.1).
+        score=pl.col("gap_min")
+        / min_gap_min
+        * pl.col("reception").fill_nan(1.0)
+        * (
+            pl.col("implied_kn") / pl.min_horizontal("sog_start", "sog_end").clip(lower_bound=0.5)
+        ).clip(0.1, 1.0),
         explanation=pl.concat_str(
             [
                 pl.format(

@@ -13,6 +13,7 @@ export interface Meta {
   generated: string;
   attribution: string;
   region: Region;
+  note: string | null; // e.g. "development preview": shown prominently when present
 }
 
 export interface Voyage {

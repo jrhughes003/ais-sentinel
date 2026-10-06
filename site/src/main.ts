@@ -42,6 +42,12 @@ async function render(): Promise<void> {
     const mod = await route.load();
     main.innerHTML = "";
     await mod.render(main);
+    // Tables scroll horizontally on small screens: keyboard users must be able to scroll them.
+    for (const w of main.querySelectorAll<HTMLElement>(".table-wrap")) {
+      w.tabIndex = 0;
+      w.setAttribute("role", "region");
+      w.setAttribute("aria-label", "Data table");
+    }
   } catch (err) {
     console.error(err);
     main.innerHTML = `<div class="page"><div class="error-box" role="alert">Could not load this view: ${String(err)}</div></div>`;

@@ -123,9 +123,10 @@ main { flex: 1; width: 100%; }
 .hero { padding: 2.2rem 0 1rem; }
 .hero p.lead { font-size: 1.15rem; color: var(--muted); max-width: 52rem; }
 .hero .actions { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1.2rem; }
-.pill { display: inline-block; font-size: 0.78rem; font-weight: 600; padding: 0.12rem 0.55rem; border-radius: 999px; background: var(--accent-soft); color: var(--accent); }
-.pill.ok { background: color-mix(in srgb, var(--ok) 15%, transparent); color: var(--ok); }
-.pill.bad { background: color-mix(in srgb, var(--bad) 15%, transparent); color: var(--bad); }
+.pill { display: inline-block; white-space: nowrap; font-size: 0.78rem; font-weight: 600; padding: 0.12rem 0.55rem; border-radius: 999px; background: var(--accent-soft); color: var(--accent); }
+/* Solid status fills: white (light) / near-black (dark) text keeps >= 4.5:1 contrast. */
+.pill.ok { background: var(--ok); color: var(--accent-fg); }
+.pill.bad { background: var(--bad); color: var(--accent-fg); }
 table { border-collapse: collapse; width: 100%; font-size: 0.9rem; }
 th, td { text-align: left; padding: 0.45rem 0.6rem; border-bottom: 1px solid var(--line); vertical-align: top; }
 th { color: var(--muted); font-weight: 600; background: var(--bg-soft); }
@@ -147,8 +148,8 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
 .map > .maplibregl-map, .map > div.canvas-holder { position: absolute; inset: 0; }
 @media (max-width: 860px) {
   .mapview { grid-template-columns: 1fr; height: auto; }
-  .panel { border-right: none; border-bottom: 1px solid var(--line); max-height: none; }
-  .map { height: 62vh; }
+  .panel { border-right: none; border-top: 1px solid var(--line); max-height: none; }
+  .map { height: 58vh; order: -1; } /* map first on phones; controls below */
 }
 .legend { display: grid; gap: 0.3rem; font-size: 0.85rem; margin: 0.6rem 0; }
 .legend span { display: flex; align-items: center; gap: 0.5rem; }

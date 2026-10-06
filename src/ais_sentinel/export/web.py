@@ -78,7 +78,14 @@ def _meta(cfg: Config) -> dict[str, Any]:
         "generated": datetime.now(UTC).isoformat(timespec="seconds"),
         "attribution": ATTRIBUTION,
         "region": dict(cfg.region),
+        "note": cfg.export.get("note"),  # e.g. "development preview", shown as a banner
     }
+
+
+def _split_label(cfg: Config, split: str) -> str:
+    """Human label for a split, from the configured dates (never hard-coded)."""
+    d0, d1 = (str(x) for x in cfg.splits[split])
+    return f"{'locked test' if split == 'test' else 'validation'} period {d0} – {d1}"
 
 
 def _models() -> list[dict[str, str]]:
@@ -345,11 +352,14 @@ def results_payload(
                     "imm_p95": imm[seg]["p95_m"],
                 }
             )
+    nis = _read_json(rep / "tracking_nis.json")
+    if nis:
+        criteria.append({"area": "Tracking", **nis["criterion"]})
     test = _read_json(rep / "prediction_test.json")
     prediction = None
     verdict: list[dict[str, Any]] = []
     if test:
-        prediction = {"split": "locked test (October)", "rows": test["table"], "by_group": []}
+        prediction = {"split": _split_label(cfg, "test"), "rows": test["table"], "by_group": []}
         verdict = test["verdict"]
         criteria.append(
             {
@@ -469,7 +479,7 @@ def stage(cfg: Config) -> None:
             out / "predictions.json",
             {
                 **_meta(cfg),
-                "split": "locked test (October 2023)" if split == "test" else "validation",
+                "split": _split_label(cfg, split),
                 "horizons": horizons,
                 "models": _models(),
                 "samples": preds,

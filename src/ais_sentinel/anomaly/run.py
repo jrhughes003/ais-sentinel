@@ -100,6 +100,8 @@ class Detectors:
                 float(g["edge_buffer_km"]),
                 ctx=self.ctx,
                 min_reception=float(g["min_reception"]),
+                max_gap_h=float(g.get("max_gap_h", 24.0)),
+                home_cells=self.homes.cells,
             )
         if kind == "jump":
             return detect_jumps(pts, **dict(a["jump"]))
@@ -169,7 +171,8 @@ def _eligible_t0(
                 v["t"] <= t0 + span + timedelta(minutes=5)
             )
             w = win.to_numpy()
-            if sog[w].min(initial=0) < 3.0 or edge_km[w].min(initial=0) < 5.0:
+            # (Not .min(initial=0): numpy treats `initial` as an extra element.)
+            if not w.any() or sog[w].min() < 3.0 or edge_km[w].min() < 5.0:
                 continue
         elif kind in ("loiter", "rendezvous"):
             if sog[i] < 2.0 or ctx.in_port(lat[i : i + 1], lon[i : i + 1])[0] or edge_km[i] < 3.0:

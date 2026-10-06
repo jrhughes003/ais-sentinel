@@ -15,6 +15,7 @@ export async function render(root: HTMLElement): Promise<void> {
 
   root.innerHTML = `
   <div class="page">
+    ${r.note ? `<div class="callout" role="note"><strong>Note:</strong> ${esc(r.note)}</div>` : ""}
     <section class="hero">
       <span class="pill">Maritime domain awareness · public data</span>
       <h1>Where is that ship going, and is it behaving normally?</h1>
@@ -49,7 +50,7 @@ export async function render(root: HTMLElement): Promise<void> {
           uncertainty ellipse.</p>
           ${
             ml60 && dr60
-              ? `<p class="small muted">At 60 min on the locked test month: ${esc(label(mlId))} ${km(ml60.mean_km)} mean error vs
+              ? `<p class="small muted">At 60 min (${esc(r.prediction?.split ?? "")}): ${esc(label(mlId))} ${km(ml60.mean_km)} mean error vs
                  ${km(dr60.mean_km)} for straight-line dead reckoning.</p>`
               : ""
           }

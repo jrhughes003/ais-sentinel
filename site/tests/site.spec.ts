@@ -1,0 +1,75 @@
+import AxeBuilder from "@axe-core/playwright";
+import { expect, type Page, test } from "@playwright/test";
+
+const VIEWS = [
+  { hash: "#/", ready: "h1", text: "Where is that ship going" },
+  { hash: "#/tracks", ready: "#stats dd", text: "Vessel tracks" },
+  { hash: "#/predict", ready: "#errors tbody tr", text: "Predicted vs actual" },
+  { hash: "#/anomalies", ready: "#list li", text: "Flagged behaviour" },
+  { hash: "#/results", ready: "#criteria", text: "Results & methods" },
+];
+
+function collectErrors(page: Page): string[] {
+  const errors: string[] = [];
+  page.on("pageerror", (e) => errors.push(e.message));
+  page.on("console", (m) => {
+    // Basemap tiles are third-party; ignore network noise from them, keep our own errors.
+    if (m.type() === "error" && !/tiles\.openfreemap|Failed to load resource/.test(m.text())) errors.push(m.text());
+  });
+  return errors;
+}
+
+for (const v of VIEWS) {
+  test(`view ${v.hash} renders without errors`, async ({ page }, info) => {
+    const errors = collectErrors(page);
+    await page.goto(`./${v.hash}`);
+    await expect(page.locator(v.ready).first()).toBeAttached({ timeout: 30_000 });
+    await expect(page.locator("main")).toContainText(v.text);
+    await page.waitForTimeout(1500);
+    await page.screenshot({ path: `test-results/${info.project.name}-${v.hash.replace(/[#/]/g, "") || "home"}.png`, fullPage: false });
+    expect(errors).toEqual([]);
+  });
+
+  test(`view ${v.hash} has no serious accessibility violations`, async ({ page }) => {
+    await page.goto(`./${v.hash}`);
+    await expect(page.locator(v.ready).first()).toBeAttached({ timeout: 30_000 });
+    const results = await new AxeBuilder({ page })
+      .withTags(["wcag2a", "wcag2aa"])
+      .exclude(".maplibregl-canvas") // the WebGL canvas is described by its container's label
+      .exclude(".maplibregl-ctrl-attrib") // third-party attribution control
+      .analyze();
+    const bad = results.violations.filter((x) => x.impact === "serious" || x.impact === "critical");
+    expect(bad.map((x) => `${x.id}: ${x.nodes.map((n) => n.target.join(" ")).slice(0, 3).join(", ")}`)).toEqual([]);
+  });
+}
+
+test("keyboard navigation reaches every page", async ({ page }, info) => {
+  test.skip(info.project.name === "mobile", "menu is collapsed on mobile; covered by the menu test");
+  await page.goto("./#/");
+  for (const name of ["Tracks", "Predictions", "Anomalies", "Results & methods", "Overview"]) {
+    await page.getByRole("link", { name, exact: true }).focus();
+    await page.keyboard.press("Enter");
+    await expect(page.getByRole("link", { name, exact: true })).toHaveAttribute("aria-current", "page");
+  }
+});
+
+test("mobile menu opens and navigates", async ({ page }, info) => {
+  test.skip(info.project.name !== "mobile", "mobile only");
+  await page.goto("./#/");
+  await page.getByRole("button", { name: "Menu" }).click();
+  await page.getByRole("link", { name: "Anomalies" }).click();
+  await expect(page.locator("main")).toContainText("Flagged behaviour");
+});
+
+test("initial page weight is small", async ({ page }) => {
+  let bytes = 0;
+  page.on("response", async (r) => {
+    if (!r.url().startsWith("http://localhost")) return; // count our own assets only
+    const len = Number(r.headers()["content-length"] ?? 0);
+    bytes += len || (await r.body().catch(() => Buffer.alloc(0))).length;
+  });
+  await page.goto("./#/");
+  await expect(page.locator("h1")).toBeVisible();
+  await page.waitForLoadState("networkidle");
+  expect(bytes).toBeLessThan(2 * 1024 * 1024);
+});
