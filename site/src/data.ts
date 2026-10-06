@@ -123,6 +123,7 @@ export interface ResultsFile extends Meta {
   prediction: { split: string; rows: MetricRow[]; by_group: (MetricRow & { vessel_group: string })[] } | null;
   verdict: { horizon: number; best_baseline: string; diff_km: number; lo: number; hi: number; rel: number }[];
   tracking: { segment: string; cv_rmse: number; imm_rmse: number; cv_median: number; imm_median: number; cv_p95: number; imm_p95: number }[];
+  tracking_note: string | null;
   anomaly: { by_magnitude: { type: string; magnitude: number; n: number; precision: number; recall: number }[] } | null;
   criteria: Criterion[];
 }

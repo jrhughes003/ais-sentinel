@@ -37,7 +37,7 @@ from dataclasses import dataclass, field
 import numpy as np
 from numpy.typing import NDArray
 
-from ais_sentinel.tracking.kf import FilterResult, two_point_velocity
+from ais_sentinel.tracking.kf import FilterResult, gap_noise, two_point_velocity
 from ais_sentinel.tracking.models import (
     ct_predict,
     ct_process_noise,
@@ -76,6 +76,8 @@ class IMMParams:
     sogcog_vel_std: float = 0.5
     init_omega_std: float = float(np.radians(1.0))
     clutter_density: float = 5e-11  # per m²: outlier prior / area, e.g. 0.005 / (10 km)²
+    gap_q: float = 0.0  # extra acceleration PSD on steps longer than gap_s (see kf.gap_noise)
+    gap_s: float = 180.0
     max_consecutive_rejects: int = 2
 
 
@@ -112,6 +114,10 @@ def predict_mode(j: int, x: Array, P: Array, dt: float, p: IMMParams) -> tuple[A
     else:
         xp, F = ct_predict(x, dt)
         Q = ct_process_noise(dt, p.q_turn, p.q_omega)
+    extra = gap_noise(dt, p)
+    if extra:
+        Q = Q.copy()
+        Q[:4, :4] += cv_process_noise(dt, extra)  # same gap allowance in every mode
     return xp, F @ P @ F.T + Q, F
 
 

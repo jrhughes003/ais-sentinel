@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from dataclasses import replace
+
 import numpy as np
 from hypothesis import given, settings
 from hypothesis import strategies as st
@@ -109,3 +111,25 @@ def test_simulator_reproducible_and_aislike() -> None:
     clean = ~a.outlier
     resid = np.hypot(*(a.z[clean] - a.truth[clean, :2]).T)
     assert np.median(resid) < 10  # 5 m per-axis noise -> ~5.9 m median radial error
+
+
+def test_gap_noise_accepts_first_fix_after_unseen_turn() -> None:
+    """A ship turns 90 deg during a 15-minute gap: without gap noise the first fix after the
+    gap is rejected and the filter coasts on a wrong estimate; with it the fix is accepted."""
+    rng = np.random.default_rng(3)
+    t = np.concatenate([np.arange(30) * 60.0, 30 * 60.0 + 900 + np.arange(20) * 60.0])
+    truth = np.zeros((len(t), 2))
+    for i, ti in enumerate(t):
+        if ti <= 29 * 60:
+            truth[i] = [5.0 * ti, 0.0]  # east at 5 m/s
+        else:
+            truth[i] = [5.0 * 29 * 60 + 300.0, 5.0 * (ti - 29 * 60 - 60)]  # then north
+    z = truth + rng.normal(0, 5, truth.shape)
+    k = 30  # first fix after the gap
+    for run in (run_cv_filter, run_imm):
+        base = CVParams(q_accel=0.003) if run is run_cv_filter else IMMParams()
+        off = run(t, z, base)
+        on = run(t, z, replace(base, gap_q=0.3))
+        assert not off.accepted[k], run.__name__
+        assert on.accepted[k], run.__name__
+        assert np.hypot(*(on.x[k, :2] - truth[k])) < 0.2 * np.hypot(*(off.x[k, :2] - truth[k]))

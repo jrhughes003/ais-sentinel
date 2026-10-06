@@ -46,7 +46,7 @@ tracking:
     r_pos_m: 10.0            # position measurement std [m]
     gate_prob: 0.9999       # chi-square outlier gate
   imm:
-    r_pos_m: 10.0
+    r_pos_m: 5.0             # attempt 2 simulation tuning (D19); real-data value set below by calibration
     q_stationary: 0.0001
     tau_stationary_s: 30.0
     q_cruise: 0.002
@@ -54,11 +54,13 @@ tracking:
     q_omega: 2.0e-07
     sojourn_s: [1800.0, 600.0, 300.0]
     clutter_density: 5.0e-11  # outlier density per m^2 (likelihood-ratio test)
+    gap_q: 0.05            # gap-aware process noise on steps > gap_s (D19)
+    gap_s: 180.0
   gate_prob: 0.999         # default gate if a filter does not set its own
   max_consecutive_rejects: 2
   sim:                     # simulation study (tracking/sim_study.py); half-open seed ranges
     tune_seeds: [0, 50]
-    eval_seeds: [100, 300]
+    eval_seeds: [1000, 1200]  # attempt 2 uses fresh seeds; attempt 1 used 100-300 (D19)
 
 prediction:
   horizons_min: [15, 30, 60, 120]
@@ -130,3 +132,12 @@ export:
   n_predictions: 40        # seeded random draw of commercial test samples
   n_events_per_type: 15    # top-scoring commercial events per anomaly type
   case_studies: configs/case_studies.yaml
+  tracking_note: >-
+    Two attempts, both reported. Attempt 1 left the IMM far behind the Kalman filter on
+    RMSE, which was driven by a few catastrophic fixes after reporting gaps. Attempt 2 (the
+    numbers above) tuned measurement noise and added gap-aware process noise for both
+    filters, and was evaluated on fresh simulation seeds. The IMM now ties the Kalman
+    filter on straight legs and is 7% better in manoeuvres, short of the pre-registered 20%.
+    On real data both filters remain underconfident, because their process noise was tuned
+    on simulated manoeuvres harsher than real lakers make. The website's tracks and the
+    prediction baselines use the attempt-1 filter settings (DECISIONS D19).

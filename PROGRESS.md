@@ -35,14 +35,15 @@
     - a "rendezvous" that was really tug assistance;
     - a fishing boat that tripped the off-lane rule by working its grounds.
 
-**What didn't meet the pre-registered targets** (4 of 11 targets met; misses reported, not
+**What didn't meet the pre-registered targets** (5 of 11 targets met; misses reported, not
 hidden):
-- **Tracking.**
-  - The IMM did not beat the tuned Kalman filter on RMSE in simulation. Its *typical*
-    error is equal or better, but RMSE is decided by about 20 rare catastrophic fixes out of
-    36 k: coasting after a gap, or an outlier slipping in during a manoeuvre.
-  - Both filters are under-confident on real data. Many moored vessels repeat identical
-    positions, which pushes NIS towards zero.
+- **Tracking**, after two attempts, both reported (D15, D19):
+  - Attempt 2 tuned measurement noise and added gap-aware process noise for both filters,
+    evaluated on fresh simulation seeds. The IMM now **ties the Kalman filter on straight
+    legs** (target met) and is **7% better in manoeuvres**, short of the 20% target.
+  - On real data both filters remain underconfident (NIS 0.9% against 2–10%). The cause is
+    process noise tuned on simulated manoeuvres harsher than real lakers make. Measurement
+    noise turned out not to matter.
 - **Prediction:** a 15% gain at 120 min was the bar; the result was 9.5%.
 - **Anomalies:**
   - Gap recall was 0.85 against a 0.90 target. The reception mask deliberately ignores
@@ -52,8 +53,9 @@ hidden):
     stops working.
 
 **Suggested next steps:**
-1. **Tracking:** a track-confirmation step for fixes rejected after gaps, tuned on more
-   simulation seeds. Exclude repeated moored positions from NIS checks.
+1. **Tracking:** fit the process noise, or the simulator's manoeuvre statistics, to real data,
+   for example by maximising the one-step predictive likelihood on the training split. Then
+   re-run the simulation study on fresh seeds.
 2. **Deviation detector:** commercial-only lane density, a relative threshold, and
    tolerance for short interruptions. Evaluate on a *new* test month, since October has
    now been seen.
@@ -119,8 +121,8 @@ Test results are also reported for vessels never seen in training.
   a fresh test period (October has been used).
 
 ## Blocked / needs my input
-- **Tracking criterion (PLAN §9.2):** not met after 3 attempts; see D15. Options are listed in
-  the final summary. Your call whether to invest more time there.
+- (none). Tracking attempt 2 was done as agreed (D19). The next step is listed in the final
+  summary if you want to pursue it.
 - FYI: a helper Claude session ("diag-d6") reported clearing temp files outside this project
   (WSL crash dumps, swap vhdx). This session did not do or request that.
 
@@ -188,3 +190,7 @@ Test results are also reported for vessels never seen in training.
 - README results and screenshots added. Final summary written.
 - A partial source day (2023-10-29) was found with help from the helper session. Gaps
   touching it are excluded (D17).
+- Tracking attempt 2 (agreed with the owner):
+  - tuned measurement noise plus gap-aware process noise, on fresh seeds 1000–1199;
+  - straight-leg criterion now met, manoeuvre criterion 7.1% (target 20%);
+  - real-data noise calibration showed the underconfidence comes from process noise.

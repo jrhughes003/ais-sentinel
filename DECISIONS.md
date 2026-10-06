@@ -151,3 +151,45 @@ Analyses afterwards that change no reported number:
     tolerance.
   - It is **not** applied here. Re-scoring October after seeing its results would be tuning
     on the test set. A fix needs a fresh test period.
+
+### D19 — Tracking attempt 2: one bounded, pre-announced iteration (2026-10-06)
+Agreed with the owner: one principled attempt at the two diagnosed weaknesses, with the
+PLAN §9.2 targets **unchanged**, and the result reported either way.
+
+**Changes (offered to both filters equally, tuned on the same seeds 0–49):**
+- Measurement noise `r_pos_m` ∈ {5, 10} became a tuned parameter. Attempt 1 had fixed it at
+  10 m, double the simulator's true 5 m.
+- Gap-aware process noise `gap_q` ∈ {0, 0.05, 0.3}, i.e. extra acceleration noise on steps
+  longer than 3 min.
+- Evaluation moved to **fresh seeds 1000–1199**, because seeds 100–299 had been looked at.
+  Attempt-1 reports are kept as `reports/tracking_attempt1.*`.
+
+**Result:**
+
+| Criterion | Attempt 1 | Attempt 2 | Met? |
+|---|---:|---:|---|
+| IMM manoeuvre RMSE vs CV-KF | −0.6% | 7.1% lower | ❌ (target 20%) |
+| IMM straight-leg RMSE vs CV-KF | +168% | +0.2% | ✅ |
+| NEES in band | 1% | 8% | ❌ |
+| Real-data NIS above threshold | 0.9% | 0.9% | ❌ (2–10%) |
+
+**Attribution:**
+- Almost all of the gain came from correct measurement noise. The IMM chose 5 m.
+- Gap noise barely moved the tuning score (14.63 against 14.61 m), and larger values hurt.
+- The CV-KF kept q = 0.1, which already absorbs gaps.
+
+**Real-data finding** (`reports/r_calibration.md`, training split):
+- NIS is insensitive to the measurement noise over 1.5–10 m. The underconfidence comes
+  from **process noise** tuned on simulated manoeuvres that are harsher (up to 1°/s turns,
+  0.05 m/s² speed changes) than real lakers make.
+- The principled fix is to fit the simulator's manoeuvre statistics, or the process noise,
+  to real data, for example by maximising the one-step predictive likelihood on the
+  training split. That is left as the next step. It would be a second tuning iteration, not
+  part of this bounded attempt.
+
+**Scope:**
+- The default config now holds the attempt-2 IMM settings.
+- The website's tracks and the prediction baselines B1/B2 in the locked test were produced
+  with the attempt-1 settings (commit 303cd90). `tracks.parquet` was not regenerated, so
+  the locked test is untouched.
+- The validation NIS for attempt 2 was computed separately (`scripts/nis_val.py`).

@@ -111,16 +111,23 @@ def evaluate(kind: str, params: CVParams | IMMParams, tracks: list[SimTrack]) ->
     return out
 
 
+# Attempt 2 (DECISIONS D19): both filters get the same two new options, measurement noise
+# r_pos_m and gap-aware process noise gap_q. The IMM's sojourn times and clutter density
+# are fixed at the values attempt 1 chose on the same tuning seeds, to keep the grid small.
 CV_GRID: dict[str, list[float]] = {
-    "q_accel": [0.001, 0.003, 0.01, 0.03, 0.1, 0.3, 1.0],
+    "q_accel": [0.001, 0.003, 0.01, 0.03, 0.1, 0.3],
     "gate_prob": [0.999, 0.9999, 0.99999],
+    "r_pos_m": [5.0, 10.0],
+    "gap_q": [0.0, 0.05, 0.3],
 }
 IMM_GRID: dict[str, list[Any]] = {
     "q_cruise": [0.0005, 0.002],
     "q_turn": [0.01, 0.05, 0.2],
-    "q_omega": [2e-7, 2e-6, 2e-5],
-    "clutter_density": [1e-9, 5e-11, 1e-12],
-    "sojourn_s": [(1800.0, 900.0, 120.0), (1800.0, 600.0, 300.0)],
+    "q_omega": [2e-7, 2e-6],
+    "r_pos_m": [5.0, 10.0],
+    "gap_q": [0.0, 0.05, 0.3],
+    "sojourn_s": [(1800.0, 600.0, 300.0)],
+    "clutter_density": [5e-11],
 }
 
 

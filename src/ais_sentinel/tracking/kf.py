@@ -41,6 +41,23 @@ class CVParams:
     """Initial velocity standard deviation when initialised from SOG/COG (m/s)."""
     gate_prob: float = 0.999
     max_consecutive_rejects: int = 2
+    gap_q: float = 0.0
+    """Extra acceleration PSD (m²/s³) on steps longer than ``gap_s``; 0 disables it."""
+    gap_s: float = 180.0
+
+
+def gap_noise(dt: float, params: CVParams | object) -> float:
+    """Extra acceleration PSD for a step of ``dt`` seconds (gap-aware process noise).
+
+    During a reporting gap the vessel may manoeuvre unseen. The white-noise-acceleration
+    model with the cruising q badly underestimates how far it can then be from the
+    straight-line prediction, so the first fix after a gap fails the outlier test and the
+    filter coasts on a wrong estimate. That was the dominant RMSE failure in the
+    simulation study (DECISIONS D15, D19). Steps longer than ``gap_s`` therefore get
+    ``gap_q`` of additional acceleration noise.
+    """
+    gq = float(getattr(params, "gap_q", 0.0))
+    return gq if gq > 0 and dt > float(getattr(params, "gap_s", 180.0)) else 0.0
 
 
 def two_point_velocity(t: Array, z: Array, i: int) -> Array:
@@ -114,7 +131,7 @@ def run_cv_filter(
         dt = float(t[i] - t[i - 1])
         F = cv_transition(dt)
         x_pred = F @ x
-        P_pred = F @ P @ F.T + cv_process_noise(dt, params.q_accel)
+        P_pred = F @ P @ F.T + cv_process_noise(dt, params.q_accel + gap_noise(dt, params))
         Fs[i], xps[i], Pps[i] = F, x_pred, P_pred
         nu = z[i] - H_POS @ x_pred
         S = H_POS @ P_pred @ H_POS.T + R

@@ -353,7 +353,7 @@ def results_payload(
                     "imm_p95": imm[seg]["p95_m"],
                 }
             )
-    nis = _read_json(rep / "tracking_nis.json")
+    nis = _read_json(rep / "tracking_nis_attempt2.json") or _read_json(rep / "tracking_nis.json")
     if nis:
         criteria.append({"area": "Tracking", **nis["criterion"]})
     test = _read_json(rep / "prediction_test.json")
@@ -431,6 +431,7 @@ def results_payload(
         "prediction": prediction,
         "verdict": verdict,
         "tracking": tracking_rows,
+        "tracking_note": cfg.export.get("tracking_note"),
         "anomaly": anomaly,
         "criteria": criteria,
     }

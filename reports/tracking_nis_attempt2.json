@@ -1,0 +1,24 @@
+{
+ "split": "val",
+ "cv": {
+  "n": 1889864,
+  "mean": 0.06226736843917985,
+  "median": 0.00019752133566811167,
+  "frac_above_95": 0.0020594074494249322,
+  "rejected_frac": 0.00114762105742372
+ },
+ "imm": {
+  "n": 1892768,
+  "mean": 0.4276340170707476,
+  "median": 0.004020169493794535,
+  "frac_above_95": 0.009143223046881603,
+  "rejected_frac": 0.000306137664996875
+ },
+ "criterion": {
+  "name": "Real-data NIS: share above the 95% \u03c7\u00b2 threshold (IMM, validation)",
+  "target": "between 2% and 10%",
+  "result": "0.9% (CV-KF 0.2%)",
+  "met": false
+ },
+ "imm_no_repeats_frac_above_95": 0.010898092282487122
+}

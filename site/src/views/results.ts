@@ -93,7 +93,8 @@ export async function render(root: HTMLElement): Promise<void> {
         .join("")}</tbody></table></div>
     <p class="small muted">RMSE is dominated by a handful of rare events (a fix rejected right after a
     reporting gap, or an outlier admitted during a manoeuvre); the median and 95th percentile show
-    typical behaviour. See DECISIONS.md D15.</p>
+    typical behaviour. See DECISIONS.md D15 and D19.</p>
+    ${r.tracking_note ? `<div class="callout small" role="note">${esc(r.tracking_note)}</div>` : ""}
 
     <h2 id="anomaly">Anomaly detection (synthetic injection)</h2>
     <p>Anomalies with known ground truth were injected into real test-month voyages at a range of

@@ -52,10 +52,10 @@ Against the strongest baseline (kNN), the ML model chosen on validation (M2) is:
 | Area | Criterion | Result | Met? |
 |---|---|---|---|
 | Data | Reproducible pipeline; DQ tests; ≥ 5 M rows | 11.09 M rows; leakage and DQ tests pass | ✅ |
-| Tracking | IMM ≥ 20% lower RMSE than tuned CV-KF in manoeuvres (simulation) | −0.6% | ❌ |
-| Tracking | IMM no more than 10% worse on straights | +168% | ❌ |
-| Tracking | NEES inside the 95% band for ≥ 80% of steps | 1% | ❌ |
-| Tracking | Real NIS: 2–10% above the 95% threshold | 0.9% (underconfident) | ❌ |
+| Tracking | IMM ≥ 20% lower RMSE than tuned CV-KF in manoeuvres (simulation) | 7.1% lower (attempt 2; attempt 1: −0.6%) | ❌ |
+| Tracking | IMM no more than 10% worse on straights | +0.2% (attempt 2; attempt 1: +168%) | ✅ |
+| Tracking | NEES inside the 95% band for ≥ 80% of steps | 8% (attempt 1: 1%) | ❌ |
+| Tracking | Real NIS: 2–10% above the 95% threshold | 0.9% (underconfident; process noise, see D19) | ❌ |
 | Prediction | ML beats best baseline at 60 & 120 min, ≥ 15% at 120 | significant at both, but −9.5% at 120 | ❌ |
 | Prediction | 90% coverage within 85–95% at every horizon | 0.89–0.91 | ✅ |
 | Anomaly | Gap P ≥ 0.9 / R ≥ 0.9 | 1.00 / 0.85 | ❌ |
@@ -67,7 +67,9 @@ Against the strongest baseline (kNN), the ML model chosen on validation (M2) is:
 | Site | All views; desktop + mobile; 0 serious axe violations; ≤ 2 MB initial load | 26 Playwright tests pass | ✅ |
 | Engineering | CI green; ≥ 85% coverage on core modules | 80 tests, 95% coverage | ✅ |
 
-Misses are explained, not hidden. Details are in
+Tracking had two attempts, both reported. The second was one bounded iteration, agreed in
+advance and evaluated on fresh simulation seeds (DECISIONS D19). Misses are explained, not
+hidden. Details are in
 [PROGRESS.md](PROGRESS.md#final-summary) and the reports:
 [prediction](reports/prediction_test.md), [tracking](reports/tracking.md),
 [anomaly](reports/anomaly.md).
