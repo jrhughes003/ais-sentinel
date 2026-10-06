@@ -38,3 +38,4 @@ site/playwright-report/
 Thumbs.db
 .vscode/
 .idea/
+logs/
