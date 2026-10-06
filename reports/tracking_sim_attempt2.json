@@ -1,0 +1,5306 @@
+{
+ "tune_seeds": [
+  0,
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9,
+  10,
+  11,
+  12,
+  13,
+  14,
+  15,
+  16,
+  17,
+  18,
+  19,
+  20,
+  21,
+  22,
+  23,
+  24,
+  25,
+  26,
+  27,
+  28,
+  29,
+  30,
+  31,
+  32,
+  33,
+  34,
+  35,
+  36,
+  37,
+  38,
+  39,
+  40,
+  41,
+  42,
+  43,
+  44,
+  45,
+  46,
+  47,
+  48,
+  49
+ ],
+ "eval_seeds": [
+  1000,
+  1001,
+  1002,
+  1003,
+  1004,
+  1005,
+  1006,
+  1007,
+  1008,
+  1009,
+  1010,
+  1011,
+  1012,
+  1013,
+  1014,
+  1015,
+  1016,
+  1017,
+  1018,
+  1019,
+  1020,
+  1021,
+  1022,
+  1023,
+  1024,
+  1025,
+  1026,
+  1027,
+  1028,
+  1029,
+  1030,
+  1031,
+  1032,
+  1033,
+  1034,
+  1035,
+  1036,
+  1037,
+  1038,
+  1039,
+  1040,
+  1041,
+  1042,
+  1043,
+  1044,
+  1045,
+  1046,
+  1047,
+  1048,
+  1049,
+  1050,
+  1051,
+  1052,
+  1053,
+  1054,
+  1055,
+  1056,
+  1057,
+  1058,
+  1059,
+  1060,
+  1061,
+  1062,
+  1063,
+  1064,
+  1065,
+  1066,
+  1067,
+  1068,
+  1069,
+  1070,
+  1071,
+  1072,
+  1073,
+  1074,
+  1075,
+  1076,
+  1077,
+  1078,
+  1079,
+  1080,
+  1081,
+  1082,
+  1083,
+  1084,
+  1085,
+  1086,
+  1087,
+  1088,
+  1089,
+  1090,
+  1091,
+  1092,
+  1093,
+  1094,
+  1095,
+  1096,
+  1097,
+  1098,
+  1099,
+  1100,
+  1101,
+  1102,
+  1103,
+  1104,
+  1105,
+  1106,
+  1107,
+  1108,
+  1109,
+  1110,
+  1111,
+  1112,
+  1113,
+  1114,
+  1115,
+  1116,
+  1117,
+  1118,
+  1119,
+  1120,
+  1121,
+  1122,
+  1123,
+  1124,
+  1125,
+  1126,
+  1127,
+  1128,
+  1129,
+  1130,
+  1131,
+  1132,
+  1133,
+  1134,
+  1135,
+  1136,
+  1137,
+  1138,
+  1139,
+  1140,
+  1141,
+  1142,
+  1143,
+  1144,
+  1145,
+  1146,
+  1147,
+  1148,
+  1149,
+  1150,
+  1151,
+  1152,
+  1153,
+  1154,
+  1155,
+  1156,
+  1157,
+  1158,
+  1159,
+  1160,
+  1161,
+  1162,
+  1163,
+  1164,
+  1165,
+  1166,
+  1167,
+  1168,
+  1169,
+  1170,
+  1171,
+  1172,
+  1173,
+  1174,
+  1175,
+  1176,
+  1177,
+  1178,
+  1179,
+  1180,
+  1181,
+  1182,
+  1183,
+  1184,
+  1185,
+  1186,
+  1187,
+  1188,
+  1189,
+  1190,
+  1191,
+  1192,
+  1193,
+  1194,
+  1195,
+  1196,
+  1197,
+  1198,
+  1199
+ ],
+ "tuned": {
+  "cv": {
+   "q_accel": 0.1,
+   "r_pos_m": 10.0,
+   "init_vel_std": 5.0,
+   "sogcog_vel_std": 0.5,
+   "gate_prob": 0.9999,
+   "max_consecutive_rejects": 2,
+   "gap_q": 0.0,
+   "gap_s": 180.0
+  },
+  "imm": {
+   "r_pos_m": 5.0,
+   "q_stationary": 0.0001,
+   "tau_stationary_s": 30.0,
+   "q_cruise": 0.0005,
+   "q_turn": 0.05,
+   "q_omega": 2e-07,
+   "sojourn_s": [
+    1800.0,
+    600.0,
+    300.0
+   ],
+   "switch": [
+    [
+     0.0,
+     0.9,
+     0.1
+    ],
+    [
+     0.2,
+     0.0,
+     0.8
+    ],
+    [
+     0.1,
+     0.9,
+     0.0
+    ]
+   ],
+   "init_probs": [
+    0.2,
+    0.6,
+    0.2
+   ],
+   "init_vel_std": 5.0,
+   "sogcog_vel_std": 0.5,
+   "init_omega_std": 0.017453292519943295,
+   "clutter_density": 5e-11,
+   "gap_q": 0.05,
+   "gap_s": 180.0,
+   "max_consecutive_rejects": 2
+  }
+ },
+ "tuning_history": {
+  "cv": [
+   {
+    "params": {
+     "q_accel": 0.001,
+     "r_pos_m": 5.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.0,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 296.88155121821785
+   },
+   {
+    "params": {
+     "q_accel": 0.001,
+     "r_pos_m": 5.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.05,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 163.46806541413883
+   },
+   {
+    "params": {
+     "q_accel": 0.001,
+     "r_pos_m": 5.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.3,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 173.48162489803315
+   },
+   {
+    "params": {
+     "q_accel": 0.001,
+     "r_pos_m": 10.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.0,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 296.3578039091154
+   },
+   {
+    "params": {
+     "q_accel": 0.001,
+     "r_pos_m": 10.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.05,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 164.374980814221
+   },
+   {
+    "params": {
+     "q_accel": 0.001,
+     "r_pos_m": 10.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.3,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 174.31585117241758
+   },
+   {
+    "params": {
+     "q_accel": 0.001,
+     "r_pos_m": 5.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.9999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.0,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 295.50263296984224
+   },
+   {
+    "params": {
+     "q_accel": 0.001,
+     "r_pos_m": 5.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.9999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.05,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 163.72812663249985
+   },
+   {
+    "params": {
+     "q_accel": 0.001,
+     "r_pos_m": 5.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.9999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.3,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 173.50695889191394
+   },
+   {
+    "params": {
+     "q_accel": 0.001,
+     "r_pos_m": 10.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.9999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.0,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 276.2904841646887
+   },
+   {
+    "params": {
+     "q_accel": 0.001,
+     "r_pos_m": 10.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.9999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.05,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 125.96951135319594
+   },
+   {
+    "params": {
+     "q_accel": 0.001,
+     "r_pos_m": 10.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.9999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.3,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 138.4187811619256
+   },
+   {
+    "params": {
+     "q_accel": 0.001,
+     "r_pos_m": 5.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.99999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.0,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 273.4071174038472
+   },
+   {
+    "params": {
+     "q_accel": 0.001,
+     "r_pos_m": 5.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.99999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.05,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 124.91405674024935
+   },
+   {
+    "params": {
+     "q_accel": 0.001,
+     "r_pos_m": 5.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.99999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.3,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 137.48202259553145
+   },
+   {
+    "params": {
+     "q_accel": 0.001,
+     "r_pos_m": 10.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.99999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.0,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 274.4170986138824
+   },
+   {
+    "params": {
+     "q_accel": 0.001,
+     "r_pos_m": 10.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.99999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.05,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 126.0755580509109
+   },
+   {
+    "params": {
+     "q_accel": 0.001,
+     "r_pos_m": 10.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.99999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.3,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 138.52048260887005
+   },
+   {
+    "params": {
+     "q_accel": 0.003,
+     "r_pos_m": 5.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.0,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 271.4725595602624
+   },
+   {
+    "params": {
+     "q_accel": 0.003,
+     "r_pos_m": 5.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.05,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 124.23983591689253
+   },
+   {
+    "params": {
+     "q_accel": 0.003,
+     "r_pos_m": 5.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.3,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 137.15654605234164
+   },
+   {
+    "params": {
+     "q_accel": 0.003,
+     "r_pos_m": 10.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.0,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 271.57268262685375
+   },
+   {
+    "params": {
+     "q_accel": 0.003,
+     "r_pos_m": 10.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.05,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 124.82989400171303
+   },
+   {
+    "params": {
+     "q_accel": 0.003,
+     "r_pos_m": 10.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.3,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 137.6708383858469
+   },
+   {
+    "params": {
+     "q_accel": 0.003,
+     "r_pos_m": 5.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.9999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.0,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 256.8030855054355
+   },
+   {
+    "params": {
+     "q_accel": 0.003,
+     "r_pos_m": 5.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.9999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.05,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 123.95787570301702
+   },
+   {
+    "params": {
+     "q_accel": 0.003,
+     "r_pos_m": 5.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.9999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.3,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 136.6264176263748
+   },
+   {
+    "params": {
+     "q_accel": 0.003,
+     "r_pos_m": 10.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.9999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.0,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 274.12917210233616
+   },
+   {
+    "params": {
+     "q_accel": 0.003,
+     "r_pos_m": 10.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.9999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.05,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 155.52083854240618
+   },
+   {
+    "params": {
+     "q_accel": 0.003,
+     "r_pos_m": 10.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.9999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.3,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 165.76804019371707
+   },
+   {
+    "params": {
+     "q_accel": 0.003,
+     "r_pos_m": 5.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.99999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.0,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 249.18427880594837
+   },
+   {
+    "params": {
+     "q_accel": 0.003,
+     "r_pos_m": 5.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.99999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.05,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 123.72001328449109
+   },
+   {
+    "params": {
+     "q_accel": 0.003,
+     "r_pos_m": 5.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.99999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.3,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 136.40648396494745
+   },
+   {
+    "params": {
+     "q_accel": 0.003,
+     "r_pos_m": 10.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.99999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.0,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 267.0694973655575
+   },
+   {
+    "params": {
+     "q_accel": 0.003,
+     "r_pos_m": 10.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.99999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.05,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 155.36345268513767
+   },
+   {
+    "params": {
+     "q_accel": 0.003,
+     "r_pos_m": 10.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.99999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.3,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 165.62734464273666
+   },
+   {
+    "params": {
+     "q_accel": 0.01,
+     "r_pos_m": 5.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.0,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 193.37060574323894
+   },
+   {
+    "params": {
+     "q_accel": 0.01,
+     "r_pos_m": 5.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.05,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 121.57745788602473
+   },
+   {
+    "params": {
+     "q_accel": 0.01,
+     "r_pos_m": 5.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.3,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 121.62587260533952
+   },
+   {
+    "params": {
+     "q_accel": 0.01,
+     "r_pos_m": 10.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.0,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 194.73456208473155
+   },
+   {
+    "params": {
+     "q_accel": 0.01,
+     "r_pos_m": 10.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.05,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 121.7225619002485
+   },
+   {
+    "params": {
+     "q_accel": 0.01,
+     "r_pos_m": 10.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.3,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 121.75660926454552
+   },
+   {
+    "params": {
+     "q_accel": 0.01,
+     "r_pos_m": 5.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.9999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.0,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 187.71133125336917
+   },
+   {
+    "params": {
+     "q_accel": 0.01,
+     "r_pos_m": 5.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.9999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.05,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 121.11784580592204
+   },
+   {
+    "params": {
+     "q_accel": 0.01,
+     "r_pos_m": 5.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.9999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.3,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 134.071908146336
+   },
+   {
+    "params": {
+     "q_accel": 0.01,
+     "r_pos_m": 10.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.9999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.0,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 186.04959037274213
+   },
+   {
+    "params": {
+     "q_accel": 0.01,
+     "r_pos_m": 10.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.9999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.05,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 121.11076192823133
+   },
+   {
+    "params": {
+     "q_accel": 0.01,
+     "r_pos_m": 10.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.9999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.3,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 134.071098148552
+   },
+   {
+    "params": {
+     "q_accel": 0.01,
+     "r_pos_m": 5.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.99999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.0,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 175.74252345621653
+   },
+   {
+    "params": {
+     "q_accel": 0.01,
+     "r_pos_m": 5.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.99999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.05,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 113.5014086063768
+   },
+   {
+    "params": {
+     "q_accel": 0.01,
+     "r_pos_m": 5.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.99999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.3,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 127.25985362292077
+   },
+   {
+    "params": {
+     "q_accel": 0.01,
+     "r_pos_m": 10.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.99999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.0,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 176.34870129950247
+   },
+   {
+    "params": {
+     "q_accel": 0.01,
+     "r_pos_m": 10.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.99999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.05,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 113.67621047042454
+   },
+   {
+    "params": {
+     "q_accel": 0.01,
+     "r_pos_m": 10.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.99999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.3,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 127.39516318541982
+   },
+   {
+    "params": {
+     "q_accel": 0.03,
+     "r_pos_m": 5.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.0,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 46.51141976719367
+   },
+   {
+    "params": {
+     "q_accel": 0.03,
+     "r_pos_m": 5.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.05,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 46.36088141335939
+   },
+   {
+    "params": {
+     "q_accel": 0.03,
+     "r_pos_m": 5.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.3,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 74.45149954408431
+   },
+   {
+    "params": {
+     "q_accel": 0.03,
+     "r_pos_m": 10.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.0,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 46.56261224544817
+   },
+   {
+    "params": {
+     "q_accel": 0.03,
+     "r_pos_m": 10.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.05,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 46.41518289999506
+   },
+   {
+    "params": {
+     "q_accel": 0.03,
+     "r_pos_m": 10.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.3,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 74.45561405574304
+   },
+   {
+    "params": {
+     "q_accel": 0.03,
+     "r_pos_m": 5.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.9999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.0,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 44.38827707059961
+   },
+   {
+    "params": {
+     "q_accel": 0.03,
+     "r_pos_m": 5.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.9999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.05,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 44.4000603336118
+   },
+   {
+    "params": {
+     "q_accel": 0.03,
+     "r_pos_m": 5.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.9999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.3,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 72.79134654145639
+   },
+   {
+    "params": {
+     "q_accel": 0.03,
+     "r_pos_m": 10.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.9999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.0,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 44.20053755886828
+   },
+   {
+    "params": {
+     "q_accel": 0.03,
+     "r_pos_m": 10.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.9999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.05,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 44.308043295736184
+   },
+   {
+    "params": {
+     "q_accel": 0.03,
+     "r_pos_m": 10.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.9999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.3,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 72.70146344363505
+   },
+   {
+    "params": {
+     "q_accel": 0.03,
+     "r_pos_m": 5.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.99999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.0,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 20.59226594813473
+   },
+   {
+    "params": {
+     "q_accel": 0.03,
+     "r_pos_m": 5.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.99999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.05,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 20.60083059653064
+   },
+   {
+    "params": {
+     "q_accel": 0.03,
+     "r_pos_m": 5.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.99999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.3,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 61.247045165864485
+   },
+   {
+    "params": {
+     "q_accel": 0.03,
+     "r_pos_m": 10.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.99999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.0,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 20.434920466637333
+   },
+   {
+    "params": {
+     "q_accel": 0.03,
+     "r_pos_m": 10.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.99999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.05,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 20.447434466105488
+   },
+   {
+    "params": {
+     "q_accel": 0.03,
+     "r_pos_m": 10.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.99999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.3,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 61.15634291110252
+   },
+   {
+    "params": {
+     "q_accel": 0.1,
+     "r_pos_m": 5.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.0,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 17.61708267936362
+   },
+   {
+    "params": {
+     "q_accel": 0.1,
+     "r_pos_m": 5.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.05,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 17.621023877818853
+   },
+   {
+    "params": {
+     "q_accel": 0.1,
+     "r_pos_m": 5.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.3,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 60.62467249199629
+   },
+   {
+    "params": {
+     "q_accel": 0.1,
+     "r_pos_m": 10.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.0,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 17.522266011692572
+   },
+   {
+    "params": {
+     "q_accel": 0.1,
+     "r_pos_m": 10.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.05,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 17.526905312522555
+   },
+   {
+    "params": {
+     "q_accel": 0.1,
+     "r_pos_m": 10.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.3,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 60.56441866043325
+   },
+   {
+    "params": {
+     "q_accel": 0.1,
+     "r_pos_m": 5.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.9999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.0,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 17.617057750123386
+   },
+   {
+    "params": {
+     "q_accel": 0.1,
+     "r_pos_m": 5.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.9999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.05,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 17.621023877818853
+   },
+   {
+    "params": {
+     "q_accel": 0.1,
+     "r_pos_m": 5.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.9999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.3,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 60.62466691250358
+   },
+   {
+    "params": {
+     "q_accel": 0.1,
+     "r_pos_m": 10.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.9999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.0,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 17.5221796060504
+   },
+   {
+    "params": {
+     "q_accel": 0.1,
+     "r_pos_m": 10.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.9999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.05,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 17.526905312522555
+   },
+   {
+    "params": {
+     "q_accel": 0.1,
+     "r_pos_m": 10.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.9999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.3,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 60.56439830323805
+   },
+   {
+    "params": {
+     "q_accel": 0.1,
+     "r_pos_m": 5.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.99999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.0,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 17.61709515229923
+   },
+   {
+    "params": {
+     "q_accel": 0.1,
+     "r_pos_m": 5.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.99999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.05,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 17.621061286346855
+   },
+   {
+    "params": {
+     "q_accel": 0.1,
+     "r_pos_m": 5.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.99999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.3,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 60.62467778558939
+   },
+   {
+    "params": {
+     "q_accel": 0.1,
+     "r_pos_m": 10.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.99999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.0,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 17.522333051929813
+   },
+   {
+    "params": {
+     "q_accel": 0.1,
+     "r_pos_m": 10.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.99999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.05,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 17.527058776666248
+   },
+   {
+    "params": {
+     "q_accel": 0.1,
+     "r_pos_m": 10.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.99999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.3,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 60.56444271484586
+   },
+   {
+    "params": {
+     "q_accel": 0.3,
+     "r_pos_m": 5.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.0,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 84.07488256093414
+   },
+   {
+    "params": {
+     "q_accel": 0.3,
+     "r_pos_m": 5.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.05,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 83.92143521016695
+   },
+   {
+    "params": {
+     "q_accel": 0.3,
+     "r_pos_m": 5.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.3,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 83.51672760763459
+   },
+   {
+    "params": {
+     "q_accel": 0.3,
+     "r_pos_m": 10.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.0,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 84.02334295200963
+   },
+   {
+    "params": {
+     "q_accel": 0.3,
+     "r_pos_m": 10.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.05,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 83.87363208254601
+   },
+   {
+    "params": {
+     "q_accel": 0.3,
+     "r_pos_m": 10.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.3,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 83.47854797210027
+   },
+   {
+    "params": {
+     "q_accel": 0.3,
+     "r_pos_m": 5.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.9999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.0,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 95.75124089110224
+   },
+   {
+    "params": {
+     "q_accel": 0.3,
+     "r_pos_m": 5.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.9999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.05,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 95.6165338332512
+   },
+   {
+    "params": {
+     "q_accel": 0.3,
+     "r_pos_m": 5.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.9999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.3,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 95.26152447257421
+   },
+   {
+    "params": {
+     "q_accel": 0.3,
+     "r_pos_m": 10.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.9999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.0,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 95.6748870899919
+   },
+   {
+    "params": {
+     "q_accel": 0.3,
+     "r_pos_m": 10.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.9999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.05,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 95.5434352405751
+   },
+   {
+    "params": {
+     "q_accel": 0.3,
+     "r_pos_m": 10.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.9999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.3,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 95.19679527369566
+   },
+   {
+    "params": {
+     "q_accel": 0.3,
+     "r_pos_m": 5.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.99999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.0,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 95.75124089110224
+   },
+   {
+    "params": {
+     "q_accel": 0.3,
+     "r_pos_m": 5.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.99999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.05,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 95.6165338332512
+   },
+   {
+    "params": {
+     "q_accel": 0.3,
+     "r_pos_m": 5.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.99999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.3,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 95.26152447257421
+   },
+   {
+    "params": {
+     "q_accel": 0.3,
+     "r_pos_m": 10.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.99999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.0,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 95.6748870899919
+   },
+   {
+    "params": {
+     "q_accel": 0.3,
+     "r_pos_m": 10.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.99999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.05,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 95.5434352405751
+   },
+   {
+    "params": {
+     "q_accel": 0.3,
+     "r_pos_m": 10.0,
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "gate_prob": 0.99999,
+     "max_consecutive_rejects": 2,
+     "gap_q": 0.3,
+     "gap_s": 180.0
+    },
+    "moving_rmse_m": 95.19679527369566
+   }
+  ],
+  "imm": [
+   {
+    "params": {
+     "r_pos_m": 5.0,
+     "q_stationary": 0.0001,
+     "tau_stationary_s": 30.0,
+     "q_cruise": 0.0005,
+     "q_turn": 0.01,
+     "q_omega": 2e-07,
+     "sojourn_s": [
+      1800.0,
+      600.0,
+      300.0
+     ],
+     "switch": [
+      [
+       0.0,
+       0.9,
+       0.1
+      ],
+      [
+       0.2,
+       0.0,
+       0.8
+      ],
+      [
+       0.1,
+       0.9,
+       0.0
+      ]
+     ],
+     "init_probs": [
+      0.2,
+      0.6,
+      0.2
+     ],
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "init_omega_std": 0.017453292519943295,
+     "clutter_density": 5e-11,
+     "gap_q": 0.0,
+     "gap_s": 180.0,
+     "max_consecutive_rejects": 2
+    },
+    "moving_rmse_m": 159.16193707173312
+   },
+   {
+    "params": {
+     "r_pos_m": 5.0,
+     "q_stationary": 0.0001,
+     "tau_stationary_s": 30.0,
+     "q_cruise": 0.0005,
+     "q_turn": 0.01,
+     "q_omega": 2e-07,
+     "sojourn_s": [
+      1800.0,
+      600.0,
+      300.0
+     ],
+     "switch": [
+      [
+       0.0,
+       0.9,
+       0.1
+      ],
+      [
+       0.2,
+       0.0,
+       0.8
+      ],
+      [
+       0.1,
+       0.9,
+       0.0
+      ]
+     ],
+     "init_probs": [
+      0.2,
+      0.6,
+      0.2
+     ],
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "init_omega_std": 0.017453292519943295,
+     "clutter_density": 5e-11,
+     "gap_q": 0.05,
+     "gap_s": 180.0,
+     "max_consecutive_rejects": 2
+    },
+    "moving_rmse_m": 24.969137367846514
+   },
+   {
+    "params": {
+     "r_pos_m": 5.0,
+     "q_stationary": 0.0001,
+     "tau_stationary_s": 30.0,
+     "q_cruise": 0.0005,
+     "q_turn": 0.01,
+     "q_omega": 2e-07,
+     "sojourn_s": [
+      1800.0,
+      600.0,
+      300.0
+     ],
+     "switch": [
+      [
+       0.0,
+       0.9,
+       0.1
+      ],
+      [
+       0.2,
+       0.0,
+       0.8
+      ],
+      [
+       0.1,
+       0.9,
+       0.0
+      ]
+     ],
+     "init_probs": [
+      0.2,
+      0.6,
+      0.2
+     ],
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "init_omega_std": 0.017453292519943295,
+     "clutter_density": 5e-11,
+     "gap_q": 0.3,
+     "gap_s": 180.0,
+     "max_consecutive_rejects": 2
+    },
+    "moving_rmse_m": 62.46062576257471
+   },
+   {
+    "params": {
+     "r_pos_m": 10.0,
+     "q_stationary": 0.0001,
+     "tau_stationary_s": 30.0,
+     "q_cruise": 0.0005,
+     "q_turn": 0.01,
+     "q_omega": 2e-07,
+     "sojourn_s": [
+      1800.0,
+      600.0,
+      300.0
+     ],
+     "switch": [
+      [
+       0.0,
+       0.9,
+       0.1
+      ],
+      [
+       0.2,
+       0.0,
+       0.8
+      ],
+      [
+       0.1,
+       0.9,
+       0.0
+      ]
+     ],
+     "init_probs": [
+      0.2,
+      0.6,
+      0.2
+     ],
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "init_omega_std": 0.017453292519943295,
+     "clutter_density": 5e-11,
+     "gap_q": 0.0,
+     "gap_s": 180.0,
+     "max_consecutive_rejects": 2
+    },
+    "moving_rmse_m": 159.90619122396302
+   },
+   {
+    "params": {
+     "r_pos_m": 10.0,
+     "q_stationary": 0.0001,
+     "tau_stationary_s": 30.0,
+     "q_cruise": 0.0005,
+     "q_turn": 0.01,
+     "q_omega": 2e-07,
+     "sojourn_s": [
+      1800.0,
+      600.0,
+      300.0
+     ],
+     "switch": [
+      [
+       0.0,
+       0.9,
+       0.1
+      ],
+      [
+       0.2,
+       0.0,
+       0.8
+      ],
+      [
+       0.1,
+       0.9,
+       0.0
+      ]
+     ],
+     "init_probs": [
+      0.2,
+      0.6,
+      0.2
+     ],
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "init_omega_std": 0.017453292519943295,
+     "clutter_density": 5e-11,
+     "gap_q": 0.05,
+     "gap_s": 180.0,
+     "max_consecutive_rejects": 2
+    },
+    "moving_rmse_m": 21.360799635392006
+   },
+   {
+    "params": {
+     "r_pos_m": 10.0,
+     "q_stationary": 0.0001,
+     "tau_stationary_s": 30.0,
+     "q_cruise": 0.0005,
+     "q_turn": 0.01,
+     "q_omega": 2e-07,
+     "sojourn_s": [
+      1800.0,
+      600.0,
+      300.0
+     ],
+     "switch": [
+      [
+       0.0,
+       0.9,
+       0.1
+      ],
+      [
+       0.2,
+       0.0,
+       0.8
+      ],
+      [
+       0.1,
+       0.9,
+       0.0
+      ]
+     ],
+     "init_probs": [
+      0.2,
+      0.6,
+      0.2
+     ],
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "init_omega_std": 0.017453292519943295,
+     "clutter_density": 5e-11,
+     "gap_q": 0.3,
+     "gap_s": 180.0,
+     "max_consecutive_rejects": 2
+    },
+    "moving_rmse_m": 61.265738605491194
+   },
+   {
+    "params": {
+     "r_pos_m": 5.0,
+     "q_stationary": 0.0001,
+     "tau_stationary_s": 30.0,
+     "q_cruise": 0.0005,
+     "q_turn": 0.01,
+     "q_omega": 2e-06,
+     "sojourn_s": [
+      1800.0,
+      600.0,
+      300.0
+     ],
+     "switch": [
+      [
+       0.0,
+       0.9,
+       0.1
+      ],
+      [
+       0.2,
+       0.0,
+       0.8
+      ],
+      [
+       0.1,
+       0.9,
+       0.0
+      ]
+     ],
+     "init_probs": [
+      0.2,
+      0.6,
+      0.2
+     ],
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "init_omega_std": 0.017453292519943295,
+     "clutter_density": 5e-11,
+     "gap_q": 0.0,
+     "gap_s": 180.0,
+     "max_consecutive_rejects": 2
+    },
+    "moving_rmse_m": 156.224482786045
+   },
+   {
+    "params": {
+     "r_pos_m": 5.0,
+     "q_stationary": 0.0001,
+     "tau_stationary_s": 30.0,
+     "q_cruise": 0.0005,
+     "q_turn": 0.01,
+     "q_omega": 2e-06,
+     "sojourn_s": [
+      1800.0,
+      600.0,
+      300.0
+     ],
+     "switch": [
+      [
+       0.0,
+       0.9,
+       0.1
+      ],
+      [
+       0.2,
+       0.0,
+       0.8
+      ],
+      [
+       0.1,
+       0.9,
+       0.0
+      ]
+     ],
+     "init_probs": [
+      0.2,
+      0.6,
+      0.2
+     ],
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "init_omega_std": 0.017453292519943295,
+     "clutter_density": 5e-11,
+     "gap_q": 0.05,
+     "gap_s": 180.0,
+     "max_consecutive_rejects": 2
+    },
+    "moving_rmse_m": 20.79471122439244
+   },
+   {
+    "params": {
+     "r_pos_m": 5.0,
+     "q_stationary": 0.0001,
+     "tau_stationary_s": 30.0,
+     "q_cruise": 0.0005,
+     "q_turn": 0.01,
+     "q_omega": 2e-06,
+     "sojourn_s": [
+      1800.0,
+      600.0,
+      300.0
+     ],
+     "switch": [
+      [
+       0.0,
+       0.9,
+       0.1
+      ],
+      [
+       0.2,
+       0.0,
+       0.8
+      ],
+      [
+       0.1,
+       0.9,
+       0.0
+      ]
+     ],
+     "init_probs": [
+      0.2,
+      0.6,
+      0.2
+     ],
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "init_omega_std": 0.017453292519943295,
+     "clutter_density": 5e-11,
+     "gap_q": 0.3,
+     "gap_s": 180.0,
+     "max_consecutive_rejects": 2
+    },
+    "moving_rmse_m": 55.308091515287835
+   },
+   {
+    "params": {
+     "r_pos_m": 10.0,
+     "q_stationary": 0.0001,
+     "tau_stationary_s": 30.0,
+     "q_cruise": 0.0005,
+     "q_turn": 0.01,
+     "q_omega": 2e-06,
+     "sojourn_s": [
+      1800.0,
+      600.0,
+      300.0
+     ],
+     "switch": [
+      [
+       0.0,
+       0.9,
+       0.1
+      ],
+      [
+       0.2,
+       0.0,
+       0.8
+      ],
+      [
+       0.1,
+       0.9,
+       0.0
+      ]
+     ],
+     "init_probs": [
+      0.2,
+      0.6,
+      0.2
+     ],
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "init_omega_std": 0.017453292519943295,
+     "clutter_density": 5e-11,
+     "gap_q": 0.0,
+     "gap_s": 180.0,
+     "max_consecutive_rejects": 2
+    },
+    "moving_rmse_m": 157.3029517324473
+   },
+   {
+    "params": {
+     "r_pos_m": 10.0,
+     "q_stationary": 0.0001,
+     "tau_stationary_s": 30.0,
+     "q_cruise": 0.0005,
+     "q_turn": 0.01,
+     "q_omega": 2e-06,
+     "sojourn_s": [
+      1800.0,
+      600.0,
+      300.0
+     ],
+     "switch": [
+      [
+       0.0,
+       0.9,
+       0.1
+      ],
+      [
+       0.2,
+       0.0,
+       0.8
+      ],
+      [
+       0.1,
+       0.9,
+       0.0
+      ]
+     ],
+     "init_probs": [
+      0.2,
+      0.6,
+      0.2
+     ],
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "init_omega_std": 0.017453292519943295,
+     "clutter_density": 5e-11,
+     "gap_q": 0.05,
+     "gap_s": 180.0,
+     "max_consecutive_rejects": 2
+    },
+    "moving_rmse_m": 20.79557323187908
+   },
+   {
+    "params": {
+     "r_pos_m": 10.0,
+     "q_stationary": 0.0001,
+     "tau_stationary_s": 30.0,
+     "q_cruise": 0.0005,
+     "q_turn": 0.01,
+     "q_omega": 2e-06,
+     "sojourn_s": [
+      1800.0,
+      600.0,
+      300.0
+     ],
+     "switch": [
+      [
+       0.0,
+       0.9,
+       0.1
+      ],
+      [
+       0.2,
+       0.0,
+       0.8
+      ],
+      [
+       0.1,
+       0.9,
+       0.0
+      ]
+     ],
+     "init_probs": [
+      0.2,
+      0.6,
+      0.2
+     ],
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "init_omega_std": 0.017453292519943295,
+     "clutter_density": 5e-11,
+     "gap_q": 0.3,
+     "gap_s": 180.0,
+     "max_consecutive_rejects": 2
+    },
+    "moving_rmse_m": 54.56144734214245
+   },
+   {
+    "params": {
+     "r_pos_m": 5.0,
+     "q_stationary": 0.0001,
+     "tau_stationary_s": 30.0,
+     "q_cruise": 0.0005,
+     "q_turn": 0.05,
+     "q_omega": 2e-07,
+     "sojourn_s": [
+      1800.0,
+      600.0,
+      300.0
+     ],
+     "switch": [
+      [
+       0.0,
+       0.9,
+       0.1
+      ],
+      [
+       0.2,
+       0.0,
+       0.8
+      ],
+      [
+       0.1,
+       0.9,
+       0.0
+      ]
+     ],
+     "init_probs": [
+      0.2,
+      0.6,
+      0.2
+     ],
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "init_omega_std": 0.017453292519943295,
+     "clutter_density": 5e-11,
+     "gap_q": 0.0,
+     "gap_s": 180.0,
+     "max_consecutive_rejects": 2
+    },
+    "moving_rmse_m": 15.485452785262348
+   },
+   {
+    "params": {
+     "r_pos_m": 5.0,
+     "q_stationary": 0.0001,
+     "tau_stationary_s": 30.0,
+     "q_cruise": 0.0005,
+     "q_turn": 0.05,
+     "q_omega": 2e-07,
+     "sojourn_s": [
+      1800.0,
+      600.0,
+      300.0
+     ],
+     "switch": [
+      [
+       0.0,
+       0.9,
+       0.1
+      ],
+      [
+       0.2,
+       0.0,
+       0.8
+      ],
+      [
+       0.1,
+       0.9,
+       0.0
+      ]
+     ],
+     "init_probs": [
+      0.2,
+      0.6,
+      0.2
+     ],
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "init_omega_std": 0.017453292519943295,
+     "clutter_density": 5e-11,
+     "gap_q": 0.05,
+     "gap_s": 180.0,
+     "max_consecutive_rejects": 2
+    },
+    "moving_rmse_m": 14.613540397176484
+   },
+   {
+    "params": {
+     "r_pos_m": 5.0,
+     "q_stationary": 0.0001,
+     "tau_stationary_s": 30.0,
+     "q_cruise": 0.0005,
+     "q_turn": 0.05,
+     "q_omega": 2e-07,
+     "sojourn_s": [
+      1800.0,
+      600.0,
+      300.0
+     ],
+     "switch": [
+      [
+       0.0,
+       0.9,
+       0.1
+      ],
+      [
+       0.2,
+       0.0,
+       0.8
+      ],
+      [
+       0.1,
+       0.9,
+       0.0
+      ]
+     ],
+     "init_probs": [
+      0.2,
+      0.6,
+      0.2
+     ],
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "init_omega_std": 0.017453292519943295,
+     "clutter_density": 5e-11,
+     "gap_q": 0.3,
+     "gap_s": 180.0,
+     "max_consecutive_rejects": 2
+    },
+    "moving_rmse_m": 59.632619704070706
+   },
+   {
+    "params": {
+     "r_pos_m": 10.0,
+     "q_stationary": 0.0001,
+     "tau_stationary_s": 30.0,
+     "q_cruise": 0.0005,
+     "q_turn": 0.05,
+     "q_omega": 2e-07,
+     "sojourn_s": [
+      1800.0,
+      600.0,
+      300.0
+     ],
+     "switch": [
+      [
+       0.0,
+       0.9,
+       0.1
+      ],
+      [
+       0.2,
+       0.0,
+       0.8
+      ],
+      [
+       0.1,
+       0.9,
+       0.0
+      ]
+     ],
+     "init_probs": [
+      0.2,
+      0.6,
+      0.2
+     ],
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "init_omega_std": 0.017453292519943295,
+     "clutter_density": 5e-11,
+     "gap_q": 0.0,
+     "gap_s": 180.0,
+     "max_consecutive_rejects": 2
+    },
+    "moving_rmse_m": 16.31978980627325
+   },
+   {
+    "params": {
+     "r_pos_m": 10.0,
+     "q_stationary": 0.0001,
+     "tau_stationary_s": 30.0,
+     "q_cruise": 0.0005,
+     "q_turn": 0.05,
+     "q_omega": 2e-07,
+     "sojourn_s": [
+      1800.0,
+      600.0,
+      300.0
+     ],
+     "switch": [
+      [
+       0.0,
+       0.9,
+       0.1
+      ],
+      [
+       0.2,
+       0.0,
+       0.8
+      ],
+      [
+       0.1,
+       0.9,
+       0.0
+      ]
+     ],
+     "init_probs": [
+      0.2,
+      0.6,
+      0.2
+     ],
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "init_omega_std": 0.017453292519943295,
+     "clutter_density": 5e-11,
+     "gap_q": 0.05,
+     "gap_s": 180.0,
+     "max_consecutive_rejects": 2
+    },
+    "moving_rmse_m": 15.49560912120242
+   },
+   {
+    "params": {
+     "r_pos_m": 10.0,
+     "q_stationary": 0.0001,
+     "tau_stationary_s": 30.0,
+     "q_cruise": 0.0005,
+     "q_turn": 0.05,
+     "q_omega": 2e-07,
+     "sojourn_s": [
+      1800.0,
+      600.0,
+      300.0
+     ],
+     "switch": [
+      [
+       0.0,
+       0.9,
+       0.1
+      ],
+      [
+       0.2,
+       0.0,
+       0.8
+      ],
+      [
+       0.1,
+       0.9,
+       0.0
+      ]
+     ],
+     "init_probs": [
+      0.2,
+      0.6,
+      0.2
+     ],
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "init_omega_std": 0.017453292519943295,
+     "clutter_density": 5e-11,
+     "gap_q": 0.3,
+     "gap_s": 180.0,
+     "max_consecutive_rejects": 2
+    },
+    "moving_rmse_m": 59.73694366969814
+   },
+   {
+    "params": {
+     "r_pos_m": 5.0,
+     "q_stationary": 0.0001,
+     "tau_stationary_s": 30.0,
+     "q_cruise": 0.0005,
+     "q_turn": 0.05,
+     "q_omega": 2e-06,
+     "sojourn_s": [
+      1800.0,
+      600.0,
+      300.0
+     ],
+     "switch": [
+      [
+       0.0,
+       0.9,
+       0.1
+      ],
+      [
+       0.2,
+       0.0,
+       0.8
+      ],
+      [
+       0.1,
+       0.9,
+       0.0
+      ]
+     ],
+     "init_probs": [
+      0.2,
+      0.6,
+      0.2
+     ],
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "init_omega_std": 0.017453292519943295,
+     "clutter_density": 5e-11,
+     "gap_q": 0.0,
+     "gap_s": 180.0,
+     "max_consecutive_rejects": 2
+    },
+    "moving_rmse_m": 49.26662539810698
+   },
+   {
+    "params": {
+     "r_pos_m": 5.0,
+     "q_stationary": 0.0001,
+     "tau_stationary_s": 30.0,
+     "q_cruise": 0.0005,
+     "q_turn": 0.05,
+     "q_omega": 2e-06,
+     "sojourn_s": [
+      1800.0,
+      600.0,
+      300.0
+     ],
+     "switch": [
+      [
+       0.0,
+       0.9,
+       0.1
+      ],
+      [
+       0.2,
+       0.0,
+       0.8
+      ],
+      [
+       0.1,
+       0.9,
+       0.0
+      ]
+     ],
+     "init_probs": [
+      0.2,
+      0.6,
+      0.2
+     ],
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "init_omega_std": 0.017453292519943295,
+     "clutter_density": 5e-11,
+     "gap_q": 0.05,
+     "gap_s": 180.0,
+     "max_consecutive_rejects": 2
+    },
+    "moving_rmse_m": 63.63181046289114
+   },
+   {
+    "params": {
+     "r_pos_m": 5.0,
+     "q_stationary": 0.0001,
+     "tau_stationary_s": 30.0,
+     "q_cruise": 0.0005,
+     "q_turn": 0.05,
+     "q_omega": 2e-06,
+     "sojourn_s": [
+      1800.0,
+      600.0,
+      300.0
+     ],
+     "switch": [
+      [
+       0.0,
+       0.9,
+       0.1
+      ],
+      [
+       0.2,
+       0.0,
+       0.8
+      ],
+      [
+       0.1,
+       0.9,
+       0.0
+      ]
+     ],
+     "init_probs": [
+      0.2,
+      0.6,
+      0.2
+     ],
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "init_omega_std": 0.017453292519943295,
+     "clutter_density": 5e-11,
+     "gap_q": 0.3,
+     "gap_s": 180.0,
+     "max_consecutive_rejects": 2
+    },
+    "moving_rmse_m": 70.48965674427852
+   },
+   {
+    "params": {
+     "r_pos_m": 10.0,
+     "q_stationary": 0.0001,
+     "tau_stationary_s": 30.0,
+     "q_cruise": 0.0005,
+     "q_turn": 0.05,
+     "q_omega": 2e-06,
+     "sojourn_s": [
+      1800.0,
+      600.0,
+      300.0
+     ],
+     "switch": [
+      [
+       0.0,
+       0.9,
+       0.1
+      ],
+      [
+       0.2,
+       0.0,
+       0.8
+      ],
+      [
+       0.1,
+       0.9,
+       0.0
+      ]
+     ],
+     "init_probs": [
+      0.2,
+      0.6,
+      0.2
+     ],
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "init_omega_std": 0.017453292519943295,
+     "clutter_density": 5e-11,
+     "gap_q": 0.0,
+     "gap_s": 180.0,
+     "max_consecutive_rejects": 2
+    },
+    "moving_rmse_m": 49.303496916281624
+   },
+   {
+    "params": {
+     "r_pos_m": 10.0,
+     "q_stationary": 0.0001,
+     "tau_stationary_s": 30.0,
+     "q_cruise": 0.0005,
+     "q_turn": 0.05,
+     "q_omega": 2e-06,
+     "sojourn_s": [
+      1800.0,
+      600.0,
+      300.0
+     ],
+     "switch": [
+      [
+       0.0,
+       0.9,
+       0.1
+      ],
+      [
+       0.2,
+       0.0,
+       0.8
+      ],
+      [
+       0.1,
+       0.9,
+       0.0
+      ]
+     ],
+     "init_probs": [
+      0.2,
+      0.6,
+      0.2
+     ],
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "init_omega_std": 0.017453292519943295,
+     "clutter_density": 5e-11,
+     "gap_q": 0.05,
+     "gap_s": 180.0,
+     "max_consecutive_rejects": 2
+    },
+    "moving_rmse_m": 63.51356713993037
+   },
+   {
+    "params": {
+     "r_pos_m": 10.0,
+     "q_stationary": 0.0001,
+     "tau_stationary_s": 30.0,
+     "q_cruise": 0.0005,
+     "q_turn": 0.05,
+     "q_omega": 2e-06,
+     "sojourn_s": [
+      1800.0,
+      600.0,
+      300.0
+     ],
+     "switch": [
+      [
+       0.0,
+       0.9,
+       0.1
+      ],
+      [
+       0.2,
+       0.0,
+       0.8
+      ],
+      [
+       0.1,
+       0.9,
+       0.0
+      ]
+     ],
+     "init_probs": [
+      0.2,
+      0.6,
+      0.2
+     ],
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "init_omega_std": 0.017453292519943295,
+     "clutter_density": 5e-11,
+     "gap_q": 0.3,
+     "gap_s": 180.0,
+     "max_consecutive_rejects": 2
+    },
+    "moving_rmse_m": 91.68179847818716
+   },
+   {
+    "params": {
+     "r_pos_m": 5.0,
+     "q_stationary": 0.0001,
+     "tau_stationary_s": 30.0,
+     "q_cruise": 0.0005,
+     "q_turn": 0.2,
+     "q_omega": 2e-07,
+     "sojourn_s": [
+      1800.0,
+      600.0,
+      300.0
+     ],
+     "switch": [
+      [
+       0.0,
+       0.9,
+       0.1
+      ],
+      [
+       0.2,
+       0.0,
+       0.8
+      ],
+      [
+       0.1,
+       0.9,
+       0.0
+      ]
+     ],
+     "init_probs": [
+      0.2,
+      0.6,
+      0.2
+     ],
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "init_omega_std": 0.017453292519943295,
+     "clutter_density": 5e-11,
+     "gap_q": 0.0,
+     "gap_s": 180.0,
+     "max_consecutive_rejects": 2
+    },
+    "moving_rmse_m": 14.71344006939667
+   },
+   {
+    "params": {
+     "r_pos_m": 5.0,
+     "q_stationary": 0.0001,
+     "tau_stationary_s": 30.0,
+     "q_cruise": 0.0005,
+     "q_turn": 0.2,
+     "q_omega": 2e-07,
+     "sojourn_s": [
+      1800.0,
+      600.0,
+      300.0
+     ],
+     "switch": [
+      [
+       0.0,
+       0.9,
+       0.1
+      ],
+      [
+       0.2,
+       0.0,
+       0.8
+      ],
+      [
+       0.1,
+       0.9,
+       0.0
+      ]
+     ],
+     "init_probs": [
+      0.2,
+      0.6,
+      0.2
+     ],
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "init_omega_std": 0.017453292519943295,
+     "clutter_density": 5e-11,
+     "gap_q": 0.05,
+     "gap_s": 180.0,
+     "max_consecutive_rejects": 2
+    },
+    "moving_rmse_m": 17.4853452276373
+   },
+   {
+    "params": {
+     "r_pos_m": 5.0,
+     "q_stationary": 0.0001,
+     "tau_stationary_s": 30.0,
+     "q_cruise": 0.0005,
+     "q_turn": 0.2,
+     "q_omega": 2e-07,
+     "sojourn_s": [
+      1800.0,
+      600.0,
+      300.0
+     ],
+     "switch": [
+      [
+       0.0,
+       0.9,
+       0.1
+      ],
+      [
+       0.2,
+       0.0,
+       0.8
+      ],
+      [
+       0.1,
+       0.9,
+       0.0
+      ]
+     ],
+     "init_probs": [
+      0.2,
+      0.6,
+      0.2
+     ],
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "init_omega_std": 0.017453292519943295,
+     "clutter_density": 5e-11,
+     "gap_q": 0.3,
+     "gap_s": 180.0,
+     "max_consecutive_rejects": 2
+    },
+    "moving_rmse_m": 61.03145579904078
+   },
+   {
+    "params": {
+     "r_pos_m": 10.0,
+     "q_stationary": 0.0001,
+     "tau_stationary_s": 30.0,
+     "q_cruise": 0.0005,
+     "q_turn": 0.2,
+     "q_omega": 2e-07,
+     "sojourn_s": [
+      1800.0,
+      600.0,
+      300.0
+     ],
+     "switch": [
+      [
+       0.0,
+       0.9,
+       0.1
+      ],
+      [
+       0.2,
+       0.0,
+       0.8
+      ],
+      [
+       0.1,
+       0.9,
+       0.0
+      ]
+     ],
+     "init_probs": [
+      0.2,
+      0.6,
+      0.2
+     ],
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "init_omega_std": 0.017453292519943295,
+     "clutter_density": 5e-11,
+     "gap_q": 0.0,
+     "gap_s": 180.0,
+     "max_consecutive_rejects": 2
+    },
+    "moving_rmse_m": 14.63891529885751
+   },
+   {
+    "params": {
+     "r_pos_m": 10.0,
+     "q_stationary": 0.0001,
+     "tau_stationary_s": 30.0,
+     "q_cruise": 0.0005,
+     "q_turn": 0.2,
+     "q_omega": 2e-07,
+     "sojourn_s": [
+      1800.0,
+      600.0,
+      300.0
+     ],
+     "switch": [
+      [
+       0.0,
+       0.9,
+       0.1
+      ],
+      [
+       0.2,
+       0.0,
+       0.8
+      ],
+      [
+       0.1,
+       0.9,
+       0.0
+      ]
+     ],
+     "init_probs": [
+      0.2,
+      0.6,
+      0.2
+     ],
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "init_omega_std": 0.017453292519943295,
+     "clutter_density": 5e-11,
+     "gap_q": 0.05,
+     "gap_s": 180.0,
+     "max_consecutive_rejects": 2
+    },
+    "moving_rmse_m": 17.417325472648663
+   },
+   {
+    "params": {
+     "r_pos_m": 10.0,
+     "q_stationary": 0.0001,
+     "tau_stationary_s": 30.0,
+     "q_cruise": 0.0005,
+     "q_turn": 0.2,
+     "q_omega": 2e-07,
+     "sojourn_s": [
+      1800.0,
+      600.0,
+      300.0
+     ],
+     "switch": [
+      [
+       0.0,
+       0.9,
+       0.1
+      ],
+      [
+       0.2,
+       0.0,
+       0.8
+      ],
+      [
+       0.1,
+       0.9,
+       0.0
+      ]
+     ],
+     "init_probs": [
+      0.2,
+      0.6,
+      0.2
+     ],
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "init_omega_std": 0.017453292519943295,
+     "clutter_density": 5e-11,
+     "gap_q": 0.3,
+     "gap_s": 180.0,
+     "max_consecutive_rejects": 2
+    },
+    "moving_rmse_m": 60.98769314290948
+   },
+   {
+    "params": {
+     "r_pos_m": 5.0,
+     "q_stationary": 0.0001,
+     "tau_stationary_s": 30.0,
+     "q_cruise": 0.0005,
+     "q_turn": 0.2,
+     "q_omega": 2e-06,
+     "sojourn_s": [
+      1800.0,
+      600.0,
+      300.0
+     ],
+     "switch": [
+      [
+       0.0,
+       0.9,
+       0.1
+      ],
+      [
+       0.2,
+       0.0,
+       0.8
+      ],
+      [
+       0.1,
+       0.9,
+       0.0
+      ]
+     ],
+     "init_probs": [
+      0.2,
+      0.6,
+      0.2
+     ],
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "init_omega_std": 0.017453292519943295,
+     "clutter_density": 5e-11,
+     "gap_q": 0.0,
+     "gap_s": 180.0,
+     "max_consecutive_rejects": 2
+    },
+    "moving_rmse_m": 15.202041848933154
+   },
+   {
+    "params": {
+     "r_pos_m": 5.0,
+     "q_stationary": 0.0001,
+     "tau_stationary_s": 30.0,
+     "q_cruise": 0.0005,
+     "q_turn": 0.2,
+     "q_omega": 2e-06,
+     "sojourn_s": [
+      1800.0,
+      600.0,
+      300.0
+     ],
+     "switch": [
+      [
+       0.0,
+       0.9,
+       0.1
+      ],
+      [
+       0.2,
+       0.0,
+       0.8
+      ],
+      [
+       0.1,
+       0.9,
+       0.0
+      ]
+     ],
+     "init_probs": [
+      0.2,
+      0.6,
+      0.2
+     ],
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "init_omega_std": 0.017453292519943295,
+     "clutter_density": 5e-11,
+     "gap_q": 0.05,
+     "gap_s": 180.0,
+     "max_consecutive_rejects": 2
+    },
+    "moving_rmse_m": 48.16744006609714
+   },
+   {
+    "params": {
+     "r_pos_m": 5.0,
+     "q_stationary": 0.0001,
+     "tau_stationary_s": 30.0,
+     "q_cruise": 0.0005,
+     "q_turn": 0.2,
+     "q_omega": 2e-06,
+     "sojourn_s": [
+      1800.0,
+      600.0,
+      300.0
+     ],
+     "switch": [
+      [
+       0.0,
+       0.9,
+       0.1
+      ],
+      [
+       0.2,
+       0.0,
+       0.8
+      ],
+      [
+       0.1,
+       0.9,
+       0.0
+      ]
+     ],
+     "init_probs": [
+      0.2,
+      0.6,
+      0.2
+     ],
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "init_omega_std": 0.017453292519943295,
+     "clutter_density": 5e-11,
+     "gap_q": 0.3,
+     "gap_s": 180.0,
+     "max_consecutive_rejects": 2
+    },
+    "moving_rmse_m": 40.090195327168644
+   },
+   {
+    "params": {
+     "r_pos_m": 10.0,
+     "q_stationary": 0.0001,
+     "tau_stationary_s": 30.0,
+     "q_cruise": 0.0005,
+     "q_turn": 0.2,
+     "q_omega": 2e-06,
+     "sojourn_s": [
+      1800.0,
+      600.0,
+      300.0
+     ],
+     "switch": [
+      [
+       0.0,
+       0.9,
+       0.1
+      ],
+      [
+       0.2,
+       0.0,
+       0.8
+      ],
+      [
+       0.1,
+       0.9,
+       0.0
+      ]
+     ],
+     "init_probs": [
+      0.2,
+      0.6,
+      0.2
+     ],
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "init_omega_std": 0.017453292519943295,
+     "clutter_density": 5e-11,
+     "gap_q": 0.0,
+     "gap_s": 180.0,
+     "max_consecutive_rejects": 2
+    },
+    "moving_rmse_m": 44.796693873878986
+   },
+   {
+    "params": {
+     "r_pos_m": 10.0,
+     "q_stationary": 0.0001,
+     "tau_stationary_s": 30.0,
+     "q_cruise": 0.0005,
+     "q_turn": 0.2,
+     "q_omega": 2e-06,
+     "sojourn_s": [
+      1800.0,
+      600.0,
+      300.0
+     ],
+     "switch": [
+      [
+       0.0,
+       0.9,
+       0.1
+      ],
+      [
+       0.2,
+       0.0,
+       0.8
+      ],
+      [
+       0.1,
+       0.9,
+       0.0
+      ]
+     ],
+     "init_probs": [
+      0.2,
+      0.6,
+      0.2
+     ],
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "init_omega_std": 0.017453292519943295,
+     "clutter_density": 5e-11,
+     "gap_q": 0.05,
+     "gap_s": 180.0,
+     "max_consecutive_rejects": 2
+    },
+    "moving_rmse_m": 64.03542029695849
+   },
+   {
+    "params": {
+     "r_pos_m": 10.0,
+     "q_stationary": 0.0001,
+     "tau_stationary_s": 30.0,
+     "q_cruise": 0.0005,
+     "q_turn": 0.2,
+     "q_omega": 2e-06,
+     "sojourn_s": [
+      1800.0,
+      600.0,
+      300.0
+     ],
+     "switch": [
+      [
+       0.0,
+       0.9,
+       0.1
+      ],
+      [
+       0.2,
+       0.0,
+       0.8
+      ],
+      [
+       0.1,
+       0.9,
+       0.0
+      ]
+     ],
+     "init_probs": [
+      0.2,
+      0.6,
+      0.2
+     ],
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "init_omega_std": 0.017453292519943295,
+     "clutter_density": 5e-11,
+     "gap_q": 0.3,
+     "gap_s": 180.0,
+     "max_consecutive_rejects": 2
+    },
+    "moving_rmse_m": 58.02472755108418
+   },
+   {
+    "params": {
+     "r_pos_m": 5.0,
+     "q_stationary": 0.0001,
+     "tau_stationary_s": 30.0,
+     "q_cruise": 0.002,
+     "q_turn": 0.01,
+     "q_omega": 2e-07,
+     "sojourn_s": [
+      1800.0,
+      600.0,
+      300.0
+     ],
+     "switch": [
+      [
+       0.0,
+       0.9,
+       0.1
+      ],
+      [
+       0.2,
+       0.0,
+       0.8
+      ],
+      [
+       0.1,
+       0.9,
+       0.0
+      ]
+     ],
+     "init_probs": [
+      0.2,
+      0.6,
+      0.2
+     ],
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "init_omega_std": 0.017453292519943295,
+     "clutter_density": 5e-11,
+     "gap_q": 0.0,
+     "gap_s": 180.0,
+     "max_consecutive_rejects": 2
+    },
+    "moving_rmse_m": 151.96826712519012
+   },
+   {
+    "params": {
+     "r_pos_m": 5.0,
+     "q_stationary": 0.0001,
+     "tau_stationary_s": 30.0,
+     "q_cruise": 0.002,
+     "q_turn": 0.01,
+     "q_omega": 2e-07,
+     "sojourn_s": [
+      1800.0,
+      600.0,
+      300.0
+     ],
+     "switch": [
+      [
+       0.0,
+       0.9,
+       0.1
+      ],
+      [
+       0.2,
+       0.0,
+       0.8
+      ],
+      [
+       0.1,
+       0.9,
+       0.0
+      ]
+     ],
+     "init_probs": [
+      0.2,
+      0.6,
+      0.2
+     ],
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "init_omega_std": 0.017453292519943295,
+     "clutter_density": 5e-11,
+     "gap_q": 0.05,
+     "gap_s": 180.0,
+     "max_consecutive_rejects": 2
+    },
+    "moving_rmse_m": 21.064559442735707
+   },
+   {
+    "params": {
+     "r_pos_m": 5.0,
+     "q_stationary": 0.0001,
+     "tau_stationary_s": 30.0,
+     "q_cruise": 0.002,
+     "q_turn": 0.01,
+     "q_omega": 2e-07,
+     "sojourn_s": [
+      1800.0,
+      600.0,
+      300.0
+     ],
+     "switch": [
+      [
+       0.0,
+       0.9,
+       0.1
+      ],
+      [
+       0.2,
+       0.0,
+       0.8
+      ],
+      [
+       0.1,
+       0.9,
+       0.0
+      ]
+     ],
+     "init_probs": [
+      0.2,
+      0.6,
+      0.2
+     ],
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "init_omega_std": 0.017453292519943295,
+     "clutter_density": 5e-11,
+     "gap_q": 0.3,
+     "gap_s": 180.0,
+     "max_consecutive_rejects": 2
+    },
+    "moving_rmse_m": 61.02616245235904
+   },
+   {
+    "params": {
+     "r_pos_m": 10.0,
+     "q_stationary": 0.0001,
+     "tau_stationary_s": 30.0,
+     "q_cruise": 0.002,
+     "q_turn": 0.01,
+     "q_omega": 2e-07,
+     "sojourn_s": [
+      1800.0,
+      600.0,
+      300.0
+     ],
+     "switch": [
+      [
+       0.0,
+       0.9,
+       0.1
+      ],
+      [
+       0.2,
+       0.0,
+       0.8
+      ],
+      [
+       0.1,
+       0.9,
+       0.0
+      ]
+     ],
+     "init_probs": [
+      0.2,
+      0.6,
+      0.2
+     ],
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "init_omega_std": 0.017453292519943295,
+     "clutter_density": 5e-11,
+     "gap_q": 0.0,
+     "gap_s": 180.0,
+     "max_consecutive_rejects": 2
+    },
+    "moving_rmse_m": 157.2045860465005
+   },
+   {
+    "params": {
+     "r_pos_m": 10.0,
+     "q_stationary": 0.0001,
+     "tau_stationary_s": 30.0,
+     "q_cruise": 0.002,
+     "q_turn": 0.01,
+     "q_omega": 2e-07,
+     "sojourn_s": [
+      1800.0,
+      600.0,
+      300.0
+     ],
+     "switch": [
+      [
+       0.0,
+       0.9,
+       0.1
+      ],
+      [
+       0.2,
+       0.0,
+       0.8
+      ],
+      [
+       0.1,
+       0.9,
+       0.0
+      ]
+     ],
+     "init_probs": [
+      0.2,
+      0.6,
+      0.2
+     ],
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "init_omega_std": 0.017453292519943295,
+     "clutter_density": 5e-11,
+     "gap_q": 0.05,
+     "gap_s": 180.0,
+     "max_consecutive_rejects": 2
+    },
+    "moving_rmse_m": 20.872509780316985
+   },
+   {
+    "params": {
+     "r_pos_m": 10.0,
+     "q_stationary": 0.0001,
+     "tau_stationary_s": 30.0,
+     "q_cruise": 0.002,
+     "q_turn": 0.01,
+     "q_omega": 2e-07,
+     "sojourn_s": [
+      1800.0,
+      600.0,
+      300.0
+     ],
+     "switch": [
+      [
+       0.0,
+       0.9,
+       0.1
+      ],
+      [
+       0.2,
+       0.0,
+       0.8
+      ],
+      [
+       0.1,
+       0.9,
+       0.0
+      ]
+     ],
+     "init_probs": [
+      0.2,
+      0.6,
+      0.2
+     ],
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "init_omega_std": 0.017453292519943295,
+     "clutter_density": 5e-11,
+     "gap_q": 0.3,
+     "gap_s": 180.0,
+     "max_consecutive_rejects": 2
+    },
+    "moving_rmse_m": 61.11663057151303
+   },
+   {
+    "params": {
+     "r_pos_m": 5.0,
+     "q_stationary": 0.0001,
+     "tau_stationary_s": 30.0,
+     "q_cruise": 0.002,
+     "q_turn": 0.01,
+     "q_omega": 2e-06,
+     "sojourn_s": [
+      1800.0,
+      600.0,
+      300.0
+     ],
+     "switch": [
+      [
+       0.0,
+       0.9,
+       0.1
+      ],
+      [
+       0.2,
+       0.0,
+       0.8
+      ],
+      [
+       0.1,
+       0.9,
+       0.0
+      ]
+     ],
+     "init_probs": [
+      0.2,
+      0.6,
+      0.2
+     ],
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "init_omega_std": 0.017453292519943295,
+     "clutter_density": 5e-11,
+     "gap_q": 0.0,
+     "gap_s": 180.0,
+     "max_consecutive_rejects": 2
+    },
+    "moving_rmse_m": 155.85430499524682
+   },
+   {
+    "params": {
+     "r_pos_m": 5.0,
+     "q_stationary": 0.0001,
+     "tau_stationary_s": 30.0,
+     "q_cruise": 0.002,
+     "q_turn": 0.01,
+     "q_omega": 2e-06,
+     "sojourn_s": [
+      1800.0,
+      600.0,
+      300.0
+     ],
+     "switch": [
+      [
+       0.0,
+       0.9,
+       0.1
+      ],
+      [
+       0.2,
+       0.0,
+       0.8
+      ],
+      [
+       0.1,
+       0.9,
+       0.0
+      ]
+     ],
+     "init_probs": [
+      0.2,
+      0.6,
+      0.2
+     ],
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "init_omega_std": 0.017453292519943295,
+     "clutter_density": 5e-11,
+     "gap_q": 0.05,
+     "gap_s": 180.0,
+     "max_consecutive_rejects": 2
+    },
+    "moving_rmse_m": 21.010567337251814
+   },
+   {
+    "params": {
+     "r_pos_m": 5.0,
+     "q_stationary": 0.0001,
+     "tau_stationary_s": 30.0,
+     "q_cruise": 0.002,
+     "q_turn": 0.01,
+     "q_omega": 2e-06,
+     "sojourn_s": [
+      1800.0,
+      600.0,
+      300.0
+     ],
+     "switch": [
+      [
+       0.0,
+       0.9,
+       0.1
+      ],
+      [
+       0.2,
+       0.0,
+       0.8
+      ],
+      [
+       0.1,
+       0.9,
+       0.0
+      ]
+     ],
+     "init_probs": [
+      0.2,
+      0.6,
+      0.2
+     ],
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "init_omega_std": 0.017453292519943295,
+     "clutter_density": 5e-11,
+     "gap_q": 0.3,
+     "gap_s": 180.0,
+     "max_consecutive_rejects": 2
+    },
+    "moving_rmse_m": 55.63624806338779
+   },
+   {
+    "params": {
+     "r_pos_m": 10.0,
+     "q_stationary": 0.0001,
+     "tau_stationary_s": 30.0,
+     "q_cruise": 0.002,
+     "q_turn": 0.01,
+     "q_omega": 2e-06,
+     "sojourn_s": [
+      1800.0,
+      600.0,
+      300.0
+     ],
+     "switch": [
+      [
+       0.0,
+       0.9,
+       0.1
+      ],
+      [
+       0.2,
+       0.0,
+       0.8
+      ],
+      [
+       0.1,
+       0.9,
+       0.0
+      ]
+     ],
+     "init_probs": [
+      0.2,
+      0.6,
+      0.2
+     ],
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "init_omega_std": 0.017453292519943295,
+     "clutter_density": 5e-11,
+     "gap_q": 0.0,
+     "gap_s": 180.0,
+     "max_consecutive_rejects": 2
+    },
+    "moving_rmse_m": 156.83120880545792
+   },
+   {
+    "params": {
+     "r_pos_m": 10.0,
+     "q_stationary": 0.0001,
+     "tau_stationary_s": 30.0,
+     "q_cruise": 0.002,
+     "q_turn": 0.01,
+     "q_omega": 2e-06,
+     "sojourn_s": [
+      1800.0,
+      600.0,
+      300.0
+     ],
+     "switch": [
+      [
+       0.0,
+       0.9,
+       0.1
+      ],
+      [
+       0.2,
+       0.0,
+       0.8
+      ],
+      [
+       0.1,
+       0.9,
+       0.0
+      ]
+     ],
+     "init_probs": [
+      0.2,
+      0.6,
+      0.2
+     ],
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "init_omega_std": 0.017453292519943295,
+     "clutter_density": 5e-11,
+     "gap_q": 0.05,
+     "gap_s": 180.0,
+     "max_consecutive_rejects": 2
+    },
+    "moving_rmse_m": 20.43202906282175
+   },
+   {
+    "params": {
+     "r_pos_m": 10.0,
+     "q_stationary": 0.0001,
+     "tau_stationary_s": 30.0,
+     "q_cruise": 0.002,
+     "q_turn": 0.01,
+     "q_omega": 2e-06,
+     "sojourn_s": [
+      1800.0,
+      600.0,
+      300.0
+     ],
+     "switch": [
+      [
+       0.0,
+       0.9,
+       0.1
+      ],
+      [
+       0.2,
+       0.0,
+       0.8
+      ],
+      [
+       0.1,
+       0.9,
+       0.0
+      ]
+     ],
+     "init_probs": [
+      0.2,
+      0.6,
+      0.2
+     ],
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "init_omega_std": 0.017453292519943295,
+     "clutter_density": 5e-11,
+     "gap_q": 0.3,
+     "gap_s": 180.0,
+     "max_consecutive_rejects": 2
+    },
+    "moving_rmse_m": 54.76700444555586
+   },
+   {
+    "params": {
+     "r_pos_m": 5.0,
+     "q_stationary": 0.0001,
+     "tau_stationary_s": 30.0,
+     "q_cruise": 0.002,
+     "q_turn": 0.05,
+     "q_omega": 2e-07,
+     "sojourn_s": [
+      1800.0,
+      600.0,
+      300.0
+     ],
+     "switch": [
+      [
+       0.0,
+       0.9,
+       0.1
+      ],
+      [
+       0.2,
+       0.0,
+       0.8
+      ],
+      [
+       0.1,
+       0.9,
+       0.0
+      ]
+     ],
+     "init_probs": [
+      0.2,
+      0.6,
+      0.2
+     ],
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "init_omega_std": 0.017453292519943295,
+     "clutter_density": 5e-11,
+     "gap_q": 0.0,
+     "gap_s": 180.0,
+     "max_consecutive_rejects": 2
+    },
+    "moving_rmse_m": 15.91711493943641
+   },
+   {
+    "params": {
+     "r_pos_m": 5.0,
+     "q_stationary": 0.0001,
+     "tau_stationary_s": 30.0,
+     "q_cruise": 0.002,
+     "q_turn": 0.05,
+     "q_omega": 2e-07,
+     "sojourn_s": [
+      1800.0,
+      600.0,
+      300.0
+     ],
+     "switch": [
+      [
+       0.0,
+       0.9,
+       0.1
+      ],
+      [
+       0.2,
+       0.0,
+       0.8
+      ],
+      [
+       0.1,
+       0.9,
+       0.0
+      ]
+     ],
+     "init_probs": [
+      0.2,
+      0.6,
+      0.2
+     ],
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "init_omega_std": 0.017453292519943295,
+     "clutter_density": 5e-11,
+     "gap_q": 0.05,
+     "gap_s": 180.0,
+     "max_consecutive_rejects": 2
+    },
+    "moving_rmse_m": 15.06661488005426
+   },
+   {
+    "params": {
+     "r_pos_m": 5.0,
+     "q_stationary": 0.0001,
+     "tau_stationary_s": 30.0,
+     "q_cruise": 0.002,
+     "q_turn": 0.05,
+     "q_omega": 2e-07,
+     "sojourn_s": [
+      1800.0,
+      600.0,
+      300.0
+     ],
+     "switch": [
+      [
+       0.0,
+       0.9,
+       0.1
+      ],
+      [
+       0.2,
+       0.0,
+       0.8
+      ],
+      [
+       0.1,
+       0.9,
+       0.0
+      ]
+     ],
+     "init_probs": [
+      0.2,
+      0.6,
+      0.2
+     ],
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "init_omega_std": 0.017453292519943295,
+     "clutter_density": 5e-11,
+     "gap_q": 0.3,
+     "gap_s": 180.0,
+     "max_consecutive_rejects": 2
+    },
+    "moving_rmse_m": 59.742295618892086
+   },
+   {
+    "params": {
+     "r_pos_m": 10.0,
+     "q_stationary": 0.0001,
+     "tau_stationary_s": 30.0,
+     "q_cruise": 0.002,
+     "q_turn": 0.05,
+     "q_omega": 2e-07,
+     "sojourn_s": [
+      1800.0,
+      600.0,
+      300.0
+     ],
+     "switch": [
+      [
+       0.0,
+       0.9,
+       0.1
+      ],
+      [
+       0.2,
+       0.0,
+       0.8
+      ],
+      [
+       0.1,
+       0.9,
+       0.0
+      ]
+     ],
+     "init_probs": [
+      0.2,
+      0.6,
+      0.2
+     ],
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "init_omega_std": 0.017453292519943295,
+     "clutter_density": 5e-11,
+     "gap_q": 0.0,
+     "gap_s": 180.0,
+     "max_consecutive_rejects": 2
+    },
+    "moving_rmse_m": 15.907704498356194
+   },
+   {
+    "params": {
+     "r_pos_m": 10.0,
+     "q_stationary": 0.0001,
+     "tau_stationary_s": 30.0,
+     "q_cruise": 0.002,
+     "q_turn": 0.05,
+     "q_omega": 2e-07,
+     "sojourn_s": [
+      1800.0,
+      600.0,
+      300.0
+     ],
+     "switch": [
+      [
+       0.0,
+       0.9,
+       0.1
+      ],
+      [
+       0.2,
+       0.0,
+       0.8
+      ],
+      [
+       0.1,
+       0.9,
+       0.0
+      ]
+     ],
+     "init_probs": [
+      0.2,
+      0.6,
+      0.2
+     ],
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "init_omega_std": 0.017453292519943295,
+     "clutter_density": 5e-11,
+     "gap_q": 0.05,
+     "gap_s": 180.0,
+     "max_consecutive_rejects": 2
+    },
+    "moving_rmse_m": 15.055254629084242
+   },
+   {
+    "params": {
+     "r_pos_m": 10.0,
+     "q_stationary": 0.0001,
+     "tau_stationary_s": 30.0,
+     "q_cruise": 0.002,
+     "q_turn": 0.05,
+     "q_omega": 2e-07,
+     "sojourn_s": [
+      1800.0,
+      600.0,
+      300.0
+     ],
+     "switch": [
+      [
+       0.0,
+       0.9,
+       0.1
+      ],
+      [
+       0.2,
+       0.0,
+       0.8
+      ],
+      [
+       0.1,
+       0.9,
+       0.0
+      ]
+     ],
+     "init_probs": [
+      0.2,
+      0.6,
+      0.2
+     ],
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "init_omega_std": 0.017453292519943295,
+     "clutter_density": 5e-11,
+     "gap_q": 0.3,
+     "gap_s": 180.0,
+     "max_consecutive_rejects": 2
+    },
+    "moving_rmse_m": 59.62223174006389
+   },
+   {
+    "params": {
+     "r_pos_m": 5.0,
+     "q_stationary": 0.0001,
+     "tau_stationary_s": 30.0,
+     "q_cruise": 0.002,
+     "q_turn": 0.05,
+     "q_omega": 2e-06,
+     "sojourn_s": [
+      1800.0,
+      600.0,
+      300.0
+     ],
+     "switch": [
+      [
+       0.0,
+       0.9,
+       0.1
+      ],
+      [
+       0.2,
+       0.0,
+       0.8
+      ],
+      [
+       0.1,
+       0.9,
+       0.0
+      ]
+     ],
+     "init_probs": [
+      0.2,
+      0.6,
+      0.2
+     ],
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "init_omega_std": 0.017453292519943295,
+     "clutter_density": 5e-11,
+     "gap_q": 0.0,
+     "gap_s": 180.0,
+     "max_consecutive_rejects": 2
+    },
+    "moving_rmse_m": 48.886717644570226
+   },
+   {
+    "params": {
+     "r_pos_m": 5.0,
+     "q_stationary": 0.0001,
+     "tau_stationary_s": 30.0,
+     "q_cruise": 0.002,
+     "q_turn": 0.05,
+     "q_omega": 2e-06,
+     "sojourn_s": [
+      1800.0,
+      600.0,
+      300.0
+     ],
+     "switch": [
+      [
+       0.0,
+       0.9,
+       0.1
+      ],
+      [
+       0.2,
+       0.0,
+       0.8
+      ],
+      [
+       0.1,
+       0.9,
+       0.0
+      ]
+     ],
+     "init_probs": [
+      0.2,
+      0.6,
+      0.2
+     ],
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "init_omega_std": 0.017453292519943295,
+     "clutter_density": 5e-11,
+     "gap_q": 0.05,
+     "gap_s": 180.0,
+     "max_consecutive_rejects": 2
+    },
+    "moving_rmse_m": 63.29487066786893
+   },
+   {
+    "params": {
+     "r_pos_m": 5.0,
+     "q_stationary": 0.0001,
+     "tau_stationary_s": 30.0,
+     "q_cruise": 0.002,
+     "q_turn": 0.05,
+     "q_omega": 2e-06,
+     "sojourn_s": [
+      1800.0,
+      600.0,
+      300.0
+     ],
+     "switch": [
+      [
+       0.0,
+       0.9,
+       0.1
+      ],
+      [
+       0.2,
+       0.0,
+       0.8
+      ],
+      [
+       0.1,
+       0.9,
+       0.0
+      ]
+     ],
+     "init_probs": [
+      0.2,
+      0.6,
+      0.2
+     ],
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "init_omega_std": 0.017453292519943295,
+     "clutter_density": 5e-11,
+     "gap_q": 0.3,
+     "gap_s": 180.0,
+     "max_consecutive_rejects": 2
+    },
+    "moving_rmse_m": 64.63153686776583
+   },
+   {
+    "params": {
+     "r_pos_m": 10.0,
+     "q_stationary": 0.0001,
+     "tau_stationary_s": 30.0,
+     "q_cruise": 0.002,
+     "q_turn": 0.05,
+     "q_omega": 2e-06,
+     "sojourn_s": [
+      1800.0,
+      600.0,
+      300.0
+     ],
+     "switch": [
+      [
+       0.0,
+       0.9,
+       0.1
+      ],
+      [
+       0.2,
+       0.0,
+       0.8
+      ],
+      [
+       0.1,
+       0.9,
+       0.0
+      ]
+     ],
+     "init_probs": [
+      0.2,
+      0.6,
+      0.2
+     ],
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "init_omega_std": 0.017453292519943295,
+     "clutter_density": 5e-11,
+     "gap_q": 0.0,
+     "gap_s": 180.0,
+     "max_consecutive_rejects": 2
+    },
+    "moving_rmse_m": 48.91807790075139
+   },
+   {
+    "params": {
+     "r_pos_m": 10.0,
+     "q_stationary": 0.0001,
+     "tau_stationary_s": 30.0,
+     "q_cruise": 0.002,
+     "q_turn": 0.05,
+     "q_omega": 2e-06,
+     "sojourn_s": [
+      1800.0,
+      600.0,
+      300.0
+     ],
+     "switch": [
+      [
+       0.0,
+       0.9,
+       0.1
+      ],
+      [
+       0.2,
+       0.0,
+       0.8
+      ],
+      [
+       0.1,
+       0.9,
+       0.0
+      ]
+     ],
+     "init_probs": [
+      0.2,
+      0.6,
+      0.2
+     ],
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "init_omega_std": 0.017453292519943295,
+     "clutter_density": 5e-11,
+     "gap_q": 0.05,
+     "gap_s": 180.0,
+     "max_consecutive_rejects": 2
+    },
+    "moving_rmse_m": 63.204653392198885
+   },
+   {
+    "params": {
+     "r_pos_m": 10.0,
+     "q_stationary": 0.0001,
+     "tau_stationary_s": 30.0,
+     "q_cruise": 0.002,
+     "q_turn": 0.05,
+     "q_omega": 2e-06,
+     "sojourn_s": [
+      1800.0,
+      600.0,
+      300.0
+     ],
+     "switch": [
+      [
+       0.0,
+       0.9,
+       0.1
+      ],
+      [
+       0.2,
+       0.0,
+       0.8
+      ],
+      [
+       0.1,
+       0.9,
+       0.0
+      ]
+     ],
+     "init_probs": [
+      0.2,
+      0.6,
+      0.2
+     ],
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "init_omega_std": 0.017453292519943295,
+     "clutter_density": 5e-11,
+     "gap_q": 0.3,
+     "gap_s": 180.0,
+     "max_consecutive_rejects": 2
+    },
+    "moving_rmse_m": 91.51483928633317
+   },
+   {
+    "params": {
+     "r_pos_m": 5.0,
+     "q_stationary": 0.0001,
+     "tau_stationary_s": 30.0,
+     "q_cruise": 0.002,
+     "q_turn": 0.2,
+     "q_omega": 2e-07,
+     "sojourn_s": [
+      1800.0,
+      600.0,
+      300.0
+     ],
+     "switch": [
+      [
+       0.0,
+       0.9,
+       0.1
+      ],
+      [
+       0.2,
+       0.0,
+       0.8
+      ],
+      [
+       0.1,
+       0.9,
+       0.0
+      ]
+     ],
+     "init_probs": [
+      0.2,
+      0.6,
+      0.2
+     ],
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "init_omega_std": 0.017453292519943295,
+     "clutter_density": 5e-11,
+     "gap_q": 0.0,
+     "gap_s": 180.0,
+     "max_consecutive_rejects": 2
+    },
+    "moving_rmse_m": 14.755763430581766
+   },
+   {
+    "params": {
+     "r_pos_m": 5.0,
+     "q_stationary": 0.0001,
+     "tau_stationary_s": 30.0,
+     "q_cruise": 0.002,
+     "q_turn": 0.2,
+     "q_omega": 2e-07,
+     "sojourn_s": [
+      1800.0,
+      600.0,
+      300.0
+     ],
+     "switch": [
+      [
+       0.0,
+       0.9,
+       0.1
+      ],
+      [
+       0.2,
+       0.0,
+       0.8
+      ],
+      [
+       0.1,
+       0.9,
+       0.0
+      ]
+     ],
+     "init_probs": [
+      0.2,
+      0.6,
+      0.2
+     ],
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "init_omega_std": 0.017453292519943295,
+     "clutter_density": 5e-11,
+     "gap_q": 0.05,
+     "gap_s": 180.0,
+     "max_consecutive_rejects": 2
+    },
+    "moving_rmse_m": 17.519009413762443
+   },
+   {
+    "params": {
+     "r_pos_m": 5.0,
+     "q_stationary": 0.0001,
+     "tau_stationary_s": 30.0,
+     "q_cruise": 0.002,
+     "q_turn": 0.2,
+     "q_omega": 2e-07,
+     "sojourn_s": [
+      1800.0,
+      600.0,
+      300.0
+     ],
+     "switch": [
+      [
+       0.0,
+       0.9,
+       0.1
+      ],
+      [
+       0.2,
+       0.0,
+       0.8
+      ],
+      [
+       0.1,
+       0.9,
+       0.0
+      ]
+     ],
+     "init_probs": [
+      0.2,
+      0.6,
+      0.2
+     ],
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "init_omega_std": 0.017453292519943295,
+     "clutter_density": 5e-11,
+     "gap_q": 0.3,
+     "gap_s": 180.0,
+     "max_consecutive_rejects": 2
+    },
+    "moving_rmse_m": 61.03466096454461
+   },
+   {
+    "params": {
+     "r_pos_m": 10.0,
+     "q_stationary": 0.0001,
+     "tau_stationary_s": 30.0,
+     "q_cruise": 0.002,
+     "q_turn": 0.2,
+     "q_omega": 2e-07,
+     "sojourn_s": [
+      1800.0,
+      600.0,
+      300.0
+     ],
+     "switch": [
+      [
+       0.0,
+       0.9,
+       0.1
+      ],
+      [
+       0.2,
+       0.0,
+       0.8
+      ],
+      [
+       0.1,
+       0.9,
+       0.0
+      ]
+     ],
+     "init_probs": [
+      0.2,
+      0.6,
+      0.2
+     ],
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "init_omega_std": 0.017453292519943295,
+     "clutter_density": 5e-11,
+     "gap_q": 0.0,
+     "gap_s": 180.0,
+     "max_consecutive_rejects": 2
+    },
+    "moving_rmse_m": 14.633734779737578
+   },
+   {
+    "params": {
+     "r_pos_m": 10.0,
+     "q_stationary": 0.0001,
+     "tau_stationary_s": 30.0,
+     "q_cruise": 0.002,
+     "q_turn": 0.2,
+     "q_omega": 2e-07,
+     "sojourn_s": [
+      1800.0,
+      600.0,
+      300.0
+     ],
+     "switch": [
+      [
+       0.0,
+       0.9,
+       0.1
+      ],
+      [
+       0.2,
+       0.0,
+       0.8
+      ],
+      [
+       0.1,
+       0.9,
+       0.0
+      ]
+     ],
+     "init_probs": [
+      0.2,
+      0.6,
+      0.2
+     ],
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "init_omega_std": 0.017453292519943295,
+     "clutter_density": 5e-11,
+     "gap_q": 0.05,
+     "gap_s": 180.0,
+     "max_consecutive_rejects": 2
+    },
+    "moving_rmse_m": 17.41002269420604
+   },
+   {
+    "params": {
+     "r_pos_m": 10.0,
+     "q_stationary": 0.0001,
+     "tau_stationary_s": 30.0,
+     "q_cruise": 0.002,
+     "q_turn": 0.2,
+     "q_omega": 2e-07,
+     "sojourn_s": [
+      1800.0,
+      600.0,
+      300.0
+     ],
+     "switch": [
+      [
+       0.0,
+       0.9,
+       0.1
+      ],
+      [
+       0.2,
+       0.0,
+       0.8
+      ],
+      [
+       0.1,
+       0.9,
+       0.0
+      ]
+     ],
+     "init_probs": [
+      0.2,
+      0.6,
+      0.2
+     ],
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "init_omega_std": 0.017453292519943295,
+     "clutter_density": 5e-11,
+     "gap_q": 0.3,
+     "gap_s": 180.0,
+     "max_consecutive_rejects": 2
+    },
+    "moving_rmse_m": 60.976569292513084
+   },
+   {
+    "params": {
+     "r_pos_m": 5.0,
+     "q_stationary": 0.0001,
+     "tau_stationary_s": 30.0,
+     "q_cruise": 0.002,
+     "q_turn": 0.2,
+     "q_omega": 2e-06,
+     "sojourn_s": [
+      1800.0,
+      600.0,
+      300.0
+     ],
+     "switch": [
+      [
+       0.0,
+       0.9,
+       0.1
+      ],
+      [
+       0.2,
+       0.0,
+       0.8
+      ],
+      [
+       0.1,
+       0.9,
+       0.0
+      ]
+     ],
+     "init_probs": [
+      0.2,
+      0.6,
+      0.2
+     ],
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "init_omega_std": 0.017453292519943295,
+     "clutter_density": 5e-11,
+     "gap_q": 0.0,
+     "gap_s": 180.0,
+     "max_consecutive_rejects": 2
+    },
+    "moving_rmse_m": 15.311626201813995
+   },
+   {
+    "params": {
+     "r_pos_m": 5.0,
+     "q_stationary": 0.0001,
+     "tau_stationary_s": 30.0,
+     "q_cruise": 0.002,
+     "q_turn": 0.2,
+     "q_omega": 2e-06,
+     "sojourn_s": [
+      1800.0,
+      600.0,
+      300.0
+     ],
+     "switch": [
+      [
+       0.0,
+       0.9,
+       0.1
+      ],
+      [
+       0.2,
+       0.0,
+       0.8
+      ],
+      [
+       0.1,
+       0.9,
+       0.0
+      ]
+     ],
+     "init_probs": [
+      0.2,
+      0.6,
+      0.2
+     ],
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "init_omega_std": 0.017453292519943295,
+     "clutter_density": 5e-11,
+     "gap_q": 0.05,
+     "gap_s": 180.0,
+     "max_consecutive_rejects": 2
+    },
+    "moving_rmse_m": 48.2369212218958
+   },
+   {
+    "params": {
+     "r_pos_m": 5.0,
+     "q_stationary": 0.0001,
+     "tau_stationary_s": 30.0,
+     "q_cruise": 0.002,
+     "q_turn": 0.2,
+     "q_omega": 2e-06,
+     "sojourn_s": [
+      1800.0,
+      600.0,
+      300.0
+     ],
+     "switch": [
+      [
+       0.0,
+       0.9,
+       0.1
+      ],
+      [
+       0.2,
+       0.0,
+       0.8
+      ],
+      [
+       0.1,
+       0.9,
+       0.0
+      ]
+     ],
+     "init_probs": [
+      0.2,
+      0.6,
+      0.2
+     ],
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "init_omega_std": 0.017453292519943295,
+     "clutter_density": 5e-11,
+     "gap_q": 0.3,
+     "gap_s": 180.0,
+     "max_consecutive_rejects": 2
+    },
+    "moving_rmse_m": 40.049511426155924
+   },
+   {
+    "params": {
+     "r_pos_m": 10.0,
+     "q_stationary": 0.0001,
+     "tau_stationary_s": 30.0,
+     "q_cruise": 0.002,
+     "q_turn": 0.2,
+     "q_omega": 2e-06,
+     "sojourn_s": [
+      1800.0,
+      600.0,
+      300.0
+     ],
+     "switch": [
+      [
+       0.0,
+       0.9,
+       0.1
+      ],
+      [
+       0.2,
+       0.0,
+       0.8
+      ],
+      [
+       0.1,
+       0.9,
+       0.0
+      ]
+     ],
+     "init_probs": [
+      0.2,
+      0.6,
+      0.2
+     ],
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "init_omega_std": 0.017453292519943295,
+     "clutter_density": 5e-11,
+     "gap_q": 0.0,
+     "gap_s": 180.0,
+     "max_consecutive_rejects": 2
+    },
+    "moving_rmse_m": 44.92613068349477
+   },
+   {
+    "params": {
+     "r_pos_m": 10.0,
+     "q_stationary": 0.0001,
+     "tau_stationary_s": 30.0,
+     "q_cruise": 0.002,
+     "q_turn": 0.2,
+     "q_omega": 2e-06,
+     "sojourn_s": [
+      1800.0,
+      600.0,
+      300.0
+     ],
+     "switch": [
+      [
+       0.0,
+       0.9,
+       0.1
+      ],
+      [
+       0.2,
+       0.0,
+       0.8
+      ],
+      [
+       0.1,
+       0.9,
+       0.0
+      ]
+     ],
+     "init_probs": [
+      0.2,
+      0.6,
+      0.2
+     ],
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "init_omega_std": 0.017453292519943295,
+     "clutter_density": 5e-11,
+     "gap_q": 0.05,
+     "gap_s": 180.0,
+     "max_consecutive_rejects": 2
+    },
+    "moving_rmse_m": 64.12765519843062
+   },
+   {
+    "params": {
+     "r_pos_m": 10.0,
+     "q_stationary": 0.0001,
+     "tau_stationary_s": 30.0,
+     "q_cruise": 0.002,
+     "q_turn": 0.2,
+     "q_omega": 2e-06,
+     "sojourn_s": [
+      1800.0,
+      600.0,
+      300.0
+     ],
+     "switch": [
+      [
+       0.0,
+       0.9,
+       0.1
+      ],
+      [
+       0.2,
+       0.0,
+       0.8
+      ],
+      [
+       0.1,
+       0.9,
+       0.0
+      ]
+     ],
+     "init_probs": [
+      0.2,
+      0.6,
+      0.2
+     ],
+     "init_vel_std": 5.0,
+     "sogcog_vel_std": 0.5,
+     "init_omega_std": 0.017453292519943295,
+     "clutter_density": 5e-11,
+     "gap_q": 0.3,
+     "gap_s": 180.0,
+     "max_consecutive_rejects": 2
+    },
+    "moving_rmse_m": 58.1223355934906
+   }
+  ]
+ },
+ "eval": {
+  "cv": {
+   "straight": {
+    "n": 29844,
+    "rmse_m": 33.38411225915171,
+    "median_m": 5.841648868657925,
+    "p95_m": 12.300351025976004
+   },
+   "manoeuvre": {
+    "n": 6157,
+    "rmse_m": 86.71705157342487,
+    "median_m": 5.854495728179973,
+    "p95_m": 12.486853989093206
+   },
+   "stopped": {
+    "n": 1543,
+    "rmse_m": 221.56465414601269,
+    "median_m": 5.925397630312156,
+    "p95_m": 12.235974112788028
+   },
+   "moving": {
+    "n": 36001,
+    "rmse_m": 47.010221975997716,
+    "median_m": 5.843537130716644,
+    "p95_m": 12.32195530093443
+   },
+   "nees": {
+    "runs": 200,
+    "steps": 118,
+    "mean_anees": 8.834741726704971,
+    "median_anees": 0.5778598104323973,
+    "band": [
+     3.617562966311435,
+     4.401376684465753
+    ],
+    "frac_in_band": 0.01694915254237288,
+    "anees_trace": [
+     0.592,
+     0.563,
+     0.531,
+     0.47,
+     0.541,
+     0.539,
+     0.496,
+     0.581,
+     0.544,
+     0.581,
+     0.631,
+     0.599,
+     0.613,
+     4.195,
+     0.889,
+     0.581,
+     0.536,
+     0.52,
+     0.549,
+     0.594,
+     0.521,
+     0.544,
+     0.569,
+     3.743,
+     469.201,
+     1.175,
+     0.628,
+     0.498,
+     0.573,
+     0.577,
+     0.625,
+     0.59,
+     0.589,
+     355.885,
+     8.86,
+     0.553,
+     0.582,
+     0.532,
+     0.557,
+     0.525,
+     0.568,
+     0.604,
+     0.595,
+     0.614,
+     0.579,
+     0.564,
+     0.59,
+     0.621,
+     0.576,
+     0.571,
+     0.539,
+     0.524,
+     0.599,
+     0.607,
+     0.493,
+     0.539,
+     0.575,
+     0.587,
+     0.555,
+     0.606,
+     6.499,
+     0.994,
+     0.579,
+     0.556,
+     8.389,
+     1.095,
+     0.551,
+     0.524,
+     0.592,
+     0.572,
+     0.508,
+     98.962,
+     0.608,
+     0.54,
+     0.533,
+     0.577,
+     0.56,
+     0.646,
+     0.617,
+     0.556,
+     0.594,
+     5.184,
+     9.327,
+     1.224,
+     0.597,
+     0.572,
+     0.519,
+     0.602,
+     0.626,
+     0.566,
+     0.56,
+     0.562,
+     0.612,
+     0.571,
+     0.62,
+     0.609,
+     0.554,
+     0.525,
+     8.329,
+     1.09,
+     0.53,
+     0.552,
+     0.541,
+     0.595,
+     0.503,
+     0.556,
+     0.568,
+     0.533,
+     0.578,
+     0.503,
+     0.621,
+     0.554,
+     0.58,
+     0.528,
+     0.67,
+     0.643,
+     0.571,
+     0.598
+    ]
+   },
+   "outlier_rejection": {
+    "precision": 0.8956043956043956,
+    "recall": 0.8858695652173914,
+    "rejected_non_outliers": 19
+   }
+  },
+  "imm": {
+   "straight": {
+    "n": 29844,
+    "rmse_m": 33.449256904269916,
+    "median_m": 5.4006341194782745,
+    "p95_m": 11.4166891639799
+   },
+   "manoeuvre": {
+    "n": 6157,
+    "rmse_m": 80.53088342571533,
+    "median_m": 5.891452277557086,
+    "p95_m": 12.509860300858055
+   },
+   "stopped": {
+    "n": 1543,
+    "rmse_m": 169.54113499063877,
+    "median_m": 5.1341550270673935,
+    "p95_m": 11.449281688932114
+   },
+   "moving": {
+    "n": 36001,
+    "rmse_m": 45.128989548154905,
+    "median_m": 5.472873848804429,
+    "p95_m": 11.616606486014366
+   },
+   "nees": {
+    "runs": 200,
+    "steps": 118,
+    "mean_anees": 35.690287957729744,
+    "median_anees": 3.1348373663040876,
+    "band": [
+     3.617562966311435,
+     4.401376684465753
+    ],
+    "frac_in_band": 0.0847457627118644,
+    "anees_trace": [
+     3.401,
+     2.643,
+     2.444,
+     2.405,
+     3.119,
+     2.428,
+     2.655,
+     6.491,
+     3.234,
+     2.65,
+     3.089,
+     2.687,
+     3.275,
+     18.827,
+     5.385,
+     11.773,
+     3.457,
+     2.277,
+     2.668,
+     3.151,
+     2.094,
+     2.776,
+     2.615,
+     15.787,
+     1877.773,
+     3.304,
+     3.113,
+     2.635,
+     2.999,
+     2.473,
+     3.576,
+     3.425,
+     6.401,
+     1424.054,
+     20.285,
+     3.097,
+     2.889,
+     2.832,
+     2.658,
+     2.539,
+     3.247,
+     3.78,
+     5.405,
+     2.769,
+     3.18,
+     2.593,
+     3.518,
+     2.948,
+     3.099,
+     2.744,
+     3.403,
+     2.996,
+     4.002,
+     3.029,
+     3.716,
+     2.803,
+     3.055,
+     2.982,
+     2.724,
+     3.952,
+     26.453,
+     3.694,
+     3.484,
+     2.39,
+     34.176,
+     5.056,
+     3.111,
+     3.762,
+     3.266,
+     3.237,
+     2.661,
+     396.867,
+     2.637,
+     8.327,
+     3.307,
+     3.012,
+     3.684,
+     3.024,
+     3.074,
+     2.843,
+     3.062,
+     20.908,
+     6.358,
+     3.395,
+     2.768,
+     2.578,
+     4.63,
+     4.553,
+     3.916,
+     4.787,
+     2.649,
+     2.5,
+     3.27,
+     4.826,
+     2.398,
+     4.229,
+     2.565,
+     2.239,
+     4.011,
+     5.694,
+     4.427,
+     3.483,
+     3.101,
+     3.234,
+     2.595,
+     3.308,
+     2.754,
+     2.413,
+     2.937,
+     5.265,
+     2.899,
+     2.882,
+     2.918,
+     2.84,
+     3.477,
+     3.519,
+     3.506,
+     5.167
+    ]
+   },
+   "outlier_rejection": {
+    "precision": 0.9105263157894737,
+    "recall": 0.9402173913043478,
+    "rejected_non_outliers": 17
+   }
+  }
+ },
+ "criteria": [
+  {
+   "name": "IMM manoeuvre RMSE vs best-tuned CV-KF",
+   "target": ">= 20% lower",
+   "result": "7.1% lower",
+   "met": false
+  },
+  {
+   "name": "IMM straight-segment RMSE vs CV-KF",
+   "target": "<= 10% worse",
+   "result": "+0.2%",
+   "met": true
+  },
+  {
+   "name": "IMM NEES steps inside 95% band",
+   "target": ">= 80%",
+   "result": "8%",
+   "met": false
+  }
+ ]
+}

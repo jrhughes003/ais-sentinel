@@ -14,7 +14,7 @@ outlier is still rejected, because the fix after it agrees with the existing tra
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 import numpy as np
 from numpy.typing import NDArray
@@ -24,6 +24,7 @@ from ais_sentinel.tracking.models import cv_process_noise, cv_transition
 
 Array = NDArray[np.float64]
 
+_LOG2PI = float(np.log(2 * np.pi))
 H_POS = np.array([[1.0, 0.0, 0.0, 0.0], [0.0, 1.0, 0.0, 0.0]])
 
 
@@ -78,6 +79,10 @@ class FilterResult:
     nis: Array  # (N,) NaN at (re)initialisation
     accepted: NDArray[np.bool_]  # (N,)
     reinit: NDArray[np.bool_]  # (N,) True where the filter (re)started
+    loglik: Array = field(default_factory=lambda: np.zeros(0))
+    """(N,) one-step predictive log-likelihood of each fix, computed *before* the filter
+    decides to accept, reject or restart; NaN only at the first fix. Restart fixes must be
+    scored: skipping them let an overly stiff filter look best (DECISIONS D20)."""
 
 
 def initial_state(z: Array, vel: Array | None, p: CVParams) -> tuple[Array, Array]:
@@ -117,6 +122,7 @@ def run_cv_filter(
     xps, Pps = np.zeros((n, 4)), np.zeros((n, 4, 4))
     Fs = np.tile(np.eye(4), (n, 1, 1))
     nis = np.full(n, np.nan)
+    lls = np.full(n, np.nan)
     accepted = np.zeros(n, dtype=bool)
     reinit = np.zeros(n, dtype=bool)
 
@@ -137,6 +143,7 @@ def run_cv_filter(
         S = H_POS @ P_pred @ H_POS.T + R
         S_inv = np.linalg.inv(S)
         nis[i] = float(nu @ S_inv @ nu)
+        lls[i] = -0.5 * (nis[i] + float(np.log(np.linalg.det(S))) + 2 * _LOG2PI)
         if nis[i] <= gate:
             K = P_pred @ H_POS.T @ S_inv
             x = x_pred + K @ nu
@@ -158,7 +165,8 @@ def run_cv_filter(
                 nis[i] = np.nan
                 rejects = 0
         xs[i], Ps[i] = x, P
-    return FilterResult(t, xs, Ps, xps, Pps, Fs, nis, accepted, reinit)
+    lls[0] = np.nan  # only the first fix has no prediction; restarts are still scored
+    return FilterResult(t, xs, Ps, xps, Pps, Fs, nis, accepted, reinit, loglik=lls)
 
 
 def rts_smooth(res: FilterResult) -> tuple[Array, Array]:

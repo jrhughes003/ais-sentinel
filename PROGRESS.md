@@ -35,15 +35,16 @@
     - a "rendezvous" that was really tug assistance;
     - a fishing boat that tripped the off-lane rule by working its grounds.
 
-**What didn't meet the pre-registered targets** (5 of 11 targets met; misses reported, not
+**What didn't meet the pre-registered targets** (4 of 11 targets met; misses reported, not
 hidden):
-- **Tracking**, after two attempts, both reported (D15, D19):
-  - Attempt 2 tuned measurement noise and added gap-aware process noise for both filters,
-    evaluated on fresh simulation seeds. The IMM now **ties the Kalman filter on straight
-    legs** (target met) and is **7% better in manoeuvres**, short of the 20% target.
-  - On real data both filters remain underconfident (NIS 0.9% against 2–10%). The cause is
-    process noise tuned on simulated manoeuvres harsher than real lakers make. Measurement
-    noise turned out not to matter.
+- **Tracking**, after three attempts, all reported (D15, D19, D20):
+  - The final attempt recalibrated the simulator to real ship behaviour and fitted both
+    filters' noise to real training data.
+  - On real data the IMM is clearly the better predictor (−7.4 against −10.4 log-likelihood
+    per fix), and its consistency improved from 0.9% to 1.6% (target 2–10%).
+  - But in a realistic simulator a well-tuned Kalman filter follows gentle real manoeuvres
+    just as well (both 1.4 m RMSE). The pre-registered margins over it are not met.
+  - The remaining straight-leg gap is two fixes right after 20-minute reporting gaps.
 - **Prediction:** a 15% gain at 120 min was the bar; the result was 9.5%.
 - **Anomalies:**
   - Gap recall was 0.85 against a 0.90 target. The reception mask deliberately ignores
@@ -53,9 +54,8 @@ hidden):
     stops working.
 
 **Suggested next steps:**
-1. **Tracking:** fit the process noise, or the simulator's manoeuvre statistics, to real data,
-   for example by maximising the one-step predictive likelihood on the training split. Then
-   re-run the simulation study on fresh seeds.
+1. **Tracking:** done (D20). The one remaining known fix: re-initialise immediately when the
+   first fix after a long gap fails the gate. That would need fresh evaluation seeds.
 2. **Deviation detector:** commercial-only lane density, a relative threshold, and
    tolerance for short interruptions. Evaluate on a *new* test month, since October has
    now been seen.
@@ -121,8 +121,7 @@ Test results are also reported for vessels never seen in training.
   a fresh test period (October has been used).
 
 ## Blocked / needs my input
-- (none). Tracking attempt 2 was done as agreed (D19). The next step is listed in the final
-  summary if you want to pursue it.
+- (none). Tracking attempt 3 is done (D20); iteration stopped per the three-attempt guardrail.
 - FYI: a helper Claude session ("diag-d6") reported clearing temp files outside this project
   (WSL crash dumps, swap vhdx). This session did not do or request that.
 
@@ -194,3 +193,8 @@ Test results are also reported for vessels never seen in training.
   - tuned measurement noise plus gap-aware process noise, on fresh seeds 1000–1199;
   - straight-leg criterion now met, manoeuvre criterion 7.1% (target 20%);
   - real-data noise calibration showed the underconfidence comes from process noise.
+- Tracking attempt 3 (owner's request):
+  - simulator and both filters calibrated to real training data;
+  - fixed a likelihood loophole (unscored restarts);
+  - conservative best-of-two CV baseline;
+  - fresh seeds 2000–2199. Results in D20.

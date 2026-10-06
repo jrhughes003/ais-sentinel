@@ -54,6 +54,14 @@ class SimConfig:
     outlier_m: tuple[float, float] = (200.0, 5000.0)
     sog_sigma_kn: float = 0.1
     cog_sigma_deg: float = 2.0
+    log_uniform: bool = False
+    """Draw turn rates and accelerations log-uniformly within their ranges. Real ships are
+    mostly gentle with rare sharp manoeuvres; see tracking/calibrate.py."""
+
+
+def _draw(rng: np.random.Generator, lo_hi: tuple[float, float], log: bool) -> float:
+    lo, hi = lo_hi
+    return float(np.exp(rng.uniform(np.log(lo), np.log(hi)))) if log else float(rng.uniform(lo, hi))
 
 
 @dataclass
@@ -101,19 +109,21 @@ def _truth_1hz(rng: np.random.Generator, c: SimConfig) -> tuple[Array, Array, ND
         u = rng.uniform()
         if u < c.p_stop and speed > 0:
             # Decelerate, dwell, accelerate back to cruise.
-            a = rng.uniform(*c.accel_ms2)
+            a = _draw(rng, c.accel_ms2, c.log_uniform)
             emit(int(speed / a), 0.0, -a, "speed")
             speed = 0.0
             emit(int(rng.uniform(*c.stop_dwell_s)), 0.0, 0.0, "stopped")
             emit(int(cruise / a), 0.0, a, "speed")
             speed = cruise
         elif u < c.p_stop + c.p_turn:
-            rate = np.radians(rng.uniform(*c.turn_rate_deg_s)) * rng.choice([-1.0, 1.0])
+            rate = np.radians(_draw(rng, c.turn_rate_deg_s, c.log_uniform)) * rng.choice(
+                [-1.0, 1.0]
+            )
             angle = np.radians(rng.uniform(*c.turn_angle_deg))
             emit(max(1, int(angle / abs(rate))), rate, 0.0, "turn")
         elif u < c.p_stop + c.p_turn + c.p_speed:
             target = rng.uniform(*c.speed_kn) * KNOT_MS
-            a = rng.uniform(*c.accel_ms2) * np.sign(target - speed)
+            a = _draw(rng, c.accel_ms2, c.log_uniform) * np.sign(target - speed)
             emit(max(1, int(abs(target - speed) / max(abs(a), 1e-9))), 0.0, a, "speed")
             cruise = speed
         emit(int(rng.uniform(*c.straight_s)), 0.0, 0.0, "straight" if speed > 0 else "stopped")

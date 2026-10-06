@@ -40,27 +40,35 @@ splits:                    # inclusive UTC dates; days between splits are buffer
 
 tracking:
   workers: 4               # parallel processes for the track stage
-  # Values below were chosen by the simulation study (reports/tracking.md), not by hand.
+  # Values below come from the real-data calibration stage (tracking/calibrate.py, D20):
+  # one-step predictive likelihood on training voyages; edge values were confirmed by a
+  # local refinement. Earlier simulation-tuned values: reports/tracking_attempt1.md, D19.
   cv:
-    q_accel: 0.1            # white-noise acceleration PSD [m^2/s^3]
-    r_pos_m: 10.0            # position measurement std [m]
+    q_accel: 1.0e-04         # white-noise acceleration PSD [m^2/s^3]
+    r_pos_m: 5.0            # position measurement std [m]
     gate_prob: 0.9999       # chi-square outlier gate
   imm:
-    r_pos_m: 5.0             # attempt 2 simulation tuning (D19); real-data value set below by calibration
-    q_stationary: 0.0001
+    r_pos_m: 0.75
+    q_stationary: 1.0e-04
     tau_stationary_s: 30.0
-    q_cruise: 0.002
-    q_turn: 0.2
-    q_omega: 2.0e-07
+    q_cruise: 5.0e-04
+    q_turn: 0.05
+    q_omega: 2.0e-08
     sojourn_s: [1800.0, 600.0, 300.0]
     clutter_density: 5.0e-11  # outlier density per m^2 (likelihood-ratio test)
-    gap_q: 0.05            # gap-aware process noise on steps > gap_s (D19)
+    gap_q: 0.0             # gap-aware process noise (both filters chose 0 on real data)
     gap_s: 180.0
   gate_prob: 0.999         # default gate if a filter does not set its own
   max_consecutive_rejects: 2
   sim:                     # simulation study (tracking/sim_study.py); half-open seed ranges
     tune_seeds: [0, 50]
-    eval_seeds: [1000, 1200]  # attempt 2 uses fresh seeds; attempt 1 used 100-300 (D19)
+    # Attempt 3 (D20): "fixed" mode evaluates the real-data-calibrated simulator and filter
+    # parameters unchanged on fresh seeds. Attempt 1 used seeds 100-300, attempt 2 1000-1200.
+    eval_seeds: [2000, 2200]
+    mode: fixed
+    calibration_file: reports/tracking_calibration.json
+  calibration:               # tracking/calibrate.py (training split only)
+    n_voyages: 150
 
 prediction:
   horizons_min: [15, 30, 60, 120]
@@ -133,11 +141,12 @@ export:
   n_events_per_type: 15    # top-scoring commercial events per anomaly type
   case_studies: configs/case_studies.yaml
   tracking_note: >-
-    Two attempts, both reported. Attempt 1 left the IMM far behind the Kalman filter on
-    RMSE, which was driven by a few catastrophic fixes after reporting gaps. Attempt 2 (the
-    numbers above) tuned measurement noise and added gap-aware process noise for both
-    filters, and was evaluated on fresh simulation seeds. The IMM now ties the Kalman
-    filter on straight legs and is 7% better in manoeuvres, short of the pre-registered 20%.
-    On real data both filters remain underconfident, because their process noise was tuned
-    on simulated manoeuvres harsher than real lakers make. The website's tracks and the
-    prediction baselines use the attempt-1 filter settings (DECISIONS D19).
+    Three attempts, all reported (DECISIONS D15, D19, D20). The numbers above are attempt 3.
+    The simulator was recalibrated to real ship behaviour, and both filters' noise was fitted
+    to real training data by one-step predictive likelihood. In this realistic simulator a
+    Kalman filter tuned for accuracy tracks gentle real manoeuvres as well as the IMM (both
+    1.4 m RMSE). The IMM's straight-leg RMSE comes from two fixes after 20-minute gaps.
+    On real data the IMM predicts each next fix far better than the Kalman filter (mean
+    log-likelihood -7.4 against -10.4 per fix) and is closer to consistent (NIS 1.6%, up from
+    0.9%; target 2-10%). The website's tracks and the prediction baselines use the attempt-1
+    filter settings.

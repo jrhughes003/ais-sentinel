@@ -52,10 +52,10 @@ Against the strongest baseline (kNN), the ML model chosen on validation (M2) is:
 | Area | Criterion | Result | Met? |
 |---|---|---|---|
 | Data | Reproducible pipeline; DQ tests; ≥ 5 M rows | 11.09 M rows; leakage and DQ tests pass | ✅ |
-| Tracking | IMM ≥ 20% lower RMSE than tuned CV-KF in manoeuvres (simulation) | 7.1% lower (attempt 2; attempt 1: −0.6%) | ❌ |
-| Tracking | IMM no more than 10% worse on straights | +0.2% (attempt 2; attempt 1: +168%) | ✅ |
-| Tracking | NEES inside the 95% band for ≥ 80% of steps | 8% (attempt 1: 1%) | ❌ |
-| Tracking | Real NIS: 2–10% above the 95% threshold | 0.9% (underconfident; process noise, see D19) | ❌ |
+| Tracking | IMM ≥ 20% lower RMSE than tuned CV-KF in manoeuvres (simulation) | −0.4%: both 1.4 m in a simulator calibrated to real ships (attempt 3; earlier −0.6%, 7.1%) | ❌ |
+| Tracking | IMM no more than 10% worse on straights | +5,678%, from 2 post-gap fixes of 24 k (medians equal; attempt 2: +0.2%) | ❌ |
+| Tracking | NEES inside the 95% band for ≥ 80% of steps | 1% (attempt 2: 8%) | ❌ |
+| Tracking | Real NIS: 2–10% above the 95% threshold | 1.6%, up from 0.9% after fitting noise to real data | ❌ |
 | Prediction | ML beats best baseline at 60 & 120 min, ≥ 15% at 120 | significant at both, but −9.5% at 120 | ❌ |
 | Prediction | 90% coverage within 85–95% at every horizon | 0.89–0.91 | ✅ |
 | Anomaly | Gap P ≥ 0.9 / R ≥ 0.9 | 1.00 / 0.85 | ❌ |
@@ -67,9 +67,14 @@ Against the strongest baseline (kNN), the ML model chosen on validation (M2) is:
 | Site | All views; desktop + mobile; 0 serious axe violations; ≤ 2 MB initial load | 26 Playwright tests pass | ✅ |
 | Engineering | CI green; ≥ 85% coverage on core modules | 80 tests, 95% coverage | ✅ |
 
-Tracking had two attempts, both reported. The second was one bounded iteration, agreed in
-advance and evaluated on fresh simulation seeds (DECISIONS D19). Misses are explained, not
-hidden. Details are in
+**Tracking had three attempts, all reported** (DECISIONS D15, D19, D20). The final one fitted
+the simulator and both filters to real ship behaviour.
+- On real data, the IMM predicts each next fix far better than a Kalman filter (mean
+  log-likelihood −7.4 against −10.4 per fix).
+- In a realistic simulator, though, gentle real manoeuvres are tracked equally well by a
+  well-tuned Kalman filter, so the pre-registered simulation margins are not met.
+
+Misses are explained, not hidden. Details are in
 [PROGRESS.md](PROGRESS.md#final-summary) and the reports:
 [prediction](reports/prediction_test.md), [tracking](reports/tracking.md),
 [anomaly](reports/anomaly.md).

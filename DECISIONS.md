@@ -193,3 +193,59 @@ PLAN §9.2 targets **unchanged**, and the result reported either way.
   with the attempt-1 settings (commit 303cd90). `tracks.parquet` was not regenerated, so
   the locked test is untouched.
 - The validation NIS for attempt 2 was computed separately (`scripts/nis_val.py`).
+
+### D20 — Tracking attempt 3: calibrate the simulator and both filters to real data (2026-10-06)
+Requested by the owner as the next step after D19. The PLAN §9.2 targets are unchanged.
+
+**What changed (training split only):**
+- **Simulator recalibrated** to real moving commercial vessels (1.8 M one-minute steps):
+  - speeds 4.8–19.8 kn;
+  - log-uniform turn rates 0.05–0.61 °/s (real ships turn for 20% of the time);
+  - log-uniform accelerations 0.0034–0.069 m/s²;
+  - 70 s reporting, 0.53% gaps over 3 min, 0.05% outliers.
+
+  The old simulator drew turn rates uniformly up to 1 °/s.
+- **Both filters tuned by one-step predictive likelihood** on 150 seeded training voyages.
+  This is the prediction-error method, with the clutter mixture used in the objective. Two
+  issues came up during tuning:
+  - The optimum first sat on grid edges. That exposed a **loophole**: fixes where the
+    filter re-initialises were not scored, so an overly stiff CV-KF, restarting on 8% of
+    fixes, looked best. Restart fixes are now scored, with a regression test.
+  - The remaining edge values were confirmed as optima by a local refinement.
+- **Results of the tuning:**
+  - CV-KF: q = 1e-4, R = 5 m.
+  - IMM: q_cruise 5e-4, q_turn 0.05, q_omega 2e-8, R = 0.75 m.
+  - Both chose gap_q = 0.
+- **Evaluation:** fixed mode on fresh seeds 2000–2199. The IMM is not tuned in simulation.
+  - The CV-KF baseline is the **better** (on tuning seeds) of the real-likelihood CV-KF
+    and one tuned for accuracy in the calibrated simulator. This guards against a strawman:
+    the real-likelihood CV-KF rejected 3,515 good fixes in simulation and would have handed
+    the IMM a meaningless "99% better".
+
+**Results:**
+- In the realistic simulator, the simulator-tuned CV-KF tracks real-like manoeuvres as well
+  as the IMM: 1.4 m RMSE each, **manoeuvre criterion −0.4%, not met**.
+- The IMM's straight-leg RMSE (63.5 m against 1.1 m) comes from **two** fixes out of 24,057.
+  They are the first fixes after 20-minute gaps in which the vessel turned, the same
+  failure mode as attempt 1. **Not met.** Median and 95th-percentile errors are identical
+  (0.9 / 1.8 m).
+- NEES: 1% of steps in band. **Not met.**
+- Real data (validation):
+  - IMM NIS above threshold: **1.6%**, up from 0.9% (1.9% excluding repeat positions), so
+    **not met**, but close.
+  - The CV-KF is at 3.8%, but it rejects 3.8% of real fixes.
+  - The IMM predicts real fixes far better: mean log-likelihood −7.38 against −10.40 per fix.
+
+**Scorecard:**
+- The final configuration is attempt 3, so the tracking score is 0 of 4. Attempt 2 had 1 of
+  4, but against a weaker, mis-specified simulator. The latest attempt is reported, not the
+  best one.
+- This is the third attempt on this criterion. Per the project guardrail, iteration stops
+  here.
+
+**Remaining known fix, not applied:** re-initialise immediately when the first fix after a
+long gap fails the gate.
+
+**Scope:** the config holds the attempt-3 parameters. The site's tracks and the locked-test
+prediction baselines B1/B2 use the attempt-1 tracker. The attempt-1 and attempt-2 reports
+are kept in `reports/`.

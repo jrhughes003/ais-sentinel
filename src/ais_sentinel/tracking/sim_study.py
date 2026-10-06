@@ -35,7 +35,7 @@ from ais_sentinel.config import Config
 from ais_sentinel.io import write_text
 from ais_sentinel.tracking.imm import IMMParams, run_imm
 from ais_sentinel.tracking.kf import CVParams, FilterResult, run_cv_filter
-from ais_sentinel.tracking.simulate import SimTrack, simulate_track
+from ais_sentinel.tracking.simulate import SimConfig, SimTrack, simulate_track
 
 log = logging.getLogger(__name__)
 Array = NDArray[np.float64]
@@ -159,6 +159,42 @@ def _params_dict(p: CVParams | IMMParams) -> dict[str, Any]:
     return {k: (v.tolist() if isinstance(v, np.ndarray) else v) for k, v in d.items()}
 
 
+def _cv_choice_text(res: dict[str, Any]) -> str:
+    alt = res.get("cv_alternatives") or {}
+    if not alt:
+        return ""
+    r, m = alt["real_likelihood"], alt["simulator_tuned"]
+    rl = alt["real_likelihood_eval"]
+    return (
+        "The CV-KF baseline is the better (on tuning seeds) of a CV-KF tuned by real-data "
+        f"likelihood (tuning RMSE {r['tune_moving_rmse_m']:.1f} m; on evaluation it rejects "
+        f"{rl['outlier_rejection']['rejected_non_outliers']} good fixes) and one tuned for "
+        f"accuracy in this simulator (tuning RMSE {m['tune_moving_rmse_m']:.1f} m): "
+        f"**{alt['chosen'].replace('_', ' ')}**, q = {res['tuned']['cv']['q_accel']:g}."
+    )
+
+
+def _setup_text(res: dict[str, Any]) -> str:
+    ev = f"{res['eval_seeds'][0]}–{res['eval_seeds'][-1]} ({len(res['eval_seeds'])} voyages)"
+    if res.get("mode") == "fixed":
+        sc = res["sim_config"]
+        return (
+            "**Attempt 3 (fixed mode).** Simulator calibrated to real AIS behaviour, and both "
+            "filters' noise chosen by one-step predictive likelihood on real training data "
+            "(reports/tracking_calibration.md). Nothing was tuned in simulation. "
+            f"Evaluation seeds: {ev}, never used before. Simulated ships turn log-uniformly at "
+            f"{sc['turn_rate_deg_s'][0]}–{sc['turn_rate_deg_s'][1]} °/s, report every "
+            f"{sc['report_s']:.0f} s, with {sc['pos_sigma_m']} m GPS noise and "
+            f"{100 * sc['p_outlier']:.2f}% gross outliers. " + _cv_choice_text(res)
+        )
+    return (
+        f"Tuning seeds: {res['tune_seeds'][0]}–{res['tune_seeds'][-1]} "
+        f"({len(res['tune_seeds'])} voyages). Evaluation seeds: {ev}, disjoint. Each voyage is "
+        "4 h with 60 s AIS-like reporting, dropouts, bursts of missing reports, 5 m GPS noise "
+        "and 0.5% gross outliers."
+    )
+
+
 def report_markdown(res: dict[str, Any]) -> str:
     """Render the simulation study as markdown."""
     cv, imm = res["eval"]["cv"], res["eval"]["imm"]
@@ -175,11 +211,7 @@ def report_markdown(res: dict[str, Any]) -> str:
     lines = [
         "# Tracking: simulation study",
         "",
-        f"Tuning seeds: {res['tune_seeds'][0]}–{res['tune_seeds'][-1]} "
-        f"({len(res['tune_seeds'])} voyages). Evaluation seeds: {res['eval_seeds'][0]}–"
-        f"{res['eval_seeds'][-1]} ({len(res['eval_seeds'])} voyages, disjoint). Each voyage is "
-        "4 h with 60 s AIS-like reporting, dropouts, bursts of missing reports, 5 m GPS noise "
-        "and 0.5% gross outliers.",
+        _setup_text(res),
         "",
         "## Position error (m): CV-KF vs IMM",
         "",
@@ -240,10 +272,56 @@ def run_study(cfg: Config) -> dict[str, Any]:
     sc = cfg.tracking["sim"]
     tune_seeds = list(range(int(sc["tune_seeds"][0]), int(sc["tune_seeds"][1])))
     eval_seeds = list(range(int(sc["eval_seeds"][0]), int(sc["eval_seeds"][1])))
-    tune_tracks = [simulate_track(s) for s in tune_seeds]
-    eval_tracks = [simulate_track(s) for s in eval_seeds]
-    cv_best, cv_hist = tune("cv", tune_tracks)
-    imm_best, imm_hist = tune("imm", tune_tracks)
+    mode = str(sc.get("mode", "tune"))
+    sim_cfg = SimConfig()
+    cv_hist: list[dict[str, Any]] = []
+    imm_hist: list[dict[str, Any]] = []
+    if mode == "fixed":
+        # Simulator and filter parameters both come from the real-data calibration stage
+        # (tracking/calibrate.py); nothing is tuned in simulation.
+        cal = json.loads(Path(str(sc["calibration_file"])).read_text(encoding="utf-8"))
+        sim_d: dict[str, Any] = {
+            k: tuple(v) if isinstance(v, list) else v for k, v in cal["sim_config"].items()
+        }
+        sim_cfg = SimConfig(**sim_d)
+        cv_best: CVParams | IMMParams = CVParams(**cal["cv"])
+        imm_d: dict[str, Any] = {
+            k: tuple(v) if isinstance(v, list) and k != "switch" else v
+            for k, v in cal["imm"].items()
+        }
+        imm_d["switch"] = np.asarray(imm_d["switch"])
+        imm_best: CVParams | IMMParams = IMMParams(**imm_d)
+    eval_tracks = [simulate_track(s, sim_cfg) for s in eval_seeds]
+    tune_tracks = [simulate_track(s, sim_cfg) for s in tune_seeds]
+    cv_alternatives: dict[str, Any] = {}
+    if mode != "fixed":
+        cv_best, cv_hist = tune("cv", tune_tracks)
+        imm_best, imm_hist = tune("imm", tune_tracks)
+    else:
+        # "Best-tuned CV-KF" must really be the best, so this is conservative. The CV-KF
+        # tuned by real-data likelihood can be far too stiff for manoeuvres (80% of real
+        # motion is straight). A second CV-KF is therefore tuned for accuracy directly in
+        # the calibrated simulator, and whichever is better on the *tuning* seeds becomes
+        # the comparison baseline. This can only shrink the IMM's margin.
+        cv_sim, cv_hist = tune("cv", tune_tracks)
+        real_score = evaluate("cv", cv_best, tune_tracks)["moving"]["rmse_m"]
+        sim_score = evaluate("cv", cv_sim, tune_tracks)["moving"]["rmse_m"]
+        cv_alternatives = {
+            "real_likelihood": {"params": _params_dict(cv_best), "tune_moving_rmse_m": real_score},
+            "simulator_tuned": {"params": _params_dict(cv_sim), "tune_moving_rmse_m": sim_score},
+        }
+        cv_alternatives["chosen"] = (
+            "simulator_tuned" if sim_score < real_score else "real_likelihood"
+        )
+        cv_alternatives["real_likelihood_eval"] = evaluate("cv", cv_best, eval_tracks)
+        if sim_score < real_score:
+            cv_best = cv_sim
+        log.info(
+            "fixed mode: CV baseline = %s (tune RMSE real %.1f vs sim %.1f)",
+            cv_alternatives["chosen"],
+            real_score,
+            sim_score,
+        )
     ev = {"cv": evaluate("cv", cv_best, eval_tracks), "imm": evaluate("imm", imm_best, eval_tracks)}
     gain_m = 1 - ev["imm"]["manoeuvre"]["rmse_m"] / ev["cv"]["manoeuvre"]["rmse_m"]
     worse_s = ev["imm"]["straight"]["rmse_m"] / ev["cv"]["straight"]["rmse_m"] - 1
@@ -269,6 +347,11 @@ def run_study(cfg: Config) -> dict[str, Any]:
         },
     ]
     return {
+        "mode": mode,
+        "cv_alternatives": cv_alternatives,
+        "sim_config": {
+            k: (list(v) if isinstance(v, tuple) else v) for k, v in asdict(sim_cfg).items()
+        },
         "tune_seeds": tune_seeds,
         "eval_seeds": eval_seeds,
         "tuned": {"cv": _params_dict(cv_best), "imm": _params_dict(imm_best)},

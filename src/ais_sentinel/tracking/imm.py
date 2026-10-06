@@ -186,6 +186,7 @@ def run_imm(
     out_F = np.tile(np.eye(5), (n, 1, 1))
     out_mu = np.zeros((n, 3))
     nis = np.full(n, np.nan)
+    lls = np.full(n, np.nan)
     accepted = np.zeros(n, dtype=bool)
     reinit = np.zeros(n, dtype=bool)
 
@@ -224,6 +225,7 @@ def run_imm(
         nis_m = np.einsum("mi,mij,mj->m", nu_m, S_inv, nu_m)
         loglik = -0.5 * (nis_m + np.log(np.linalg.det(S_m)) + 2 * _LOG2PI)
         log_mix = float(np.logaddexp.reduce(np.log(c) + loglik))
+        lls[i] = log_mix
         if log_mix >= log_clutter:
             for j in range(3):
                 K = Pps[j] @ H5.T @ S_inv[j]
@@ -249,6 +251,7 @@ def run_imm(
         out_mu[i] = mu
         if i in snap_pos:
             snap_x[snap_pos[i]], snap_P[snap_pos[i]] = xs, Ps
+    lls[0] = np.nan  # only the first fix has no prediction; restarts are still scored
     return IMMResult(
         t,
         out_x,
@@ -259,6 +262,7 @@ def run_imm(
         nis,
         accepted,
         reinit,
+        loglik=lls,
         mu=out_mu,
         snap_idx=snap,
         snap_x=snap_x,
