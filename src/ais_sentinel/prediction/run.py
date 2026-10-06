@@ -222,9 +222,13 @@ def evaluate_stage(cfg: Config) -> None:
     knn_log = []
     for pos in pc.knn["pos_scale_m"]:
         for course in pc.knn["course_scale_deg"]:
+            # The library depends on the feature scales only, so build it once per pair and
+            # vary k at query time.
+            base_p = KNNParams(pos_scale_m=float(pos), course_scale_deg=float(course))
+            base_lib = build_library(tracks, train_ids, *ref, base_p)
             for k in pc.knn["k"]:
-                kp = KNNParams(k=int(k), pos_scale_m=float(pos), course_scale_deg=float(course))
-                lib = build_library(tracks, train_ids, *ref, kp)
+                kp = replace(base_p, k=int(k))
+                lib = replace(base_lib, params=kp)
                 fc, fb = knn_forecast(val, lib, H)
                 err = (
                     per_sample_scores(fc, val)
