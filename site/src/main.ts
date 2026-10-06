@@ -1,6 +1,7 @@
 // App shell: hash router, navigation state, theme toggle. Views are loaded on demand so the
 // landing page does not pay for the map or chart libraries.
 import "./style.css";
+import { esc } from "./util";
 
 type View = (root: HTMLElement) => Promise<void> | void;
 
@@ -17,6 +18,9 @@ const main = document.querySelector<HTMLElement>("#main")!;
 const nav = document.querySelector<HTMLElement>("#nav")!;
 const toggle = document.querySelector<HTMLButtonElement>(".nav-toggle")!;
 let current: string | null = null;
+// Navigation token: if the user moves on while a (lazy-loaded) view is still rendering,
+// the stale render must not paint over the newer page.
+let renderSeq = 0;
 
 function routeKey(): { key: string; query: URLSearchParams } {
   const raw = location.hash.replace(/^#\/?/, "");
@@ -38,20 +42,28 @@ async function render(): Promise<void> {
   }
   nav.classList.remove("open");
   toggle.setAttribute("aria-expanded", "false");
-  main.innerHTML = `<div class="page"><p class="status" role="status">Loading…</p></div>`;
+  const seq = ++renderSeq;
+  // Each navigation renders into its own container. A newer navigation replaces it, so a
+  // stale view that finishes late can only write into a detached element.
+  const target = document.createElement("div");
+  target.innerHTML = `<div class="page"><p class="status" role="status">Loading…</p></div>`;
+  main.replaceChildren(target);
   try {
     const mod = await route.load();
-    main.innerHTML = "";
-    await mod.render(main);
+    if (seq !== renderSeq) return; // superseded while the view's code was loading
+    target.innerHTML = "";
+    await mod.render(target);
+    if (seq !== renderSeq) return; // superseded while the view was fetching data
     // Tables scroll horizontally on small screens: keyboard users must be able to scroll them.
-    for (const w of main.querySelectorAll<HTMLElement>(".table-wrap")) {
+    for (const w of target.querySelectorAll<HTMLElement>(".table-wrap")) {
       w.tabIndex = 0;
       w.setAttribute("role", "region");
       w.setAttribute("aria-label", "Data table");
     }
   } catch (err) {
     console.error(err);
-    main.innerHTML = `<div class="page"><div class="error-box" role="alert">Could not load this view: ${String(err)}</div></div>`;
+    if (seq !== renderSeq) return;
+    target.innerHTML = `<div class="page"><div class="error-box" role="alert">Could not load this view: ${esc(String(err))}</div></div>`;
   }
   main.focus({ preventScroll: true });
   window.scrollTo(0, 0);

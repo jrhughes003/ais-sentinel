@@ -95,3 +95,12 @@ test("live prediction runs from the tracks view", async ({ page }, info) => {
   await btn.click();
   await expect(page.locator("#live-status")).toContainText("ran in your browser", { timeout: 60_000 });
 });
+
+test("fast navigation never shows a stale view", async ({ page }, info) => {
+  test.skip(info.project.name === "mobile", "logic is viewport-independent");
+  await page.goto("./#/tracks");
+  await page.evaluate(() => (location.hash = "#/results")); // leave before tracks finishes
+  await expect(page.locator("main")).toContainText("Results & methods", { timeout: 30_000 });
+  await page.waitForTimeout(4000); // give the abandoned tracks view time to finish
+  await expect(page.locator("main")).not.toContainText("Vessel tracks");
+});
