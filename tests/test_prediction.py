@@ -16,7 +16,7 @@ from ais_sentinel.evaluation.metrics import (
     summarise,
 )
 from ais_sentinel.geo import enu_to_latlon, sog_cog_to_enu_velocity
-from ais_sentinel.prediction.baselines import Forecast, dead_reckoning, kf_extrapolation
+from ais_sentinel.prediction.baselines import Forecast, dead_reckoning
 from ais_sentinel.prediction.samples import anchor_indices, build_samples, interp_track
 
 H = [15, 30, 60, 120]
@@ -96,7 +96,7 @@ def test_dead_reckoning_and_kf_are_exact_on_straight_line() -> None:
     s = build_samples(tr, VOYAGES, H, 60, 10)
     # 10 kn for h minutes = 0.3087 km per minute travelled.
     travelled_km = pl.col("horizon_min") * 10.0 * 1.852 / 60
-    for fc in (dead_reckoning(s, H), kf_extrapolation(s, H, q_accel=0.003)):
+    for fc in (dead_reckoning(s, H),):
         sc = per_sample_scores(fc, s).with_columns(rel=pl.col("error_km") / travelled_km)
         # Dead reckoning extrapolates in the anchor's tangent plane, while a constant course
         # is a rhumb line. They diverge laterally by ~ d^2 sin(cog) tan(lat) / (2R): 84 m
@@ -170,3 +170,22 @@ def test_paired_difference_detects_better_model() -> None:
     d, _lo, hi = paired_difference_ci(better, base, 60, n_boot=300)
     assert d < 0
     assert hi < 0
+
+
+def test_filter_forecasts_from_track_stage_snapshots_are_accurate_on_straight_line() -> None:
+    from ais_sentinel.prediction.filter_forecast import cv_forecast, imm_forecast
+    from ais_sentinel.tracking.imm import IMMParams
+    from ais_sentinel.tracking.kf import CVParams
+    from ais_sentinel.tracking.pipeline import track_voyage
+
+    pts = straight_voyage(300).select("voyage_id", "mmsi", "t", "lat", "lon", "sog_kn", "cog_deg")
+    fixes, snaps = track_voyage(pts, CVParams(q_accel=0.01), IMMParams(), 60, 10)
+    assert snaps is not None
+    s = build_samples(fixes, VOYAGES, H, 60, 10)
+    travelled_km = pl.col("horizon_min") * 10.0 * 1.852 / 60
+    for fc in (cv_forecast(s, snaps, H, 0.01), imm_forecast(s, snaps, H, IMMParams())):
+        sc = per_sample_scores(fc, s).with_columns(rel=pl.col("error_km") / travelled_km)
+        assert sc["rel"].max() < 0.01, fc.model  # within 1% of distance travelled
+        # Uncertainty grows with horizon.
+        area = sc.group_by("horizon_min").agg(pl.col("area90_km2").median()).sort("horizon_min")
+        assert area["area90_km2"].is_sorted()

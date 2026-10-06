@@ -14,8 +14,7 @@ import numpy as np
 import polars as pl
 from numpy.typing import NDArray
 
-from ais_sentinel.geo import enu_to_latlon, latlon_to_enu, sog_cog_to_enu_velocity
-from ais_sentinel.tracking.models import cv_process_noise, cv_transition
+from ais_sentinel.geo import enu_to_latlon, sog_cog_to_enu_velocity
 
 Array = NDArray[np.float64]
 
@@ -74,38 +73,4 @@ def dead_reckoning(samples: pl.DataFrame, horizons_min: list[int]) -> Forecast:
     cov[..., 0, 0] = cov[..., 1, 1] = sigma**2
     return Forecast(
         "dead_reckoning", samples["sample_id"].to_list(), list(horizons_min), lat0, lon0, mean, cov
-    )
-
-
-def kf_extrapolation(
-    samples: pl.DataFrame, horizons_min: list[int], q_accel: float, vel_var: float = 0.25
-) -> Forecast:
-    """B1: propagate the CV Kalman filter's *filtered* state forward in time.
-
-    The filtered state uses only fixes up to the anchor, so the forecast is causal. The
-    covariance is the filter's own ``F P Fᵀ + Q``. Per-fix velocity variance is not stored
-    by the tracking stage, so a nominal ``vel_var`` (m²/s²) is used.
-    """
-    lat0, lon0 = _anchors(samples)
-    fe, fn = latlon_to_enu(samples["f_lat"].to_numpy(), samples["f_lon"].to_numpy(), lat0, lon0)
-    x0 = np.column_stack([fe, fn, samples["f_ve"].to_numpy(), samples["f_vn"].to_numpy()])
-    P0 = np.zeros((len(lat0), 4, 4))
-    P0[:, 0, 0] = samples["f_pee"].to_numpy()
-    P0[:, 1, 1] = samples["f_pnn"].to_numpy()
-    P0[:, 0, 1] = P0[:, 1, 0] = samples["f_pen"].to_numpy()
-    P0[:, 2, 2] = P0[:, 3, 3] = vel_var
-    means, covs = [], []
-    for h in horizons_min:
-        dt = h * 60.0
-        F = cv_transition(dt)
-        means.append((x0 @ F.T)[:, :2])
-        covs.append((F @ P0 @ F.T + cv_process_noise(dt, q_accel))[:, :2, :2])
-    return Forecast(
-        "kf_cv",
-        samples["sample_id"].to_list(),
-        list(horizons_min),
-        lat0,
-        lon0,
-        np.stack(means, axis=1),
-        np.stack(covs, axis=1),
     )

@@ -42,7 +42,10 @@ tracking:
     q_accel: 0.003         # white-noise acceleration PSD [m^2/s^3] (tuned in simulation)
     r_pos_m: 10.0          # position measurement std [m]
   gate_prob: 0.999         # chi-square gate for outlier rejection
-  max_consecutive_rejects: 3
+  max_consecutive_rejects: 2
+  sim:                     # simulation study (tracking/sim_study.py); half-open seed ranges
+    tune_seeds: [0, 50]
+    eval_seeds: [100, 300]
 
 prediction:
   horizons_min: [15, 30, 60, 120]

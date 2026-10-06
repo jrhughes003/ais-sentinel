@@ -19,6 +19,7 @@ import polars as pl
 from ais_sentinel.config import Config
 from ais_sentinel.data.download import load_manifest
 from ais_sentinel.data.vessel_types import COMMERCIAL
+from ais_sentinel.io import write_text
 
 log = logging.getLogger(__name__)
 
@@ -95,8 +96,7 @@ def write_json(path: Path, obj: Any) -> int:
         return o
 
     text = json.dumps(clean(obj), separators=(",", ":"), ensure_ascii=False, default=str)
-    path.write_text(text, encoding="utf-8")
-    return len(text.encode())
+    return write_text(path, text)
 
 
 def stage(cfg: Config) -> None:
@@ -106,11 +106,7 @@ def stage(cfg: Config) -> None:
     base = Path(cfg.paths.processed)
     out = Path(cfg.paths.site_data)
     voyages = pl.read_parquet(base / "voyages.parquet")
-    tracks = pl.read_parquet(base / "tracks.parquet").join(
-        pl.read_parquet(base / "points.parquet").select("voyage_id", "t", "sog_kn"),
-        on=["voyage_id", "t"],
-        how="left",
-    )
+    tracks = pl.read_parquet(base / "tracks.parquet")
     picked = pick_showcase_voyages(voyages, int(cfg.export["n_showcase"]))
     payload = []
     for meta in picked.iter_rows(named=True):

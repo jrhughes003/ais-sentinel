@@ -20,6 +20,7 @@ import polars as pl
 from ais_sentinel.config import Config
 from ais_sentinel.data.clean import CleanReport, clean_points
 from ais_sentinel.data.segment import assign_voyages, split_bounds, summarise_voyages
+from ais_sentinel.io import write_text
 
 log = logging.getLogger(__name__)
 
@@ -119,5 +120,5 @@ def stage(cfg: Config) -> None:
     n_days = len(list((Path(cfg.paths.interim) / "days").glob("aoi_*.parquet")))
     report = Path(cfg.paths.reports) / "data_summary.md"
     report.parent.mkdir(parents=True, exist_ok=True)
-    report.write_text(summary_markdown(points, voyages, rep, n_days), encoding="utf-8")
+    write_text(report, summary_markdown(points, voyages, rep, n_days))
     log.info("build: wrote %s, %s, %s", p_path, v_path, report)

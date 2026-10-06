@@ -54,7 +54,7 @@ line-ending = "lf"
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "B", "UP", "N", "SIM", "NPY", "PD", "RUF"]
-ignore = ["N803", "N806", "RUF001", "RUF002", "RUF003"]
+ignore = ["N803", "N806", "N815", "RUF001", "RUF002", "RUF003"]
 
 [tool.mypy]
 python_version = "3.12"

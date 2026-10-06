@@ -16,10 +16,12 @@ def _stages() -> dict[str, Stage]:
     from ais_sentinel.data import build, download
     from ais_sentinel.export import web
     from ais_sentinel.tracking import pipeline as tracking
+    from ais_sentinel.tracking import sim_study
 
     return {
         "download": download.stage,
         "build": build.stage,
+        "sim-study": sim_study.stage,
         "track": tracking.stage,
         "export": web.stage,
     }

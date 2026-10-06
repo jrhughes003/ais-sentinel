@@ -6,8 +6,10 @@ Gating: each new fix is tested by its **normalised innovation squared** (NIS),
 predicted covariance. If the filter is consistent, NIS follows a χ² distribution with 2
 degrees of freedom. A fix whose NIS exceeds the ``gate_prob`` quantile is rejected (the
 filter coasts on its prediction). After ``max_consecutive_rejects`` rejections in a row, the
-filter assumes it has lost the target (a real jump, or two vessels sharing one MMSI) and
-re-initialises at the latest fix.
+filter assumes it has lost the target and re-initialises at the latest fix. Causes include
+a manoeuvre during a reporting gap, a real jump, or two vessels sharing one MMSI. The new
+velocity comes from the last two (mutually consistent) rejected fixes. An isolated
+outlier is still rejected, because the fix after it agrees with the existing track.
 """
 
 from __future__ import annotations
@@ -38,7 +40,12 @@ class CVParams:
     sogcog_vel_std: float = 0.5
     """Initial velocity standard deviation when initialised from SOG/COG (m/s)."""
     gate_prob: float = 0.999
-    max_consecutive_rejects: int = 3
+    max_consecutive_rejects: int = 2
+
+
+def two_point_velocity(t: Array, z: Array, i: int) -> Array:
+    """Finite-difference velocity from fixes i-1 and i (m/s)."""
+    return (z[i] - z[i - 1]) / max(float(t[i] - t[i - 1]), 1.0)
 
 
 @dataclass
@@ -125,7 +132,10 @@ def run_cv_filter(
             x, P = x_pred, P_pred
             rejects += 1
             if rejects >= params.max_consecutive_rejects:
-                x, P = initial_state(z[i], vel_at(i), params)
+                x, P = initial_state(z[i], two_point_velocity(t, z, i), params)
+                # Two-point velocity variance: 2 R / dt^2 per axis.
+                dt_v = max(float(t[i] - t[i - 1]), 1.0)
+                P[2, 2] = P[3, 3] = 2 * params.r_pos_m**2 / dt_v**2 + 0.05
                 reinit[i] = True
                 accepted[i] = True
                 nis[i] = np.nan

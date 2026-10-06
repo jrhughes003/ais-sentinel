@@ -1,0 +1,111 @@
+"""IMM filter and simulator tests."""
+
+from __future__ import annotations
+
+import numpy as np
+from hypothesis import given, settings
+from hypothesis import strategies as st
+
+from ais_sentinel.tracking.imm import IMMParams, run_imm, transition_matrix
+from ais_sentinel.tracking.kf import CVParams, rts_smooth, run_cv_filter
+from ais_sentinel.tracking.models import ct_predict
+from ais_sentinel.tracking.simulate import SimConfig, simulate_track
+
+
+@given(st.floats(0.0, 1e5))
+def test_transition_matrix_is_stochastic(dt: float) -> None:
+    pi = transition_matrix(dt, IMMParams())
+    assert np.allclose(pi.sum(axis=1), 1.0)
+    assert (pi >= 0).all()
+
+
+def test_transition_matrix_limits() -> None:
+    p = IMMParams()
+    assert np.allclose(transition_matrix(0.0, p), np.eye(3))
+    assert np.allclose(transition_matrix(1e9, p), p.switch)
+
+
+def _fixes(states: np.ndarray, rng: np.random.Generator, sigma: float = 5.0) -> np.ndarray:
+    return states[:, :2] + rng.normal(0, sigma, (len(states), 2))
+
+
+def test_mode_probabilities_identify_motion() -> None:
+    rng = np.random.default_rng(0)
+    t = np.arange(120) * 60.0
+    # Moored: position jitter only.
+    still = np.zeros((120, 5))
+    # Straight: 5 m/s east.
+    straight = np.zeros((120, 5))
+    straight[:, 0] = 5.0 * t
+    straight[:, 2] = 5.0
+    # Steady turn: 0.3 deg/s at 5 m/s.
+    turn = np.zeros((120, 5))
+    x = np.array([0.0, 0.0, 5.0, 0.0, np.radians(0.3)])
+    for i in range(120):
+        turn[i] = x
+        x, _ = ct_predict(x, 60.0)
+    p = IMMParams()
+    mu_still = run_imm(t, _fixes(still, rng), p).mu[30:].mean(axis=0)
+    mu_straight = run_imm(t, _fixes(straight, rng), p).mu[30:].mean(axis=0)
+    mu_turn = run_imm(t, _fixes(turn, rng), p).mu[30:].mean(axis=0)
+    assert mu_still.argmax() == 0
+    assert mu_straight.argmax() == 1
+    assert mu_turn.argmax() == 2
+
+
+def test_imm_tracks_turn_better_than_a_cv_filter_with_its_cruising_noise() -> None:
+    rng = np.random.default_rng(1)
+    t = np.arange(90) * 60.0
+    x = np.array([0.0, 0.0, 6.0, 0.0, np.radians(0.25)])
+    truth = np.zeros((90, 5))
+    for i in range(90):
+        truth[i] = x
+        x, _ = ct_predict(x, 60.0)
+    z = _fixes(truth, rng)
+    p = IMMParams()
+    full = run_imm(t, z, p)
+    # Reference: a plain CV Kalman filter with the IMM's cruising-mode noise.
+    cruise_only = run_cv_filter(t, z, CVParams(q_accel=p.q_cruise, r_pos_m=p.r_pos_m))
+
+    def err(x: np.ndarray) -> float:
+        return float(np.sqrt(np.mean(np.sum((x[20:, :2] - truth[20:, :2]) ** 2, axis=1))))
+
+    assert err(full.x) < 0.8 * err(cruise_only.x)
+    assert full.mu[40:, 2].mean() > 0.5  # the turning mode explains a steady turn
+
+
+@settings(max_examples=25, deadline=None)
+@given(st.integers(0, 10_000))
+def test_imm_covariances_spd_and_probabilities_normalised(seed: int) -> None:
+    tr = simulate_track(seed, SimConfig(duration_s=3600))
+    res = run_imm(tr.t, tr.z, IMMParams())
+    assert np.allclose(res.mu.sum(axis=1), 1.0)
+    for P in res.P[::5]:
+        assert np.allclose(P, P.T, atol=1e-6 * np.abs(P).max())
+        assert np.linalg.eigvalsh(P).min() > -1e-9
+    xs, _ = rts_smooth(res)
+    assert np.all(np.isfinite(xs))
+
+
+def test_imm_rejects_isolated_outlier() -> None:
+    rng = np.random.default_rng(2)
+    t = np.arange(60) * 60.0
+    truth = np.zeros((60, 5))
+    truth[:, 0] = 4.0 * t
+    z = _fixes(truth, rng)
+    z[30] += [2500.0, 1500.0]
+    res = run_imm(t, z, IMMParams())
+    assert not res.accepted[30]
+    assert res.accepted[31:].all()
+
+
+def test_simulator_reproducible_and_aislike() -> None:
+    a, b = simulate_track(7), simulate_track(7)
+    assert np.array_equal(a.t, b.t)
+    assert np.array_equal(a.z, b.z)
+    dt = np.diff(a.t)
+    assert 55 <= np.median(dt) <= 65
+    assert set(np.unique(a.segment)) <= {"straight", "turn", "speed", "stopped"}
+    clean = ~a.outlier
+    resid = np.hypot(*(a.z[clean] - a.truth[clean, :2]).T)
+    assert np.median(resid) < 10  # 5 m per-axis noise -> ~5.9 m median radial error
