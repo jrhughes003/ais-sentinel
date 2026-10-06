@@ -36,7 +36,6 @@ from dataclasses import dataclass, field
 
 import numpy as np
 from numpy.typing import NDArray
-from scipy.stats import chi2
 
 from ais_sentinel.tracking.kf import FilterResult, two_point_velocity
 from ais_sentinel.tracking.models import (
@@ -76,7 +75,7 @@ class IMMParams:
     init_vel_std: float = 5.0
     sogcog_vel_std: float = 0.5
     init_omega_std: float = float(np.radians(1.0))
-    gate_prob: float = 0.999
+    clutter_density: float = 5e-11  # per m²: outlier prior / area, e.g. 0.005 / (10 km)²
     max_consecutive_rejects: int = 2
 
 
@@ -153,21 +152,28 @@ def run_imm(
     covariances are recorded (``snap_x``, ``snap_P``). Forecasting needs them for an exact
     mode-mixture extrapolation.
 
-    **Gating is per mode.** A fix is accepted if it lies inside the χ² gate of *any* mode's
-    prediction. Gating on the combined prediction instead would be dominated by the most
-    probable mode: at the first fix of a turn the filter is about 99% "cruising", so the
-    combined gate is barely wider than the cruising mode's. The fix would be rejected
-    before the turning mode could win probability. (That was observed in the simulation
-    study: hundreds of good fixes were rejected.) If every mode rejects the fix, all modes
-    coast and the probabilities follow the Markov chain. The reported ``nis`` is the
-    combined-prediction NIS, used for consistency checks.
+    **Outlier test: likelihood ratio against a clutter model.** Each fix is either from the
+    target, with likelihood L = Σⱼ cⱼ N(ν; 0, Sⱼ) (the mode mixture, weighted by the
+    predicted mode probabilities cⱼ), or an outlier spread uniformly with density λ
+    (``clutter_density``). The fix is rejected when L < λ, i.e. when "outlier" is the more
+    probable explanation (as in probabilistic data association).
+
+    Two simpler gates were tried first and failed in the simulation study:
+
+    * Gating on the moment-matched *combined* prediction was dominated by the most likely
+      mode, and rejected the first fixes of every turn.
+    * Accepting a fix inside *any* mode's χ² gate let a wide mode with ~1% probability
+      admit kilometre-scale outliers on stationary vessels.
+
+    If the fix is rejected, every mode coasts and the probabilities follow the Markov chain.
+    The reported ``nis`` is the combined-prediction NIS, used for consistency checks.
     """
     n = len(t)
     if n == 0:
         raise ValueError("empty track")
     if np.any(np.diff(t) <= 0):
         raise ValueError("times must be strictly increasing")
-    gate = float(chi2.ppf(params.gate_prob, df=2))
+    log_clutter = float(np.log(params.clutter_density))
     R = np.eye(2) * params.r_pos_m**2
     out_x, out_P = np.zeros((n, 5)), np.zeros((n, 5, 5))
     out_xp, out_Pp = np.zeros((n, 5)), np.zeros((n, 5, 5))
@@ -210,8 +216,9 @@ def run_imm(
         S_m = Pps[:, :2, :2] + R  # (3, 2, 2)
         S_inv = np.linalg.inv(S_m)
         nis_m = np.einsum("mi,mij,mj->m", nu_m, S_inv, nu_m)
-        if nis_m.min() <= gate:
-            loglik = -0.5 * (nis_m + np.log(np.linalg.det(S_m)) + 2 * _LOG2PI)
+        loglik = -0.5 * (nis_m + np.log(np.linalg.det(S_m)) + 2 * _LOG2PI)
+        log_mix = float(np.logaddexp.reduce(np.log(c) + loglik))
+        if log_mix >= log_clutter:
             for j in range(3):
                 K = Pps[j] @ H5.T @ S_inv[j]
                 xs[j] = xps[j] + K @ nu_m[j]

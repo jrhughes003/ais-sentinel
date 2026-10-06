@@ -98,7 +98,8 @@ def voyage_samples(
     xy = np.column_stack([e, n])
     cols: dict[str, object] = {"anchor_idx": idx, "t0": v["t"].gather(idx)}
     for c in ANCHOR_COLS:
-        cols[c if c not in ("lat", "lon") else f"{c}0"] = v[c].gather(idx)
+        if c in v.columns:  # filter-state columns are optional (absent for raw fixes)
+            cols[c if c not in ("lat", "lon") else f"{c}0"] = v[c].gather(idx)
     for h in horizons_min:
         target = interp_track(t, xy, t[idx] + h * 60.0, max_bracket_s)
         la, lo = enu_to_latlon(target[:, 0], target[:, 1], lat_ref, lon_ref)

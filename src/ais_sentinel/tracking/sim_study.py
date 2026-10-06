@@ -117,9 +117,9 @@ CV_GRID: dict[str, list[float]] = {
 }
 IMM_GRID: dict[str, list[Any]] = {
     "q_cruise": [0.0005, 0.002],
-    "q_turn": [0.01, 0.05],
-    "q_omega": [2e-7, 2e-6],
-    "gate_prob": [0.999, 0.9999, 0.99999],
+    "q_turn": [0.01, 0.05, 0.2],
+    "q_omega": [2e-7, 2e-6, 2e-5],
+    "clutter_density": [1e-9, 5e-11, 1e-12],
     "sojourn_s": [(1800.0, 900.0, 120.0), (1800.0, 600.0, 300.0)],
 }
 
